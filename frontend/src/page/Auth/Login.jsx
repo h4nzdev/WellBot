@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
-  const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
   const handleLogin = (e) => {
     e.preventDefault();
@@ -147,7 +146,7 @@ const Login = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
-              <Link to="/register">
+              <Link to="/auth/register">
                 <span className="font-medium text-green-600 hover:text-green-500 cursor-pointer transition-colors">
                   Sign up for free
                 </span>

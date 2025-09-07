@@ -20,14 +20,18 @@ function ClientSidebar({ isOpen, setIsOpen }) {
   const { setUser } = useContext(AuthContext);
 
   const navItems = [
-    { name: "Dashboard", to: "/", icon: LayoutDashboard },
-    { name: "Profile", to: "/profile", icon: User },
-    { name: "AI Assistant", to: "/ai-assistant", icon: MessageSquare },
-    { name: "Book Appointment", to: "/book-appointment", icon: Calendar },
-    { name: "Clinic Locations", to: "/clinic-locations", icon: MapPin },
-    { name: "Notifications", to: "/notifications", icon: Bell },
-    { name: "Medical Records", to: "/medical-records", icon: FileText },
-    { name: "Prescriptions", to: "/prescriptions", icon: Pill },
+    { name: "Dashboard", to: "/client/dashboard", icon: LayoutDashboard },
+    { name: "Profile", to: "/client/profile", icon: User },
+    { name: "AI Assistant", to: "/client/ai-assistant", icon: MessageSquare },
+    {
+      name: "Book Appointment",
+      to: "/client/book-appointment",
+      icon: Calendar,
+    },
+    { name: "Clinic Locations", to: "/client/clinic-locations", icon: MapPin },
+    { name: "Notifications", to: "/client/notifications", icon: Bell },
+    { name: "Medical Records", to: "/client/medical-records", icon: FileText },
+    { name: "Prescriptions", to: "/client/prescriptions", icon: Pill },
   ];
 
   const bottomItems = [

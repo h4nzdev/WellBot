@@ -1,14 +1,15 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import Login from "../page/Auth/Login";
 import Registration from "../page/Auth/Registration";
 
 const AuthRoutes = () => {
   return (
-    <Routes>
-      <Route path="*" element={<Navigate to="/login" />} />
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Registration />} />
-    </Routes>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/register" element={<Registration />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

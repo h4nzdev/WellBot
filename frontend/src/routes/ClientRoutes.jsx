@@ -1,5 +1,3 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import ClientLayout from "../layout/ClientLayout";
 import ClientDashboard from "../page/Client/ClientDashboard/ClientDashboard";
 import ClientProfile from "../page/Client/ClientProfile/ClientProfile";
 import ClientAIChat from "../page/Client/ClientAIAssistant/ClientAIChat";
@@ -8,77 +6,25 @@ import ClientClinicMap from "../page/Client/ClientClinicLocations/ClientClinicMa
 import ClientNotifications from "../page/Client/ClientNotifications/ClientNotifications";
 import ClientMedicalRecords from "../page/Client/ClientMedicalRecords/ClientMedicalRecords";
 import ClientPrescriptions from "../page/Client/Prescriptions/ClientPrescriptions";
+import ClientLayout from "../layout/ClientLayout";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-function ClientRoutes() {
+const ClientRoutes = () => {
   return (
-    <Routes>
-      <Route path="*" element={<Navigate to="/" />} />
-      <Route
-        path="/"
-        element={
-          <ClientLayout>
-            <ClientDashboard />
-          </ClientLayout>
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          <ClientLayout>
-            <ClientProfile />
-          </ClientLayout>
-        }
-      />
-      <Route
-        path="/ai-assistant"
-        element={
-          <ClientLayout>
-            <ClientAIChat />
-          </ClientLayout>
-        }
-      />
-      <Route
-        path="/book-appointment"
-        element={
-          <ClientLayout>
-            <ClientBookAppointment />
-          </ClientLayout>
-        }
-      />
-      <Route
-        path="/clinic-locations"
-        element={
-          <ClientLayout>
-            <ClientClinicMap />
-          </ClientLayout>
-        }
-      />
-      <Route
-        path="/notifications"
-        element={
-          <ClientLayout>
-            <ClientNotifications />
-          </ClientLayout>
-        }
-      />
-      <Route
-        path="/medical-records"
-        element={
-          <ClientLayout>
-            <ClientMedicalRecords />
-          </ClientLayout>
-        }
-      />
-      <Route
-        path="/prescriptions"
-        element={
-          <ClientLayout>
-            <ClientPrescriptions />
-          </ClientLayout>
-        }
-      />
-    </Routes>
+    <ClientLayout>
+      <Routes>
+        <Route path="dashboard" element={<ClientDashboard />} />
+        <Route path="profile" element={<ClientProfile />} />
+        <Route path="ai-assistant" element={<ClientAIChat />} />
+        <Route path="book-appointment" element={<ClientBookAppointment />} />
+        <Route path="clinic-locations" element={<ClientClinicMap />} />
+        <Route path="notifications" element={<ClientNotifications />} />
+        <Route path="medical-records" element={<ClientMedicalRecords />} />
+        <Route path="prescriptions" element={<ClientPrescriptions />} />
+        <Route path="*" element={<Navigate to="dashboard" replace />} />
+      </Routes>
+    </ClientLayout>
   );
-}
+};
 
 export default ClientRoutes;
