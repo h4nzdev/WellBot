@@ -4,7 +4,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(false);
-  const [role, setRole] = useState("Client");
+  const [role, setRole] = useState("Clinic");
 
   console.log(user)
 
