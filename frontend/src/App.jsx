@@ -1,23 +1,7 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ClinicDashboard from "./page/ClinicPages/ClinicDashboard";
-import ClinicLayout from "./layout/ClinicLayout";
+import RoleRoutes from "./routes/RoleRoutes";
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/clinic/dashboard"
-          element={
-            <ClinicLayout>
-              <ClinicDashboard />
-            </ClinicLayout>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RoleRoutes />;
 };
 
 export default App;

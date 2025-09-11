@@ -10,20 +10,68 @@ import {
   Bell,
   LogOut,
   Stethoscope,
-} from "lucide-react"
+} from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 export default function ClinicSidebar() {
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", active: true },
-    { icon: Calendar, label: "Appointments" },
-    { icon: Users, label: "Patients" },
-    { icon: UserCheck, label: "Doctors" },
-    { icon: MessageSquare, label: "Patient Chats" },
-    { icon: FileText, label: "Medical Records" },
-    { icon: Bell, label: "Notifications" },
-    { icon: CreditCard, label: "Subscription" },
-    { icon: Settings, label: "Settings" },
-  ]
+    {
+      icon: LayoutDashboard,
+      label: "Dashboard",
+      active: true,
+      link: "/clinic/dashboard",
+    },
+    {
+      icon: Calendar,
+      label: "Appointments",
+      active: false,
+      link: "/clinic/appointments",
+    },
+    {
+      icon: Users,
+      label: "Patients",
+      active: false,
+      link: "/clinic/patients",
+    },
+    {
+      icon: UserCheck,
+      label: "Doctors",
+      active: false,
+      link: "/clinic/doctors",
+    },
+    {
+      icon: MessageSquare,
+      label: "Patient Chats",
+      active: false,
+      link: "/clinic/patients-chats",
+    },
+    {
+      icon: FileText,
+      label: "Medical Records",
+      active: false,
+      link: "/clinic/medical-records",
+    },
+    {
+      icon: Bell,
+      label: "Notifications",
+      active: false,
+      link: "/clinic/notification",
+    },
+    {
+      icon: CreditCard,
+      label: "Subscription",
+      active: false,
+      link: "/clinic/subscriptions",
+    },
+    {
+      icon: Settings,
+      label: "Settings",
+      active: false,
+      link: "/clinic/settings",
+    },
+  ];
+  const path = useLocation()
+  console.log(path.pathname)
 
   return (
     <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
@@ -41,16 +89,23 @@ export default function ClinicSidebar() {
       {/* Navigation Menu */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {menuItems.map((item, index) => (
-          <button
-            key={index}
-            className={`
+          <Link to={item.link}>
+            <button
+              key={index}
+              
+              className={`
               w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200
-              ${item.active ? "bg-cyan-600 text-white shadow-md" : "text-slate-600 hover:bg-slate-100"}
+              ${
+                path.pathname === item.link
+                  ? "bg-cyan-600 text-white shadow-md ml-2"
+                  : "text-slate-600 hover:bg-slate-100"
+              }
             `}
-          >
-            <item.icon className="w-5 h-5" />
-            <span className="font-medium">{item.label}</span>
-          </button>
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="font-medium">{item.label}</span>
+            </button>
+          </Link>
         ))}
       </nav>
 
@@ -72,5 +127,5 @@ export default function ClinicSidebar() {
         </button>
       </div>
     </div>
-  )
+  );
 }
