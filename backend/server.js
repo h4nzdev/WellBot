@@ -1,0 +1,20 @@
+import express from "express";
+import { configDB } from "./config/db.js";
+import clinicRoutes from "./routes/clinicRoutes.js";
+import doctorRouter from "./routes/doctorRoutes.js";
+import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
+configDB();
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Server is running on PORT : 3000`);
+});
+
+app.use("/clinic", clinicRoutes);
+app.use("/doctor", doctorRouter);

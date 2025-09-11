@@ -3,9 +3,12 @@ import "./index.css";
 import { AuthProvider } from "./context/AuthContext.jsx";
 
 import App from "./App.jsx";
+import { DoctorProvider } from "./context/DoctorContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
-    <App />
+    <DoctorProvider>
+      <App />
+    </DoctorProvider>
   </AuthProvider>
 );

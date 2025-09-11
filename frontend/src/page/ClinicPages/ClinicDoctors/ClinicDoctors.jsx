@@ -11,6 +11,8 @@ import {
   ChevronDown,
   MoreHorizontal,
 } from "lucide-react";
+import ClinicDoctorsTableBody from "./components/ClinicDoctorsTableBody";
+import ClinicDoctorsStats from "./components/ClinicDoctorsStats";
 
 export default function ClinicDoctors() {
   return (
@@ -34,64 +36,7 @@ export default function ClinicDoctors() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
-                  Total Doctors
-                </p>
-                <p className="text-4xl font-semibold text-slate-800">6</p>
-              </div>
-              <div className="bg-slate-500 p-4 rounded-2xl shadow-md">
-                <User className="w-8 h-8 text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
-                  Active Doctors
-                </p>
-                <p className="text-4xl font-semibold text-emerald-600">5</p>
-              </div>
-              <div className="bg-emerald-500 p-4 rounded-2xl shadow-md">
-                <User className="w-8 h-8 text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
-                  On Leave
-                </p>
-                <p className="text-4xl font-semibold text-amber-600">1</p>
-              </div>
-              <div className="bg-amber-500 p-4 rounded-2xl shadow-md">
-                <User className="w-8 h-8 text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
-                  New Doctors (30d)
-                </p>
-                <p className="text-4xl font-semibold text-cyan-600">1</p>
-              </div>
-              <div className="bg-cyan-500 p-4 rounded-2xl shadow-md">
-                <User className="w-8 h-8 text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <ClinicDoctorsStats />
         {/* Main Content */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           {/* Controls */}
@@ -150,67 +95,7 @@ export default function ClinicDoctors() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                {/* Doctor Row 1 */}
-                <tr className="hover:bg-slate-50 transition-colors border-t border-slate-200">
-                  <td className="py-4 px-4">
-                    <p className="font-semibold text-slate-800">
-                      Dr. Sarah Wilson
-                    </p>
-                  </td>
-                  <td className="px-4">Cardiology</td>
-                  <td className="px-4 text-slate-700">+1 (555) 123-4567</td>
-                  <td className="px-4 text-slate-500">
-                    sarah.wilson@email.com
-                  </td>
-                  <td className="px-4">
-                    <span className="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-md text-sm w-fit">
-                      Active
-                    </span>
-                  </td>
-                  <td className="px-4 text-center">
-                    <button
-                      type="button"
-                      className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center mx-auto"
-                      disabled
-                      aria-label="Actions"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-
-                {/* Doctor Row 2 */}
-                <tr className="hover:bg-slate-50 transition-colors border-t border-slate-200">
-                  <td className="py-4 px-4">
-                    <p className="font-semibold text-slate-800">
-                      Dr. Michael Brown
-                    </p>
-                  </td>
-                  <td className="px-4">Neurology</td>
-                  <td className="px-4 text-slate-700">+1 (555) 234-5678</td>
-                  <td className="px-4 text-slate-500">
-                    michael.brown@email.com
-                  </td>
-                  <td className="px-4">
-                    <span className="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-md text-sm w-fit">
-                      Active
-                    </span>
-                  </td>
-                  <td className="px-4 text-center">
-                    <button
-                      type="button"
-                      className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center mx-auto"
-                      disabled
-                      aria-label="Actions"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-
-                {/* Add more rows as needed */}
-              </tbody>
+              <ClinicDoctorsTableBody />
             </table>
           </div>
 
