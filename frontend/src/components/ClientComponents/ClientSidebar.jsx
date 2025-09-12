@@ -9,6 +9,7 @@ import {
   Bell,
   LogOut,
   Stethoscope,
+  Timer,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -29,12 +30,6 @@ export default function ClientSidebar() {
       link: "/client/appointments",
     },
     {
-      icon: UserCheck,
-      label: "Doctors",
-      active: false,
-      link: "/client/doctors",
-    },
-    {
       icon: MessageSquare,
       label: "Chats",
       active: false,
@@ -53,10 +48,10 @@ export default function ClientSidebar() {
       link: "/client/notification",
     },
     {
-      icon: CreditCard,
-      label: "Subscription",
+      icon: Timer,
+      label: "Reminder",
       active: false,
-      link: "/client/subscriptions",
+      link: "/client/reminder",
     },
     {
       icon: Settings,
@@ -83,7 +78,7 @@ export default function ClientSidebar() {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
+    <div className="fixed md:block hidden left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
       {/* Sidebar Header */}
       <div className="flex items-center space-x-3 p-6 border-b flex-shrink-0">
         <div className="bg-cyan-600 p-2 rounded-lg">

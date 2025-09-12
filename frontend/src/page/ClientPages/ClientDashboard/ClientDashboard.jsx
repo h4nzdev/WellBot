@@ -22,7 +22,7 @@ export default function ClientDashboard() {
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
-      <div className="mx-auto p-6 max-w-7xl">
+      <div className="mx-auto">
         {/* Header */}
         <header className="mb-8">
           <h1 className="text-3xl md:text-4xl font-semibold text-slate-800">

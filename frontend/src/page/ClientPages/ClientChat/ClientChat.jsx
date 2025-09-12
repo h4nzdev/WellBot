@@ -4,7 +4,7 @@ import React from "react";
 const ClientChat = () => {
   return (
     <div className="w-full min-h-screen bg-slate-50 flex flex-col">
-      <div className="flex-1 max-w-4xl mx-auto p-6 w-full flex flex-col">
+      <div className="flex-1 mx-auto w-full flex flex-col">
         <header className="mb-8 text-center">
           <h1 className="text-3xl md:text-4xl font-semibold text-slate-800">
             AI Symptom Checker
