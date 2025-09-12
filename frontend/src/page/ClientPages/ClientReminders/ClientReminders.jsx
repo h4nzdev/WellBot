@@ -22,10 +22,10 @@ const ClientReminders = () => {
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
-      <div className="mx-auto">
+      <div className="mx-auto p-4 sm:p-6 max-w-7xl">
         <header className="mb-8">
-          <div className="flex justify-between items-center">
-            <div>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div className="mb-4 sm:mb-0">
               <h1 className="text-3xl md:text-4xl font-semibold text-slate-800">
                 My Reminders
               </h1>
@@ -33,7 +33,7 @@ const ClientReminders = () => {
                 Manage your personal health reminders.
               </p>
             </div>
-            <button className="flex items-center justify-center p-3 bg-cyan-600 text-white rounded-xl shadow-lg hover:bg-cyan-700 transition-all duration-300">
+            <button className="flex items-center justify-center p-3 bg-cyan-600 text-white rounded-xl shadow-lg hover:bg-cyan-700 transition-all duration-300 w-full sm:w-auto">
               <Plus className="w-6 h-6 mr-2" />
               Set New Reminder
             </button>
