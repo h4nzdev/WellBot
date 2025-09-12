@@ -1,10 +1,23 @@
 import Clinic from "../model/clinicModel.js";
 import Doctor from "../model/doctorModel.js";
+import bcrypt from "bcrypt";
 
-// ➕ Register a new clinic
+// Register a new clinic
 export const addClinic = async (req, res) => {
   try {
-    const clinic = new Clinic(req.body); // expect {name, email, password, subscriptionPlan}
+    const { name, email, password, subscriptionPlan } = req.body;
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create clinic with hashed password
+    const clinic = new Clinic({
+      name,
+      email,
+      password: hashedPassword,
+      subscriptionPlan,
+    });
+
     await clinic.save();
     res.status(201).json({ message: "Clinic added successfully", clinic });
   } catch (err) {
@@ -12,7 +25,7 @@ export const addClinic = async (req, res) => {
   }
 };
 
-// 📋 Get all clinics
+// Get all clinics
 export const getAllClinics = async (req, res) => {
   try {
     const clinics = await Clinic.find().populate("doctors"); // include doctors info
@@ -22,7 +35,7 @@ export const getAllClinics = async (req, res) => {
   }
 };
 
-// 🔍 Get one clinic by ID
+// Get one clinic by ID
 export const getClinicById = async (req, res) => {
   try {
     const clinic = await Clinic.findById(req.params.id).populate("doctors");
@@ -33,10 +46,12 @@ export const getClinicById = async (req, res) => {
   }
 };
 
-// ✏️ Update clinic info
+// Update clinic info
 export const updateClinic = async (req, res) => {
   try {
-    const clinic = await Clinic.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const clinic = await Clinic.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!clinic) return res.status(404).json({ error: "Clinic not found" });
     res.json({ message: "Clinic updated", clinic });
   } catch (err) {
@@ -44,7 +59,7 @@ export const updateClinic = async (req, res) => {
   }
 };
 
-// ❌ Delete a clinic
+// Delete a clinic
 export const deleteClinic = async (req, res) => {
   try {
     const clinic = await Clinic.findByIdAndDelete(req.params.id);
@@ -55,7 +70,7 @@ export const deleteClinic = async (req, res) => {
   }
 };
 
-// ➕ Add a doctor into a clinic (using $push)
+// Add a doctor into a clinic (using $push)
 export const addDoctorToClinic = async (req, res) => {
   try {
     const { clinicId } = req.params;

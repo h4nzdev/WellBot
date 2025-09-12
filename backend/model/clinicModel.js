@@ -27,6 +27,10 @@ const ClinicSchema = new mongoose.Schema({
     type: Number,
     default: 0, // resets each day
   },
+  role: {
+    type: String,
+    default: "Clinic",
+  },
   doctors: [
     {
       type: mongoose.Schema.Types.ObjectId,

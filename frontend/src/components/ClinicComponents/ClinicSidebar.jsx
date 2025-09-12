@@ -11,7 +11,9 @@ import {
   LogOut,
   Stethoscope,
 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function ClinicSidebar() {
   const menuItems = [
@@ -70,8 +72,22 @@ export default function ClinicSidebar() {
       link: "/clinic/settings",
     },
   ];
-  const path = useLocation()
-  console.log(path.pathname)
+  const path = useLocation();
+  const navigate = useNavigate();
+  const { setUser, setRole } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    // Clear session storage
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("role");
+
+    // Update auth context
+    setUser(false);
+    setRole("Clinic");
+
+    // Redirect to login page
+    navigate("/auth/login");
+  };
 
   return (
     <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
@@ -92,7 +108,6 @@ export default function ClinicSidebar() {
           <Link to={item.link}>
             <button
               key={index}
-              
               className={`
               w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200
               ${
@@ -121,7 +136,10 @@ export default function ClinicSidebar() {
           </div>
         </div>
 
-        <button className="w-full flex items-center space-x-3 p-3 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors duration-200">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center space-x-3 p-3 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors duration-200"
+        >
           <LogOut className="w-5 h-5" />
           <span className="font-medium">Logout</span>
         </button>

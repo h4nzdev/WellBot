@@ -31,6 +31,10 @@ const PatientSchema = new mongoose.Schema({
   address: {
     type: String,
   },
+  role: {
+    type: String,
+    default: "Client",
+  },
   password: {
     type: String,
     required: true, // will be hashed before save

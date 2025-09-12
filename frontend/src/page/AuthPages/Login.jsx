@@ -1,6 +1,34 @@
-import { Shield, Star, Sparkles } from "lucide-react"
+import { Shield, Star, Sparkles } from "lucide-react";
+import { useContext, useState } from "react";
+import axios from "axios";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Login() {
+  const { setRole, setUser } = useContext(AuthContext);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/auth/login",
+        formData
+      );
+      setRole(res.data.clinic.role);
+      setUser(res.data.clinic);
+      console.log(formData);
+      setFormData({
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -11,16 +39,26 @@ export default function Login() {
             </div>
             <h1 className="text-4xl font-semibold text-slate-800">Medora</h1>
           </div>
-          <p className="text-lg text-slate-600">Sign in to your clinic dashboard</p>
+          <p className="text-lg text-slate-600">
+            Sign in to your clinic dashboard
+          </p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-          <h2 className="text-2xl font-semibold text-slate-800 mb-6">Sign In</h2>
+          <h2 className="text-2xl font-semibold text-slate-800 mb-6">
+            Sign In
+          </h2>
 
-          <form className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Email Address
+              </label>
               <input
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 type="email"
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                 placeholder="doctor@clinic.com"
@@ -28,17 +66,26 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Password
+              </label>
               <input
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
                 type="password"
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
-                placeholder="••••••••"
+                placeholder="Password"
               />
             </div>
 
             <div className="flex items-center justify-between">
               <label className="flex items-center">
-                <input type="checkbox" className="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500" />
+                <input
+                  type="checkbox"
+                  className="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
+                />
                 <span className="ml-2 text-sm text-slate-600">Remember me</span>
               </label>
               <a href="#" className="text-sm text-cyan-600 hover:text-cyan-700">
@@ -57,7 +104,10 @@ export default function Login() {
           <div className="mt-6 pt-6 border-t border-slate-200">
             <p className="text-center text-sm text-slate-600">
               New to Medora?{" "}
-              <a href="/auth/register" className="text-cyan-600 hover:text-cyan-700 font-medium">
+              <a
+                href="/auth/register"
+                className="text-cyan-600 hover:text-cyan-700 font-medium"
+              >
                 Create account
               </a>
             </p>
@@ -77,5 +127,5 @@ export default function Login() {
         </div>
       </div>
     </div>
-  )
+  );
 }

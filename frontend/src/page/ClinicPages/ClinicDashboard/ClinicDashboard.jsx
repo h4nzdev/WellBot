@@ -14,8 +14,13 @@ import {
   Activity,
   DollarSign,
 } from "lucide-react";
+import { useContext } from "react";
+import { AppointmentContext } from "../../../context/AppointmentContext";
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function ClinicDashboard() {
+  const { appointments } = useContext(AppointmentContext);
+  const {user} = useContext(AuthContext)
   // Static data for demonstration
   const stats = {
     appointments: 24,
@@ -23,54 +28,6 @@ export default function ClinicDashboard() {
     doctors: 5,
     revenue: 12450,
   };
-
-  const recentAppointments = [
-    {
-      id: 1,
-      patientName: "John Smith",
-      doctor: "Dr. Sarah Wilson",
-      date: "2024-09-10",
-      time: "09:00 AM",
-      status: "confirmed",
-      type: "Consultation",
-    },
-    {
-      id: 2,
-      patientName: "Maria Garcia",
-      doctor: "Dr. Michael Brown",
-      date: "2024-09-10",
-      time: "10:30 AM",
-      status: "pending",
-      type: "Follow-up",
-    },
-    {
-      id: 3,
-      patientName: "David Johnson",
-      doctor: "Dr. Sarah Wilson",
-      date: "2024-09-10",
-      time: "02:00 PM",
-      status: "completed",
-      type: "Check-up",
-    },
-    {
-      id: 4,
-      patientName: "Lisa Chen",
-      doctor: "Dr. Robert Davis",
-      date: "2024-09-11",
-      time: "11:00 AM",
-      status: "confirmed",
-      type: "Consultation",
-    },
-    {
-      id: 5,
-      patientName: "Ahmed Hassan",
-      doctor: "Dr. Emily Taylor",
-      date: "2024-09-11",
-      time: "03:30 PM",
-      status: "pending",
-      type: "Surgery",
-    },
-  ];
 
   const recentActivities = [
     {
@@ -106,7 +63,7 @@ export default function ClinicDashboard() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "confirmed":
+      case "Scheduled":
         return "bg-emerald-50 text-emerald-700 border border-emerald-200";
       case "pending":
         return "bg-amber-50 text-amber-700 border border-amber-200";
@@ -119,7 +76,7 @@ export default function ClinicDashboard() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "confirmed":
+      case "Scheduled":
         return <CheckCircle className="w-4 h-4" />;
       case "pending":
         return <Clock className="w-4 h-4" />;
@@ -141,7 +98,7 @@ export default function ClinicDashboard() {
             </div>
             <div>
               <h1 className="text-3xl md:text-4xl font-semibold text-slate-800">
-                Clinic Dashboard
+                {user.name}
               </h1>
               <p className="text-slate-600 mt-1">
                 Welcome back! Here's what's happening at your clinic today.
@@ -244,7 +201,7 @@ export default function ClinicDashboard() {
                 Recent Appointments
               </h2>
               <div className="space-y-4">
-                {recentAppointments.map((appointment) => (
+                {appointments.map((appointment) => (
                   <div
                     key={appointment.id}
                     className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl p-6 hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5"
@@ -253,15 +210,17 @@ export default function ClinicDashboard() {
                       <div className="flex-1">
                         <div className="flex items-center space-x-3">
                           <h3 className="font-semibold text-slate-800 text-lg">
-                            {appointment.patientName}
+                            {appointment.patientId.name}
                           </h3>
                           <span className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-full">
                             {appointment.type}
                           </span>
                         </div>
-                        <p className="text-slate-600">{appointment.doctor}</p>
+                        <p className="text-slate-600">
+                          {appointment.doctorId.name}
+                        </p>
                         <p className="text-slate-500 text-sm mt-1">
-                          {appointment.date} at {appointment.time}
+                          {appointment.date.slice(1, 10)} at {appointment.time}
                         </p>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -276,7 +235,7 @@ export default function ClinicDashboard() {
                           </span>
                         </span>
                       </div>
-                    </div>``
+                    </div>
                   </div>
                 ))}
               </div>
