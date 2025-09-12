@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Calendar,
@@ -8,21 +8,21 @@ import {
   Plus,
   Bot,
   BellRing,
-} from 'lucide-react';
+} from "lucide-react";
 
 export default function ClientDashboard() {
   const healthTips = [
-    'Stay hydrated by drinking at least 8 glasses of water a day.',
-    'Incorporate at least 30 minutes of moderate-intensity exercise into your daily routine.',
-    'Ensure you get 7-9 hours of quality sleep per night for better health.',
-    'A balanced diet rich in fruits, vegetables, and whole grains is key to a healthy lifestyle.',
+    "Stay hydrated by drinking at least 8 glasses of water a day.",
+    "Incorporate at least 30 minutes of moderate-intensity exercise into your daily routine.",
+    "Ensure you get 7-9 hours of quality sleep per night for better health.",
+    "A balanced diet rich in fruits, vegetables, and whole grains is key to a healthy lifestyle.",
   ];
 
   const randomTip = healthTips[Math.floor(Math.random() * healthTips.length)];
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
-      <div className="mx-auto p-4 sm:p-6 max-w-7xl">
+      <div className="mx-auto">
         {/* Header */}
         <header className="mb-8">
           <h1 className="text-3xl md:text-4xl font-semibold text-slate-800">

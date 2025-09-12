@@ -27,12 +27,12 @@ export default function ClientSidebar() {
     {
       icon: MessageSquare,
       label: "AI Chat",
-      link: "/client/chat",
+      link: "/client/chats",
     },
     {
       icon: FileText,
       label: "Medical Records",
-      link: "/client/records",
+      link: "/client/medical-records",
     },
     {
       icon: Bell,
@@ -53,7 +53,7 @@ export default function ClientSidebar() {
   };
 
   return (
-    <div className="fixed md:block hidden left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
+    <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
       <div className="flex items-center space-x-3 p-6 border-b flex-shrink-0">
         <div className="bg-cyan-600 p-2 rounded-lg">
           <Stethoscope className="w-6 h-6 text-white" />
