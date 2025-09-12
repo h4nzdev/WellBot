@@ -6,7 +6,6 @@ import {
   Bell,
   LogOut,
   Stethoscope,
-  Timer,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -14,32 +13,13 @@ import { AuthContext } from "../../context/AuthContext";
 
 export default function ClientSidebar() {
   const menuItems = [
-    {
-      icon: LayoutDashboard,
-      label: "Dashboard",
-      link: "/client/dashboard",
-    },
-    {
-      icon: Calendar,
-      label: "Appointments",
-      link: "/client/appointments",
-    },
-    {
-      icon: MessageSquare,
-      label: "AI Chat",
-      link: "/client/chats",
-    },
-    {
-      icon: FileText,
-      label: "Medical Records",
-      link: "/client/medical-records",
-    },
-    {
-      icon: Bell,
-      label: "Reminders",
-      link: "/client/reminders",
-    },
+    { icon: LayoutDashboard, label: "Dashboard", link: "/client/dashboard" },
+    { icon: Calendar, label: "Appointments", link: "/client/appointments" },
+    { icon: MessageSquare, label: "AI Chat", link: "/client/chats" },
+    { icon: FileText, label: "Medical Records", link: "/client/medical-records" },
+    { icon: Bell, label: "Reminders", link: "/client/reminders" },
   ];
+
   const path = useLocation();
   const navigate = useNavigate();
   const { setUser, setRole } = useContext(AuthContext);
@@ -64,18 +44,15 @@ export default function ClientSidebar() {
         </div>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {menuItems.map((item, index) => (
-          <Link to={item.link} key={index}>
+          <Link to={item.link} key={index} className="block">
             <button
-              className={`
-              w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200
-              ${
+              className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 text-left ${
                 path.pathname === item.link
-                  ? "bg-cyan-600 text-white shadow-md ml-2"
-                  : "text-slate-600 hover:bg-slate-100"
-              }
-            `}
+                  ? "bg-cyan-600 text-white shadow-md transform scale-105"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-800"
+              }`}
             >
               <item.icon className="w-5 h-5" />
               <span className="font-medium">{item.label}</span>
@@ -97,7 +74,7 @@ export default function ClientSidebar() {
 
         <button
           onClick={handleLogout}
-          className="w-full flex items-center space-x-3 p-3 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors duration-200"
+          className="w-full flex items-center space-x-3 p-3 text-slate-600 hover:bg-red-100 hover:text-red-600 rounded-lg transition-colors duration-200"
         >
           <LogOut className="w-5 h-5" />
           <span className="font-medium">Logout</span>
