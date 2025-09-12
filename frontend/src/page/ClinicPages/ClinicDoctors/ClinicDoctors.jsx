@@ -14,7 +14,11 @@ import {
 import ClinicDoctorsTableBody from "./components/ClinicDoctorsTableBody";
 import ClinicDoctorsStats from "./components/ClinicDoctorsStats";
 
+import AddDoctorModal from "../../../components/ClinicComponents/AddDoctorModal/AddDoctorModal";
+import { useState } from "react";
+
 export default function ClinicDoctors() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <div className="w-full min-h-screen bg-slate-50">
       <div className="mx-auto ">
@@ -68,13 +72,19 @@ export default function ClinicDoctors() {
             {/* Add Button */}
             <button
               type="button"
+              onClick={() => setIsModalOpen(true)}
               className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 h-12 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center"
-              disabled
             >
               <Plus className="w-5 h-5 mr-2" />
               Add Doctor
             </button>
           </div>
+
+          {/* Add Doctor Modal */}
+          <AddDoctorModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
 
           {/* Table */}
           <div className="rounded-xl border border-slate-200 overflow-hidden">

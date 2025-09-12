@@ -19,10 +19,10 @@ export const DoctorProvider = ({ children }) => {
     fetchDoctors();
   }, []);
 
-  console.log(doctors)
+  console.log(doctors);
 
   return (
-    <DoctorContext.Provider value={{ doctors, setDoctors }}>
+    <DoctorContext.Provider value={{ doctors, setDoctors, fetchDoctors }}>
       {children}
     </DoctorContext.Provider>
   );
