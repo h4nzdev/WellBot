@@ -1,105 +1,199 @@
-"use client"
+"use client";
 
 import {
   User,
-  Send,
-  ChevronLeft,
+  MessageCircle,
+  Search,
+  ChevronDown,
+  Filter,
   MoreHorizontal,
-} from "lucide-react"
+} from "lucide-react";
 
 export default function ClinicPatientsChat() {
   return (
-    <div className="w-full min-h-screen bg-slate-50 flex flex-col">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 p-4 flex items-center space-x-4 shadow-sm">
-        <button
-          type="button"
-          className="p-2 rounded-md hover:bg-slate-100"
-          aria-label="Back to Patients"
-          disabled
-        >
-          <ChevronLeft className="w-6 h-6 text-slate-600" />
-        </button>
-        <div className="flex items-center space-x-3">
-          <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
-            JS
+    <div className="w-full min-h-screen bg-slate-50">
+      <div className="mx-auto">
+        {/* Header */}
+        <div className="mb-8 flex items-center space-x-3">
+          <div className="bg-cyan-500 p-3 rounded-2xl shadow-lg">
+            <MessageCircle className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-slate-800">John Smith</h1>
-            <p className="text-sm text-slate-500">Patient</p>
+            <h1 className="text-3xl md:text-4xl font-semibold text-slate-800">
+              Patient Chat Overview
+            </h1>
+            <p className="text-slate-600 mt-1">
+              View recent chatbot conversations from patients
+            </p>
           </div>
         </div>
-        <div className="ml-auto">
+
+        {/* Controls */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div className="relative max-w-md flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search patients or symptoms..."
+              className="pl-10 h-12 rounded-xl border border-slate-200 focus:border-cyan-300 focus:ring-1 focus:ring-cyan-200 w-full"
+              disabled
+            />
+          </div>
+
           <button
             type="button"
-            className="p-2 rounded-md hover:bg-slate-100"
-            aria-label="More options"
+            className="flex items-center h-12 px-4 rounded-xl border border-slate-200 hover:border-cyan-300 bg-transparent text-slate-700 cursor-not-allowed"
             disabled
           >
-            <MoreHorizontal className="w-6 h-6 text-slate-600" />
+            <Filter className="w-4 h-4 mr-2" />
+            Filter
+            <ChevronDown className="w-4 h-4 ml-2" />
           </button>
         </div>
-      </header>
 
-      {/* Chat Area */}
-      <main className="flex-1 overflow-y-auto p-6 space-y-6">
-        {/* Message from Doctor */}
-        <div className="flex items-start space-x-3 max-w-xl">
-          <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
-            SW
-          </div>
-          <div>
-            <div className="bg-white rounded-xl shadow p-4 text-slate-800 max-w-md">
-              <p>Hello John, how are you feeling today?</p>
-              <span className="block text-xs text-slate-400 mt-1">Dr. Sarah Wilson • 09:00 AM</span>
+        {/* Chat Table */}
+        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-lg p-6">
+          <table className="w-full text-left min-w-[700px]">
+            <thead className="bg-slate-50">
+              <tr>
+                <th className="py-4 px-4 font-semibold text-slate-700">
+                  Patient
+                </th>
+                <th className="py-4 px-4 font-semibold text-slate-700">
+                  Last Chat Snippet
+                </th>
+                <th className="py-4 px-4 font-semibold text-slate-700">
+                  Last Interaction
+                </th>
+                <th className="py-4 px-4 font-semibold text-slate-700 text-right">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Row 1 */}
+              <tr className="border-t border-slate-200 hover:bg-slate-50 transition-colors">
+                <td className="py-4 px-4 flex items-center gap-3">
+                  <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
+                    JS
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-800">John Smith</p>
+                    <p className="text-sm text-slate-500">ID: #0001</p>
+                  </div>
+                </td>
+                <td
+                  className="py-4 px-4 text-slate-700 max-w-xl truncate"
+                  title="I have been having a severe headache and some migraine symptoms for the last two days."
+                >
+                  I have been having a severe headache and some migraine
+                  symptoms for the last two days.
+                </td>
+                <td className="py-4 px-4 text-slate-600">
+                  2024-09-10 09:15 AM
+                </td>
+                <td className="py-4 px-4 text-right">
+                  <button
+                    type="button"
+                    className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
+                    disabled
+                    aria-label="View chat details"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                </td>
+              </tr>
+
+              {/* Row 2 */}
+              <tr className="border-t border-slate-200 hover:bg-slate-50 transition-colors">
+                <td className="py-4 px-4 flex items-center gap-3">
+                  <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
+                    MG
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-800">Maria Garcia</p>
+                    <p className="text-sm text-slate-500">ID: #0002</p>
+                  </div>
+                </td>
+                <td
+                  className="py-4 px-4 text-slate-700 max-w-xl truncate"
+                  title="I have a persistent cough and mild fever. What should I do?"
+                >
+                  I have a persistent cough and mild fever. What should I do?
+                </td>
+                <td className="py-4 px-4 text-slate-600">
+                  2024-09-10 10:45 AM
+                </td>
+                <td className="py-4 px-4 text-right">
+                  <button
+                    type="button"
+                    className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
+                    disabled
+                    aria-label="View chat details"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                </td>
+              </tr>
+
+              {/* Row 3 */}
+              <tr className="border-t border-slate-200 hover:bg-slate-50 transition-colors">
+                <td className="py-4 px-4 flex items-center gap-3">
+                  <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
+                    DW
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-800">David Wilson</p>
+                    <p className="text-sm text-slate-500">ID: #0003</p>
+                  </div>
+                </td>
+                <td
+                  className="py-4 px-4 text-slate-700 max-w-xl truncate"
+                  title="Experiencing shortness of breath and chest tightness."
+                >
+                  Experiencing shortness of breath and chest tightness.
+                </td>
+                <td className="py-4 px-4 text-slate-600">
+                  2024-09-11 08:30 AM
+                </td>
+                <td className="py-4 px-4 text-right">
+                  <button
+                    type="button"
+                    className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
+                    disabled
+                    aria-label="View chat details"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+                </td>
+              </tr>
+
+              {/* Add more rows as needed */}
+            </tbody>
+          </table>
+
+          {/* Pagination */}
+          <div className="mt-6 flex items-center justify-between text-sm text-slate-600">
+            <p>Showing 3 of 10 patients</p>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                disabled
+                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                disabled
+                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
+              >
+                Next
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Message from Patient */}
-        <div className="flex items-start space-x-3 max-w-xl ml-auto">
-          <div>
-            <div className="bg-cyan-600 text-white rounded-xl shadow p-4 max-w-md">
-              <p>Hi Dr. Wilson, I’m feeling better but still have some pain in my back.</p>
-              <span className="block text-xs text-cyan-200 mt-1 text-right">John Smith • 09:05 AM</span>
-            </div>
-          </div>
-          <div className="bg-cyan-600 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
-            JS
-          </div>
-        </div>
-
-        {/* Message from Doctor */}
-        <div className="flex items-start space-x-3 max-w-xl">
-          <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
-            SW
-          </div>
-          <div>
-            <div className="bg-white rounded-xl shadow p-4 text-slate-800 max-w-md">
-              <p>Thanks for the update. Please continue the prescribed medication and let me know if the pain worsens.</p>
-              <span className="block text-xs text-slate-400 mt-1">Dr. Sarah Wilson • 09:10 AM</span>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      {/* Input Area */}
-      <footer className="bg-white border-t border-slate-200 p-4 flex items-center space-x-3">
-        <input
-          type="text"
-          placeholder="Type your message..."
-          className="flex-1 h-12 rounded-xl border border-slate-300 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-          disabled
-        />
-        <button
-          type="button"
-          className="bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl p-3 disabled:opacity-50"
-          disabled
-          aria-label="Send message"
-        >
-          <Send className="w-5 h-5" />
-        </button>
-      </footer>
+      </div>
     </div>
-  )
+  );
 }
