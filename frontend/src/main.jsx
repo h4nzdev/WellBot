@@ -4,11 +4,14 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 
 import App from "./App.jsx";
 import { DoctorProvider } from "./context/DoctorContext.jsx";
+import { PatientsProvider } from "./context/PatientsContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
     <DoctorProvider>
-      <App />
+      <PatientsProvider>
+        <App />
+      </PatientsProvider>
     </DoctorProvider>
   </AuthProvider>
 );

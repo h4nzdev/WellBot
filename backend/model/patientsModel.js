@@ -1,0 +1,46 @@
+import mongoose from "mongoose";
+
+const PatientSchema = new mongoose.Schema({
+  clinicId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Clinic",
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  age: {
+    type: Number,
+    required: true,
+  },
+  gender: {
+    type: String,
+    enum: ["male", "female", "other"],
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+    unique: true, // phone should be unique for login
+  },
+  email: {
+    type: String,
+    unique: true, // prevent duplicate emails
+  },
+  address: {
+    type: String,
+  },
+  password: {
+    type: String,
+    required: true, // will be hashed before save
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const Patient = mongoose.model("Patient", PatientSchema, "patients");
+
+export default Patient;
