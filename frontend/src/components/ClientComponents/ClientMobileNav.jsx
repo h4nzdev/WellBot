@@ -8,9 +8,9 @@ const ClientMobileNav = () => {
   const menuItems = [
     { icon: Home, link: "/client/dashboard", label: "Home" },
     { icon: Calendar, link: "/client/appointments", label: "Appointments" },
-    { icon: Book, link: "/client/records", label: "Records" },
+    { icon: Book, link: "/client/medical-records", label: "Records" },
     { icon: Bell, link: "/client/reminders", label: "Reminders" },
-    { icon: MessageSquare, link: "/client/chat", label: "AI Chat" },
+    { icon: MessageSquare, link: "/client/chats", label: "AI Chat" },
   ];
 
   return (
