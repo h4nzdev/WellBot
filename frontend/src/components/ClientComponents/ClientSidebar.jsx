@@ -6,6 +6,7 @@ import {
   Bell,
   LogOut,
   Stethoscope,
+  User,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -25,6 +26,7 @@ export default function ClientSidebar() {
       link: "/client/medical-records",
     },
     { icon: Bell, label: "Reminders", link: "/client/reminders" },
+    { icon: User, label: "Profile", link: "/client/profile" },
   ];
 
   const path = useLocation();

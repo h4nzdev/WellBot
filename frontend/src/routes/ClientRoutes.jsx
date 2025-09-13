@@ -6,6 +6,7 @@ import ClientAppointments from "../page/ClientPages/ClientAppointments/ClientApp
 import ClientChat from "../page/ClientPages/ClientChat/ClientChat";
 import ClientMedicalRecords from "../page/ClientPages/ClientMedicalRecords/ClientMedicalRecords";
 import ClientReminders from "../page/ClientPages/ClientReminders/ClientReminders";
+import ClientProfile from "../page/ClientPages/ClientProfile/ClientProfile";
 
 const ClientRoutes = () => {
   return (
@@ -49,6 +50,14 @@ const ClientRoutes = () => {
           element={
             <ClientLayout>
               <ClientReminders />
+            </ClientLayout>
+          }
+        />
+        <Route
+          path="/client/profile"
+          element={
+            <ClientLayout>
+              <ClientProfile />
             </ClientLayout>
           }
         />
