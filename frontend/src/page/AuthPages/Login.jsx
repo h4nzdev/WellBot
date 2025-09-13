@@ -9,17 +9,29 @@ export default function Login() {
     email: "",
     password: "",
   });
+  const [activeTab, setActiveTab] = useState("clinic"); // 'clinic' or 'patient'
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    const loginUrl = "http://localhost:3000/auth/login"; // Single login endpoint
+
     try {
-      const res = await axios.post(
-        "http://localhost:3000/auth/login",
-        formData
-      );
-      setRole(res.data.clinic.role);
-      setUser(res.data.clinic);
-      console.log(formData);
+      // Send form data along with the role
+      const res = await axios.post(loginUrl, { ...formData, role: activeTab });
+
+      // Handle response based on role
+      if (activeTab === "clinic" && res.data.clinic) {
+        setRole(res.data.clinic.role);
+        setUser(res.data.clinic);
+      } else if (activeTab === "patient" && res.data.patient) {
+        setRole(res.data.patient.role);
+        setUser(res.data.patient);
+      } else {
+        // Handle unexpected response
+        console.error("Unexpected response from server:", res.data);
+      }
+
+      console.log("Login successful for:", activeTab);
       setFormData({
         email: "",
         password: "",
@@ -40,11 +52,34 @@ export default function Login() {
             <h1 className="text-4xl font-semibold text-slate-800">Medora</h1>
           </div>
           <p className="text-lg text-slate-600">
-            Sign in to your clinic dashboard
+            Sign in to your {activeTab} dashboard
           </p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
+          <div className="flex justify-center mb-6">
+            <button
+              className={`px-6 py-2 rounded-l-lg ${
+                activeTab === "clinic"
+                  ? "bg-cyan-600 text-white"
+                  : "bg-slate-200 text-slate-800"
+              }`}
+              onClick={() => setActiveTab("clinic")}
+            >
+              Clinic
+            </button>
+            <button
+              className={`px-6 py-2 rounded-r-lg ${
+                activeTab === "patient"
+                  ? "bg-cyan-600 text-white"
+                  : "bg-slate-200 text-slate-800"
+              }`}
+              onClick={() => setActiveTab("patient")}
+            >
+              Patient
+            </button>
+          </div>
+
           <h2 className="text-2xl font-semibold text-slate-800 mb-6">
             Sign In
           </h2>
@@ -61,7 +96,11 @@ export default function Login() {
                 }
                 type="email"
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
-                placeholder="doctor@clinic.com"
+                placeholder={
+                  activeTab === "clinic"
+                    ? "doctor@clinic.com"
+                    : "patient@example.com"
+                }
               />
             </div>
 
