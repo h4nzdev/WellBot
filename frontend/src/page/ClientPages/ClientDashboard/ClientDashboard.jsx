@@ -9,8 +9,11 @@ import {
   Bot,
   BellRing,
 } from "lucide-react";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function ClientDashboard() {
+  const { user } = useContext(AuthContext);
   const healthTips = [
     "Stay hydrated by drinking at least 8 glasses of water a day.",
     "Incorporate at least 30 minutes of moderate-intensity exercise into your daily routine.",
@@ -26,7 +29,7 @@ export default function ClientDashboard() {
         {/* Header */}
         <header className="mb-6 md:mb-8">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
-            Welcome, John!
+            Welcome, {user.name}!
           </h1>
           <p className="text-slate-600 mt-2 text-base sm:text-lg font-medium">
             Here's a summary of your health journey.

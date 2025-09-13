@@ -24,13 +24,3 @@ export const loginClinic = async (req, res) => {
   }
 };
 
-// Logout clinic
-export const logoutClinic = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ message: "Error logging out" });
-    }
-    res.clearCookie("connect.sid"); // clears session cookie
-    res.json({ message: "Logged out successfully" });
-  });
-};

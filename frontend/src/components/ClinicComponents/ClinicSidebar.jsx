@@ -14,6 +14,8 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 export default function ClinicSidebar() {
   const menuItems = [
@@ -77,16 +79,23 @@ export default function ClinicSidebar() {
   const { setUser, setRole } = useContext(AuthContext);
 
   const handleLogout = () => {
-    // Clear session storage
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("role");
-
-    // Update auth context
-    setUser(false);
-    setRole("Clinic");
-
-    // Redirect to login page
-    navigate("/auth/login");
+    Swal.fire({
+      title: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, logout",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("role");
+        setUser(false);
+        setRole("Clinic");
+        navigate("/auth/login");
+        Swal.fire("Logged out!", "You have been logged out.", "success");
+      }
+    });
   };
 
   return (

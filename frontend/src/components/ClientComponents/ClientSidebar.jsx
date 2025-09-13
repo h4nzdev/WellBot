@@ -10,13 +10,20 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 
 export default function ClientSidebar() {
+  const { user, initials } = useContext(AuthContext);
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", link: "/client/dashboard" },
     { icon: Calendar, label: "Appointments", link: "/client/appointments" },
     { icon: MessageSquare, label: "AI Chat", link: "/client/chats" },
-    { icon: FileText, label: "Medical Records", link: "/client/medical-records" },
+    {
+      icon: FileText,
+      label: "Medical Records",
+      link: "/client/medical-records",
+    },
     { icon: Bell, label: "Reminders", link: "/client/reminders" },
   ];
 
@@ -25,11 +32,23 @@ export default function ClientSidebar() {
   const { setUser, setRole } = useContext(AuthContext);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("role");
-    setUser(false);
-    setRole("Client");
-    navigate("/auth/login");
+    Swal.fire({
+      title: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, logout",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("role");
+        setUser(false);
+        setRole("Client");
+        navigate("/auth/login");
+        Swal.fire("Logged out!", "You have been logged out.", "success");
+      }
+    });
   };
 
   return (
@@ -64,10 +83,10 @@ export default function ClientSidebar() {
       <div className="flex-shrink-0 p-4 border-t bg-white">
         <div className="flex items-center space-x-3 p-3 mb-3">
           <div className="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-semibold text-sm">JD</span>
+            <span className="text-white font-semibold text-sm">{initials}</span>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800">John Doe</h3>
+            <h3 className="font-semibold text-slate-800">{user.name}</h3>
             <p className="text-sm text-slate-500">Patient</p>
           </div>
         </div>

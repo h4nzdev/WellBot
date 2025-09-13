@@ -13,11 +13,15 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const loginUrl = "http://localhost:3000/auth/login"; // Single login endpoint
+    const loginClinic = "http://localhost:3000/auth/login"; // Single login endpoint
+    const loginClient = "http://localhost:3000/auth/patient/login";
 
     try {
       // Send form data along with the role
-      const res = await axios.post(loginUrl, { ...formData, role: activeTab });
+      const res = await axios.post(
+        activeTab === "clinic" ? loginClinic : loginClient,
+        { ...formData, role: activeTab }
+      );
 
       // Handle response based on role
       if (activeTab === "clinic" && res.data.clinic) {
