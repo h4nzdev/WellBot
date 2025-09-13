@@ -14,7 +14,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -24,16 +24,10 @@ const ClientReminders = () => {
   // State for editing reminder
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
-  const [editReminder, setEditReminder] = useState({
-    reminder: "",
-    time: "",
-    status: "Active",
-    notifyCount: 0,
-  });
+  const [editReminder, setEditReminder] = useState(null);
   // State to control modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const dropdownRef = useRef(null);
 
   // Get userId from sessionStorage (simulate per-user reminders)
   const userId = sessionStorage.getItem("user") || "defaultUser";
@@ -57,13 +51,14 @@ const ClientReminders = () => {
   }, [reminders, userId]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    function handleClickAnywhere(event) {
+      // If click is not on a dropdown button, close dropdown
+      if (!event.target.closest(".dropdown-btn")) {
         setOpenDropdown(null);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickAnywhere);
+    return () => document.removeEventListener("mousedown", handleClickAnywhere);
   }, []);
 
   // Stats for UI
@@ -155,32 +150,45 @@ const ClientReminders = () => {
 
   // Open edit modal for a reminder
   function handleViewOptions(idx) {
-    setOpenDropdown(null); // Close dropdown when editing
+    setOpenDropdown(null);
     setEditIndex(idx);
     setEditReminder({
       ...reminders[idx],
       notifyCount: reminders[idx].notifyCount || 0,
     });
     setEditModalOpen(true);
+    console.log(
+      "[v0] Opening edit modal for index:",
+      idx,
+      "with data:",
+      reminders[idx]
+    );
   }
 
   // Save edited reminder
   function handleEditReminder(e) {
     e.preventDefault();
+    if (!editReminder) return; // Safety check
+
     const updated = [...reminders];
     updated[editIndex] = { ...editReminder };
     setReminders(updated);
     setEditModalOpen(false);
+    setEditReminder(null); // Clear edit data
     toast.success("Reminder updated!");
   }
 
   // Notify button increments count and shows toast
   function handleNotify() {
-    setEditReminder((r) => {
-      const newCount = (r.notifyCount || 0) + 1;
-      toast.info(`You acknowledged: ${r.reminder} (${newCount} times)`);
-      return { ...r, notifyCount: newCount };
-    });
+    // Update notifyCount in reminders array
+    const updated = [...reminders];
+    const newCount = (editReminder.notifyCount || 0) + 1;
+    updated[editIndex] = { ...editReminder, notifyCount: newCount };
+    setReminders(updated);
+    setEditReminder((r) => ({ ...r, notifyCount: newCount }));
+    toast.info(
+      `You acknowledged: ${editReminder.reminder} (${newCount} times)`
+    );
   }
 
   function toggleDropdown(index) {
@@ -309,7 +317,7 @@ const ClientReminders = () => {
           </header>
 
           {/* Stats section */}
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <section className="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200/50 shadow-lg p-6 hover:shadow-xl hover:scale-105 transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
@@ -412,10 +420,11 @@ const ClientReminders = () => {
                     Remove
                   </button>
 
-                  <div className="relative flex-1" ref={dropdownRef}>
+                  <div className="relative flex-1">
                     <button
-                      className="group w-full flex items-center justify-center px-4 py-3 bg-slate-100/80 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-slate-200/80 hover:shadow-md hover:scale-105 transition-all duration-300 border border-slate-200/50"
+                      className="dropdown-btn group w-full flex items-center justify-center px-4 py-3 bg-slate-100/80 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-slate-200/80 hover:shadow-md hover:scale-105 transition-all duration-300 border border-slate-200/50"
                       onClick={() => toggleDropdown(index)}
+                      type="button"
                     >
                       <MoreVertical className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
                       <span className="font-semibold tracking-wide flex-1">
@@ -432,7 +441,10 @@ const ClientReminders = () => {
                     {openDropdown === index && (
                       <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200/50 z-10 overflow-hidden animate-in slide-in-from-top-2 duration-200">
                         <button
-                          onClick={() => handleViewOptions(index)}
+                          onClick={() => {
+                            handleViewOptions(index);
+                            setOpenDropdown(null);
+                          }}
                           className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition-colors duration-200 text-slate-700 border-b border-slate-100"
                         >
                           <Edit3 className="w-4 h-4 text-cyan-600" />
@@ -460,7 +472,10 @@ const ClientReminders = () => {
                           </span>
                         </button>
                         <button
-                          onClick={() => handleRemoveReminder(index)}
+                          onClick={() => {
+                            setOpenDropdown(null);
+                            handleRemoveReminder(index);
+                          }}
                           className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-red-50 transition-colors duration-200 text-red-600"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -476,7 +491,7 @@ const ClientReminders = () => {
         </div>
       </div>
 
-      {editModalOpen && (
+      {editModalOpen && editIndex !== null && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform animate-in zoom-in-95 duration-300 border border-slate-200/50">
             <div className="flex justify-between items-center p-6 border-b border-slate-100">
@@ -489,7 +504,10 @@ const ClientReminders = () => {
                 </p>
               </div>
               <button
-                onClick={() => setEditModalOpen(false)}
+                onClick={() => {
+                  setEditModalOpen(false);
+                  setEditReminder(null);
+                }}
                 className="p-2 hover:bg-slate-100 rounded-xl transition-colors duration-200 group"
               >
                 <X className="w-5 h-5 text-slate-400 group-hover:text-slate-600" />
@@ -567,7 +585,10 @@ const ClientReminders = () => {
                 <div className="flex gap-3">
                   <button
                     type="button"
-                    onClick={() => setEditModalOpen(false)}
+                    onClick={() => {
+                      setEditModalOpen(false);
+                      setEditReminder(null);
+                    }}
                     className="px-6 py-3 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 transition-all duration-200 font-semibold"
                   >
                     Cancel

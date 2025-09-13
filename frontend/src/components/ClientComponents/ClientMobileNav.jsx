@@ -1,16 +1,17 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Calendar, Book, Bell, MessageSquare } from "lucide-react";
+import { Home, Calendar, Book, Bell, MessageSquare, User } from "lucide-react";
 
 const ClientMobileNav = () => {
   const path = useLocation();
 
   const menuItems = [
     { icon: Home, link: "/client/dashboard", label: "Home" },
+    { icon: User, link: "/client/profile", label: "Profile" },
     { icon: Calendar, link: "/client/appointments", label: "Appointments" },
     { icon: Book, link: "/client/medical-records", label: "Records" },
-    { icon: Bell, link: "/client/reminders", label: "Reminders" },
     { icon: MessageSquare, link: "/client/chats", label: "AI Chat" },
+    { icon: Bell, link: "/client/reminders", label: "Reminders" },
   ];
 
   return (
@@ -26,7 +27,11 @@ const ClientMobileNav = () => {
                 : "text-slate-500 hover:text-cyan-600"
             }`}
           >
-            <item.icon className={`w-6 h-6 transition-transform duration-200 ${path.pathname === item.link ? "transform scale-110" : ""}`} />
+            <item.icon
+              className={`w-6 h-6 transition-transform duration-200 ${
+                path.pathname === item.link ? "transform scale-110" : ""
+              }`}
+            />
             <span
               className={`text-xs font-medium ${
                 path.pathname === item.link ? "font-semibold" : ""
@@ -35,7 +40,7 @@ const ClientMobileNav = () => {
               {item.label}
             </span>
             {path.pathname === item.link && (
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-cyan-600 rounded-full"></span>
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-cyan-600 rounded-full"></span>
             )}
           </Link>
         ))}

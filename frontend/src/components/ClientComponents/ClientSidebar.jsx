@@ -25,8 +25,8 @@ export default function ClientSidebar() {
       label: "Medical Records",
       link: "/client/medical-records",
     },
-    { icon: Bell, label: "Reminders", link: "/client/reminders" },
     { icon: User, label: "Profile", link: "/client/profile" },
+    { icon: Bell, label: "Reminders", link: "/client/reminders" },
   ];
 
   const path = useLocation();
