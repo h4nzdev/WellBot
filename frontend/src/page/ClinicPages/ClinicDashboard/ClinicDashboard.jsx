@@ -20,7 +20,12 @@ import { AuthContext } from "../../../context/AuthContext";
 
 export default function ClinicDashboard() {
   const { appointments } = useContext(AppointmentContext);
-  const {user} = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
+
+  const clinicAppointments = appointments.filter(
+    (appointment) => appointment.clinicId === user._id
+  );
+
   // Static data for demonstration
   const stats = {
     appointments: 24,
@@ -201,7 +206,7 @@ export default function ClinicDashboard() {
                 Recent Appointments
               </h2>
               <div className="space-y-4">
-                {appointments.map((appointment) => (
+                {clinicAppointments.map((appointment) => (
                   <div
                     key={appointment.id}
                     className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl p-6 hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5"

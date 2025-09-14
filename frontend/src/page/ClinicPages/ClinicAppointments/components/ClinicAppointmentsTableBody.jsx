@@ -1,14 +1,23 @@
 import { CheckCircle, MoreHorizontal } from "lucide-react";
 import React, { useContext } from "react";
 import { AppointmentContext } from "../../../../context/AppointmentContext";
+import { AuthContext } from "../../../../context/AuthContext";
 
 const ClinicAppointmentsTableBody = () => {
   const { appointments } = useContext(AppointmentContext);
+  const { user } = useContext(AuthContext);
+
+  const clinicAppointments = appointments.filter(
+    (appointment) => appointment.clinicId === user._id
+  );
+
   return (
     <tbody>
-      {/* Appointment Row 1 */}
-      {appointments.map((appointment) => (
-        <tr className="hover:bg-slate-50 transition-colors border-t border-slate-200">
+      {clinicAppointments.map((appointment) => (
+        <tr
+          key={appointment._id}
+          className="hover:bg-slate-50 transition-colors border-t border-slate-200"
+        >
           <td className="py-4 px-4">
             <p className="font-semibold text-slate-800">
               {appointment.patientId.name}
@@ -55,7 +64,6 @@ const ClinicAppointmentsTableBody = () => {
           </td>
         </tr>
       ))}
-      {/* Add more rows similarly if needed */}
     </tbody>
   );
 };

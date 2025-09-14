@@ -1,14 +1,23 @@
 import { MoreHorizontal } from "lucide-react";
 import React, { useContext } from "react";
 import { PatientsContext } from "../../../../context/PatientsContext";
+import { AuthContext } from "../../../../context/AuthContext";
 
 const ClinicPatientsTableBody = () => {
   const { patients } = useContext(PatientsContext);
+  const { user } = useContext(AuthContext);
+
+  const clinicPatients = patients.filter(
+    (patient) => patient.clinicId === user._id
+  );
+
   return (
     <tbody>
-      {/* Patient Row 1 */}
-      {patients.map((patient) => (
-        <tr className="hover:bg-slate-50 transition-colors border-t border-slate-200">
+      {clinicPatients.map((patient) => (
+        <tr
+          key={patient._id}
+          className="hover:bg-slate-50 transition-colors border-t border-slate-200"
+        >
           <td className="py-4 px-4">
             <p className="font-semibold text-slate-800">{patient.name}</p>
           </td>
@@ -29,8 +38,6 @@ const ClinicPatientsTableBody = () => {
           </td>
         </tr>
       ))}
-
-      {/* Add more rows as needed */}
     </tbody>
   );
 };
