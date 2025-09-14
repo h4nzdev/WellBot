@@ -13,57 +13,65 @@ const ClinicAppointmentsTableBody = () => {
 
   return (
     <tbody>
-      {clinicAppointments.map((appointment) => (
-        <tr
-          key={appointment._id}
-          className="hover:bg-slate-50 transition-colors border-t border-slate-200"
-        >
-          <td className="py-4 px-4">
-            <p className="font-semibold text-slate-800">
-              {appointment.patientId.name}
-            </p>
-            <p className="text-sm text-slate-500">ID: #0001</p>
-          </td>
-          <td className="px-4">
-            <p className="font-medium text-slate-700">
-              {appointment.doctorId.name}
-            </p>
-          </td>
-          <td className="px-4">
-            <p className="font-medium text-slate-700">
-              {appointment.date.slice(1, 10)}
-            </p>
-            <p className="text-sm text-slate-500">09:00 AM</p>
-          </td>
-          <td className="px-4">
-            <span className="inline-block bg-slate-100 text-slate-700 px-2 py-1 rounded-md text-sm">
-              Consultation
-            </span>
-          </td>
-          <td className="px-4">
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-emerald-700 bg-emerald-50 border border-emerald-200 text-sm w-fit">
-              <CheckCircle className="w-4 h-4" />
-              {appointment.status}
-            </span>
-          </td>
-          <td className="px-4 text-sm">
-            <p className="text-slate-700">{appointment.patientId.phone}</p>
-            <p className="text-slate-500">{appointment.patientId.email}</p>
-          </td>
-          <td className="px-4 text-right">
-            <div className="relative inline-block text-left">
-              <button
-                type="button"
-                className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md flex items-center justify-center"
-                disabled
-                aria-label="Actions"
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </button>
-            </div>
+      {clinicAppointments.length > 0 ? (
+        clinicAppointments.map((appointment) => (
+          <tr
+            key={appointment._id}
+            className="hover:bg-slate-50 transition-colors border-t border-slate-200"
+          >
+            <td className="py-4 px-4">
+              <p className="font-semibold text-slate-800">
+                {appointment.patientId.name}
+              </p>
+              <p className="text-sm text-slate-500">ID: #0001</p>
+            </td>
+            <td className="px-4">
+              <p className="font-medium text-slate-700">
+                {appointment.doctorId.name}
+              </p>
+            </td>
+            <td className="px-4">
+              <p className="font-medium text-slate-700">
+                {appointment.date.slice(1, 10)}
+              </p>
+              <p className="text-sm text-slate-500">09:00 AM</p>
+            </td>
+            <td className="px-4">
+              <span className="inline-block bg-slate-100 text-slate-700 px-2 py-1 rounded-md text-sm">
+                Consultation
+              </span>
+            </td>
+            <td className="px-4">
+              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-emerald-700 bg-emerald-50 border border-emerald-200 text-sm w-fit">
+                <CheckCircle className="w-4 h-4" />
+                {appointment.status}
+              </span>
+            </td>
+            <td className="px-4 text-sm">
+              <p className="text-slate-700">{appointment.patientId.phone}</p>
+              <p className="text-slate-500">{appointment.patientId.email}</p>
+            </td>
+            <td className="px-4 text-right">
+              <div className="relative inline-block text-left">
+                <button
+                  type="button"
+                  className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md flex items-center justify-center"
+                  disabled
+                  aria-label="Actions"
+                >
+                  <MoreHorizontal className="h-4 w-4" />
+                </button>
+              </div>
+            </td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="7" className="text-center py-8 text-slate-500">
+            No appointments found.
           </td>
         </tr>
-      ))}
+      )}
     </tbody>
   );
 };

@@ -17,20 +17,30 @@ import {
 import { useContext } from "react";
 import { AppointmentContext } from "../../../context/AppointmentContext";
 import { AuthContext } from "../../../context/AuthContext";
+import { PatientsContext } from "../../../context/PatientsContext";
+import { DoctorContext } from "../../../context/DoctorContext";
 
 export default function ClinicDashboard() {
   const { appointments } = useContext(AppointmentContext);
+  const { patients } = useContext(PatientsContext);
+  const { doctors } = useContext(DoctorContext);
   const { user } = useContext(AuthContext);
 
   const clinicAppointments = appointments.filter(
     (appointment) => appointment.clinicId === user._id
   );
 
+  const clinicPatients = patients.filter(
+    (patient) => patient.clinicId === user._id
+  );
+
+  const clinicDoctors = doctors.filter((doctor) => doctor.clinicId === user._id);
+
   // Static data for demonstration
   const stats = {
-    appointments: 24,
-    patients: 87,
-    doctors: 5,
+    appointments: clinicAppointments.length,
+    patients: clinicPatients.length,
+    doctors: clinicDoctors.length,
     revenue: 12450,
   };
 
@@ -206,43 +216,49 @@ export default function ClinicDashboard() {
                 Recent Appointments
               </h2>
               <div className="space-y-4">
-                {clinicAppointments.map((appointment) => (
-                  <div
-                    key={appointment.id}
-                    className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl p-6 hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3">
-                          <h3 className="font-semibold text-slate-800 text-lg">
-                            {appointment.patientId.name}
-                          </h3>
-                          <span className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-full">
-                            {appointment.type}
+                {clinicAppointments.length > 0 ? (
+                  clinicAppointments.map((appointment) => (
+                    <div
+                      key={appointment.id}
+                      className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl p-6 hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3">
+                            <h3 className="font-semibold text-slate-800 text-lg">
+                              {appointment.patientId.name}
+                            </h3>
+                            <span className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-full">
+                              {appointment.type}
+                            </span>
+                          </div>
+                          <p className="text-slate-600">
+                            {appointment.doctorId.name}
+                          </p>
+                          <p className="text-slate-500 text-sm mt-1">
+                            {appointment.date.slice(1, 10)} at {appointment.time}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span
+                            className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
+                              appointment.status
+                            )} shadow-sm`}
+                          >
+                            {getStatusIcon(appointment.status)}
+                            <span className="ml-2 capitalize">
+                              {appointment.status}
+                            </span>
                           </span>
                         </div>
-                        <p className="text-slate-600">
-                          {appointment.doctorId.name}
-                        </p>
-                        <p className="text-slate-500 text-sm mt-1">
-                          {appointment.date.slice(1, 10)} at {appointment.time}
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <span
-                          className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
-                            appointment.status
-                          )} shadow-sm`}
-                        >
-                          {getStatusIcon(appointment.status)}
-                          <span className="ml-2 capitalize">
-                            {appointment.status}
-                          </span>
-                        </span>
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-slate-500">
+                    No appointments found.
                   </div>
-                ))}
+                )}
               </div>
               <div className="mt-8 text-center">
                 <button className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-8 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
