@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   CalendarPlus,
@@ -7,13 +7,23 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AddAppointmentModal from "../../../components/ClientComponents/AddAppointmentModal/AddAppointmentModal";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AppointmentContext } from "../../../context/AppointmentContext";
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function ClientAppointments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { appointments } = useContext(AppointmentContext);
+  const { user } = useContext(AuthContext);
+
+  const patientAppointment = appointments.filter(
+    (app) => app.patientId._id === user._id
+  );
+
+  console.log(patientAppointment);
 
   const stats = [
     {
@@ -43,44 +53,6 @@ export default function ClientAppointments() {
       icon: AlertCircle,
       color: "bg-amber-50/80 text-amber-700",
       iconColor: "text-amber-600",
-    },
-  ];
-
-  const appointments = [
-    {
-      doctor: "Dr. Sarah Wilson",
-      specialty: "Cardiology",
-      date: "2024-09-15",
-      time: "09:00 AM",
-      status: "confirmed",
-    },
-    {
-      doctor: "Dr. Michael Brown",
-      specialty: "Dermatology",
-      date: "2024-09-18",
-      time: "10:30 AM",
-      status: "pending",
-    },
-    {
-      doctor: "Dr. Emily Davis",
-      specialty: "Neurology",
-      date: "2024-09-20",
-      time: "02:00 PM",
-      status: "confirmed",
-    },
-    {
-      doctor: "Dr. James Miller",
-      specialty: "Orthopedics",
-      date: "2024-09-22",
-      time: "11:15 AM",
-      status: "pending",
-    },
-    {
-      doctor: "Dr. Lisa Anderson",
-      specialty: "Pediatrics",
-      date: "2024-09-25",
-      time: "03:30 PM",
-      status: "confirmed",
     },
   ];
 
@@ -184,7 +156,7 @@ export default function ClientAppointments() {
               <h2 className="text-lg font-bold text-slate-800 mb-4 tracking-tight">
                 All Appointments
               </h2>
-              {appointments.map((appointment, index) => (
+              {patientAppointment.map((appointment, index) => (
                 <div
                   key={index}
                   className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 hover:shadow-2xl transition-all duration-300"
@@ -192,15 +164,15 @@ export default function ClientAppointments() {
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
                       <h3 className="font-bold text-slate-800 text-base mb-1">
-                        {appointment.doctor}
+                        {appointment?.doctorId?.name}
                       </h3>
                       <p className="text-slate-600 text-sm font-medium mb-2">
-                        {appointment.specialty}
+                        {appointment.doctorId.specialty}
                       </p>
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-slate-600">
                         <span className="font-medium">{appointment.date}</span>
                         <span className="hidden sm:block">•</span>
-                        <span className="font-medium">{appointment.time}</span>
+                        <span className="font-medium">{appointment.date}</span>
                       </div>
                     </div>
                     <div className="ml-3 flex-shrink-0">
@@ -234,16 +206,16 @@ export default function ClientAppointments() {
                   </tr>
                 </thead>
                 <tbody>
-                  {appointments.map((appointment, index) => (
+                  {patientAppointment.map((appointment, index) => (
                     <tr
                       key={index}
                       className="border-t border-slate-200/50 hover:bg-slate-50/50 transition-all duration-300"
                     >
                       <td className="py-4 md:py-5 px-4 md:px-6 text-slate-700 font-bold text-sm md:text-base">
-                        {appointment.doctor}
+                        {appointment?.doctorId?.name}
                       </td>
                       <td className="py-4 md:py-5 px-4 md:px-6 text-slate-700 font-medium text-sm md:text-base">
-                        {appointment.specialty}
+                        {appointment?.doctorId?.specialty}
                       </td>
                       <td className="py-4 md:py-5 px-4 md:px-6 text-slate-700 font-medium text-sm md:text-base">
                         {appointment.date}

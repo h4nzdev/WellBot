@@ -1,13 +1,13 @@
 import bcrypt from "bcrypt";
-import Patient from "../model/patientsModel.js";
+import Patient from "../model/patientsModel.js";;
 
 // Login patient with sessions
 export const loginClient = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find patient by email
-    const patient = await Patient.findOne({ email });
+    // Find patient by email and populate clinicId
+    const patient = await Patient.findOne({ email }).populate("clinicId");
     if (!patient) {
       return res.status(404).json({ message: "Patient not found" });
     }
