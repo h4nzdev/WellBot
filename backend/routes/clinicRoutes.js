@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  addClinic,
   getAllClinics,
   getClinicById,
   updateClinic,
@@ -8,9 +7,6 @@ import {
 } from "../controller/clinicController.js";
 
 const clinicRouter = express.Router();
-
-// ✅ Add a new clinic
-clinicRouter.post("/add-clinic", addClinic);
 
 // ✅ Get all clinics
 clinicRouter.get("/", getAllClinics);

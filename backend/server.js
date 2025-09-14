@@ -24,5 +24,5 @@ app.use("/clinic", clinicRoutes);
 app.use("/doctor", doctorRouter);
 app.use("/patient", patientRouter);
 app.use("/appointment", appointmentRouter);
-app.use("/auth", clinicAuthRoutes);
+app.use("/auth/clinic", clinicAuthRoutes);
 app.use("/auth/patient", patientAuthRouter);

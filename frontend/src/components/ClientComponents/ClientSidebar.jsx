@@ -60,7 +60,7 @@ export default function ClientSidebar() {
           <Stethoscope className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h1 className="text-lg font-bold text-slate-800">HealthCare</h1>
+          <h1 className="text-lg font-bold text-slate-800">Medora</h1>
           <p className="text-sm text-slate-500">Client Portal</p>
         </div>
       </div>

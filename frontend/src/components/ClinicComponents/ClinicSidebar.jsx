@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 
 export default function ClinicSidebar() {
+  const { user } = useContext(AuthContext);
   const menuItems = [
     {
       icon: LayoutDashboard,
@@ -106,7 +107,12 @@ export default function ClinicSidebar() {
           <Stethoscope className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h1 className="text-lg font-bold text-slate-800">HealthCare Pro</h1>
+          <h1 className="text-lg font-bold text-slate-800">
+            Medora{" "}
+            <span className="font-medium text-slate-600">
+              {user.subscriptionPlan}
+            </span>
+          </h1>
           <p className="text-sm text-slate-500">Clinic Management</p>
         </div>
       </div>
@@ -140,7 +146,9 @@ export default function ClinicSidebar() {
             <span className="text-white font-semibold text-sm">DC</span>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800">Dr. Clinical</h3>
+            <h3 className="font-semibold text-slate-800">
+              {user.contactPerson}
+            </h3>
             <p className="text-sm text-slate-500">Admin</p>
           </div>
         </div>

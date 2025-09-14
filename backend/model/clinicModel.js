@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
 const ClinicSchema = new mongoose.Schema({
-  name: {
+  clinicName: {
+    type: String,
+    required: true,
+  },
+  contactPerson: {
     type: String,
     required: true,
   },
@@ -14,14 +18,26 @@ const ClinicSchema = new mongoose.Schema({
     type: String, // hashed password
     required: true,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: true,
+  },
+  agreeToTerms: {
+    type: Boolean,
+    default: false,
+  },
   subscriptionPlan: {
     type: String,
-    enum: ["Basic", "Premium"], // only allow these values
-    default: "Basic",
+    enum: ["Free", "Basic", "Premium"], // added "Free" for your form
+    default: "Free",
   },
   dailyPatientLimit: {
     type: Number,
-    default: 20, // Basic = 20; Premium = 50 (we can update dynamically)
+    default: 20, // Free/Basic = 20; Premium = 50
   },
   currentPatientCount: {
     type: Number,

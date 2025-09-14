@@ -1,6 +1,58 @@
+import { useState } from "react";
 import { Shield, Star, Sparkles, Check } from "lucide-react";
+import axios from "axios";
 
-export default function Registere() {
+export default function ClinicRegister() {
+  const [formData, setFormData] = useState({
+    clinicName: "",
+    contactPerson: "",
+    email: "",
+    phone: "",
+    address: "",
+    password: "",
+    confirmPassword: "",
+    selectedPlan: "free", // default to free plan
+    agreeToTerms: false,
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handlePlanSelect = (plan) => {
+    setFormData((prev) => ({
+      ...prev,
+      selectedPlan: plan,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/auth/clinic/register", formData
+      );
+      alert(res.data.message);
+      setFormData({
+        clinicName: "",
+        contactPerson: "",
+        email: "",
+        phone: "",
+        address: "",
+        password: "",
+        confirmPassword: "",
+        selectedPlan: "free",
+        agreeToTerms: false,
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
@@ -19,7 +71,7 @@ export default function Registere() {
             Register Your Clinic
           </h2>
 
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Clinic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -28,6 +80,9 @@ export default function Registere() {
                 </label>
                 <input
                   type="text"
+                  name="clinicName"
+                  value={formData.clinicName}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="Downtown Medical Center"
                 />
@@ -38,6 +93,9 @@ export default function Registere() {
                 </label>
                 <input
                   type="text"
+                  name="contactPerson"
+                  value={formData.contactPerson}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="Dr. John Smith"
                 />
@@ -51,6 +109,10 @@ export default function Registere() {
                 </label>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  autoComplete="off"
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="admin@clinic.com"
                 />
@@ -61,6 +123,9 @@ export default function Registere() {
                 </label>
                 <input
                   type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="+1 (555) 123-4567"
                 />
@@ -73,6 +138,9 @@ export default function Registere() {
               </label>
               <input
                 type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                 placeholder="123 Medical Drive, City, State 12345"
               />
@@ -85,6 +153,9 @@ export default function Registere() {
                 </label>
                 <input
                   type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="••••••••"
                 />
@@ -95,6 +166,9 @@ export default function Registere() {
                 </label>
                 <input
                   type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="••••••••"
                 />
@@ -107,23 +181,23 @@ export default function Registere() {
                 Choose Your Plan
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Basic Plan */}
-                <div className="border-2 border-slate-200 rounded-xl p-4 hover:border-cyan-500 transition-colors cursor-pointer">
-                  <input
-                    type="radio"
-                    name="plan"
-                    value="basic"
-                    className="sr-only"
-                  />
+                <div
+                  className={`border-2 rounded-xl p-4 transition-all cursor-pointer ${
+                    formData.selectedPlan === "free"
+                      ? "border-cyan-500 bg-cyan-50"
+                      : "border-slate-200 hover:border-cyan-300"
+                  }`}
+                  onClick={() => handlePlanSelect("free")}
+                >
                   <div className="text-center">
-                    <h4 className="font-semibold text-slate-800 mb-2">Basic</h4>
+                    <h4 className="font-semibold text-slate-800 mb-2">Free</h4>
                     <div className="text-2xl font-bold text-slate-800 mb-2">
-                      $29<span className="text-sm font-normal">/month</span>
+                      $0<span className="text-sm font-normal">/month</span>
                     </div>
                     <ul className="text-sm text-slate-600 space-y-1">
                       <li className="flex items-center">
                         <Check className="w-3 h-3 text-emerald-500 mr-1" />
-                        Up to 100 patients
+                        Up to 25 patients
                       </li>
                       <li className="flex items-center">
                         <Check className="w-3 h-3 text-emerald-500 mr-1" />
@@ -137,31 +211,30 @@ export default function Registere() {
                   </div>
                 </div>
 
-                {/* Professional Plan */}
-                <div className="border-2 border-cyan-500 bg-cyan-50 rounded-xl p-4 cursor-pointer relative">
-                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-cyan-500 text-white text-xs px-3 py-1 rounded-full">
-                      Popular
-                    </span>
-                  </div>
-                  <input
-                    type="radio"
-                    name="plan"
-                    value="professional"
-                    className="sr-only"
-                    defaultChecked
-                  />
+                <div
+                  className={`border-2 rounded-xl p-4 transition-all cursor-pointer relative ${
+                    formData.selectedPlan === "basic"
+                      ? "border-cyan-500 bg-cyan-50"
+                      : "border-slate-200 hover:border-cyan-300"
+                  }`}
+                  onClick={() => handlePlanSelect("basic")}
+                >
+                  {formData.selectedPlan === "basic" && (
+                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                      <span className="bg-cyan-500 text-white text-xs px-3 py-1 rounded-full">
+                        Selected
+                      </span>
+                    </div>
+                  )}
                   <div className="text-center">
-                    <h4 className="font-semibold text-slate-800 mb-2">
-                      Professional
-                    </h4>
+                    <h4 className="font-semibold text-slate-800 mb-2">Basic</h4>
                     <div className="text-2xl font-bold text-slate-800 mb-2">
-                      $79<span className="text-sm font-normal">/month</span>
+                      $29<span className="text-sm font-normal">/month</span>
                     </div>
                     <ul className="text-sm text-slate-600 space-y-1">
                       <li className="flex items-center">
                         <Check className="w-3 h-3 text-emerald-500 mr-1" />
-                        Up to 500 patients
+                        Up to 100 patients
                       </li>
                       <li className="flex items-center">
                         <Check className="w-3 h-3 text-emerald-500 mr-1" />
@@ -173,26 +246,31 @@ export default function Registere() {
                       </li>
                       <li className="flex items-center">
                         <Check className="w-3 h-3 text-emerald-500 mr-1" />
-                        Analytics
+                        Basic analytics
                       </li>
                     </ul>
                   </div>
                 </div>
 
-                {/* Enterprise Plan */}
-                <div className="border-2 border-slate-200 rounded-xl p-4 hover:border-cyan-500 transition-colors cursor-pointer">
-                  <input
-                    type="radio"
-                    name="plan"
-                    value="enterprise"
-                    className="sr-only"
-                  />
+                <div
+                  className={`border-2 rounded-xl p-4 transition-all cursor-pointer relative ${
+                    formData.selectedPlan === "pro"
+                      ? "border-cyan-500 bg-cyan-50"
+                      : "border-slate-200 hover:border-cyan-300"
+                  }`}
+                  onClick={() => handlePlanSelect("pro")}
+                >
+                  {formData.selectedPlan === "pro" && (
+                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                      <span className="bg-cyan-500 text-white text-xs px-3 py-1 rounded-full">
+                        Selected
+                      </span>
+                    </div>
+                  )}
                   <div className="text-center">
-                    <h4 className="font-semibold text-slate-800 mb-2">
-                      Enterprise
-                    </h4>
+                    <h4 className="font-semibold text-slate-800 mb-2">Pro</h4>
                     <div className="text-2xl font-bold text-slate-800 mb-2">
-                      $199<span className="text-sm font-normal">/month</span>
+                      $79<span className="text-sm font-normal">/month</span>
                     </div>
                     <ul className="text-sm text-slate-600 space-y-1">
                       <li className="flex items-center">
@@ -209,6 +287,10 @@ export default function Registere() {
                       </li>
                       <li className="flex items-center">
                         <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                        Advanced analytics
+                      </li>
+                      <li className="flex items-center">
+                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
                         Custom integrations
                       </li>
                     </ul>
@@ -220,6 +302,9 @@ export default function Registere() {
             <div className="flex items-center mt-6">
               <input
                 type="checkbox"
+                name="agreeToTerms"
+                checked={formData.agreeToTerms}
+                onChange={handleInputChange}
                 className="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
               />
               <span className="ml-2 text-sm text-slate-600">
@@ -246,7 +331,7 @@ export default function Registere() {
             <p className="text-center text-sm text-slate-600">
               Already have an account?{" "}
               <a
-                href="/auth/login"
+                href="/clinic/login"
                 className="text-cyan-600 hover:text-cyan-700 font-medium"
               >
                 Sign in

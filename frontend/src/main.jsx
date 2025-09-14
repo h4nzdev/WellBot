@@ -6,13 +6,16 @@ import App from "./App.jsx";
 import { DoctorProvider } from "./context/DoctorContext.jsx";
 import { PatientsProvider } from "./context/PatientsContext.jsx";
 import { AppointmentProvider } from "./context/AppointmentContext.jsx";
+import { ClinicProvider } from "./context/ClinicContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
     <DoctorProvider>
       <PatientsProvider>
         <AppointmentProvider>
-          <App />
+          <ClinicProvider>
+            <App />
+          </ClinicProvider>
         </AppointmentProvider>
       </PatientsProvider>
     </DoctorProvider>

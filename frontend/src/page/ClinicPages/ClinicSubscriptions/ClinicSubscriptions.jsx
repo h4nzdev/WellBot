@@ -10,8 +10,7 @@ const plans = [
     price: "$0",
     priceDetails: "/month",
     features: ["Basic features", "Limited support", "Up to 3 users"],
-    buttonText: "Current Plan",
-    upgrade: false,
+    upgrade: true,
   },
   {
     name: "Basic",
@@ -23,8 +22,7 @@ const plans = [
       "Unlimited users",
       "Advanced analytics",
     ],
-    buttonText: "Upgrade",
-    upgrade: true,
+    upgrade: false,
   },
   {
     name: "Enterprise",
@@ -36,7 +34,6 @@ const plans = [
       "Custom integrations",
       "Service level agreement",
     ],
-    buttonText: "Contact Sales",
     upgrade: false,
   },
 ];
@@ -129,7 +126,7 @@ export default function ClinicSubscriptions() {
                   }`}
                   disabled={isCurrentPlan}
                 >
-                  {isCurrentPlan ? "Current Plan" : plan.buttonText}
+                  {isCurrentPlan ? "Current Plan" : "Subscribe"}
                 </button>
               </div>
             );

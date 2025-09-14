@@ -8,10 +8,6 @@ import {
 } from "../controller/patientsController.js";
 
 const patientRouter = express.Router();
-
-// Register new patient
-patientRouter.post("/add-patient", addPatient);
-
 // Get all patients
 patientRouter.get("/", getPatients);
 

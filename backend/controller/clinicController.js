@@ -1,29 +1,5 @@
 import Clinic from "../model/clinicModel.js";
 import Doctor from "../model/doctorModel.js";
-import bcrypt from "bcrypt";
-
-// Register a new clinic
-export const addClinic = async (req, res) => {
-  try {
-    const { name, email, password, subscriptionPlan } = req.body;
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create clinic with hashed password
-    const clinic = new Clinic({
-      name,
-      email,
-      password: hashedPassword,
-      subscriptionPlan,
-    });
-
-    await clinic.save();
-    res.status(201).json({ message: "Clinic added successfully", clinic });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-};
 
 // Get all clinics
 export const getAllClinics = async (req, res) => {

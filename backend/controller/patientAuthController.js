@@ -23,3 +23,47 @@ export const loginClient = async (req, res) => {
     res.status(500).json({ message: "Error logging in", error: error.message });
   }
 };
+
+export const registerClient = async (req, res) => {
+  try {
+    const { clinicId, name, age, gender, phone, email, address, password } =
+      req.body;
+
+    // ✅ Check if email already exists
+    const existingPatient = await Patient.findOne({ email });
+    if (existingPatient) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
+    // ✅ Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // ✅ Create new patient
+    const newPatient = new Patient({
+      clinicId,
+      name,
+      age,
+      gender,
+      phone,
+      email,
+      address,
+      password: hashedPassword,
+    });
+
+    await newPatient.save();
+
+    res.status(201).json({
+      message: "Patient registered successfully",
+      patient: {
+        id: newPatient._id,
+        name: newPatient.name,
+        email: newPatient.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error registering patient",
+      error: error.message,
+    });
+  }
+};
