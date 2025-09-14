@@ -15,7 +15,9 @@ import ClinicDoctorsTableBody from "./components/ClinicDoctorsTableBody";
 import ClinicDoctorsStats from "./components/ClinicDoctorsStats";
 
 import AddDoctorModal from "../../../components/ClinicComponents/AddDoctorModal/AddDoctorModal";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../../context/AuthContext";
+import { DoctorContext } from "../../../context/DoctorContext";
 
 export default function ClinicDoctors() {
   const [isModalOpen, setIsModalOpen] = useState(false);

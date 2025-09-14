@@ -16,8 +16,25 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import ClinicAppointmentsTableBody from "./components/ClinicAppointmentsTableBody";
+import { useContext } from "react";
+import { AppointmentContext } from "../../../context/AppointmentContext";
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function ClinicAppointments() {
+  const { appointments } = useContext(AppointmentContext);
+  const { user } = useContext(AuthContext);
+  const clinicAppointments = appointments.filter(
+    (app) => app.clinicId?._id === user._id
+  );
+  const confirmedAppointment = appointments.filter(
+    (app) => app.status === "scheduled"
+  );
+  const pendingAppointment = appointments.filter(
+    (app) => app.status === "pending"
+  );
+  const completedAppointment = appointments.filter(
+    (app) => app.status === "completed"
+  );
   return (
     <div className="w-full min-h-screen bg-slate-50">
       <div className="mx-auto">
@@ -46,7 +63,9 @@ export default function ClinicAppointments() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Total Appointments
                 </p>
-                <p className="text-4xl font-semibold text-slate-800">8</p>
+                <p className="text-4xl font-semibold text-slate-800">
+                  {clinicAppointments.length}
+                </p>
               </div>
               <div className="bg-slate-500 p-4 rounded-2xl shadow-md">
                 <Calendar className="w-8 h-8 text-white" />
@@ -60,7 +79,9 @@ export default function ClinicAppointments() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Confirmed
                 </p>
-                <p className="text-4xl font-semibold text-emerald-600">3</p>
+                <p className="text-4xl font-semibold text-emerald-600">
+                  {confirmedAppointment.length}
+                </p>
               </div>
               <div className="bg-emerald-500 p-4 rounded-2xl shadow-md">
                 <CheckCircle className="w-8 h-8 text-white" />
@@ -74,7 +95,9 @@ export default function ClinicAppointments() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Pending
                 </p>
-                <p className="text-4xl font-semibold text-amber-600">3</p>
+                <p className="text-4xl font-semibold text-amber-600">
+                  {pendingAppointment.length}
+                </p>
               </div>
               <div className="bg-amber-500 p-4 rounded-2xl shadow-md">
                 <Clock className="w-8 h-8 text-white" />
@@ -88,7 +111,9 @@ export default function ClinicAppointments() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Completed
                 </p>
-                <p className="text-4xl font-semibold text-cyan-600">1</p>
+                <p className="text-4xl font-semibold text-cyan-600">
+                  {completedAppointment.length}
+                </p>
               </div>
               <div className="bg-cyan-500 p-4 rounded-2xl shadow-md">
                 <Users className="w-8 h-8 text-white" />

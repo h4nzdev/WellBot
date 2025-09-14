@@ -7,10 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { DoctorContext } from "../../../context/DoctorContext";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
+import { AppointmentContext } from "../../../context/AppointmentContext";
 
 const AddAppointmentModal = ({ isOpen, onClose }) => {
   const { doctors } = useContext(DoctorContext);
   const { user } = useContext(AuthContext);
+  const { fetchAppointments } = useContext(AppointmentContext);
   const doctorClinic = doctors?.filter(
     (doc) => doc.clinicId?._id === user.clinicId?._id
   );
@@ -54,6 +56,7 @@ const AddAppointmentModal = ({ isOpen, onClose }) => {
     );
     console.log(res.data.message);
     toast.success("Appointment Added Successfully!");
+    fetchAppointments();
     onClose(); // Close the modal after submission
   };
 
