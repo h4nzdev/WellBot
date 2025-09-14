@@ -5,6 +5,7 @@ import {
   getAppointmentById,
   updateAppointment,
   deleteAppointment,
+  respondToAppointment,
 } from "../controller/appointmentController.js";
 
 const appointmentRouter = express.Router();
@@ -23,5 +24,8 @@ appointmentRouter.put("/:id", updateAppointment);
 
 // Delete appointment (cancel)
 appointmentRouter.delete("/:id", deleteAppointment);
+
+//Clinic accept/reject appointment
+appointmentRouter.patch("/respond/:id", respondToAppointment);
 
 export default appointmentRouter;

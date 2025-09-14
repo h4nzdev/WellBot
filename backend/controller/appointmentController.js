@@ -130,3 +130,43 @@ export const deleteAppointment = async (req, res) => {
       .json({ message: "Error deleting appointment", error: error.message });
   }
 };
+
+// Clinic Respond (Approve = scheduled, Reject = cancelled)
+export const respondToAppointment = async (req, res) => {
+  try {
+    const appointmentId = req.params.id;
+    const { action } = req.body; // we send "approve" or "reject"
+
+    let newStatus;
+
+    if (action === "approve") {
+      newStatus = "scheduled";
+    } else if (action === "reject") {
+      newStatus = "cancelled";
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Action must be approve or reject" });
+    }
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { status: newStatus },
+      { new: true }
+    );
+
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.status(200).json({
+      message: `Appointment ${newStatus}`,
+      appointment: updatedAppointment,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error updating appointment status",
+      error: error.message,
+    });
+  }
+};

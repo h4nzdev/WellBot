@@ -1,5 +1,6 @@
 import { CheckCircle, MoreHorizontal, XCircle } from "lucide-react";
 import React, { useContext } from "react";
+import axios from "axios"; // ⬅️ added
 import { AppointmentContext } from "../../../../context/AppointmentContext";
 import { AuthContext } from "../../../../context/AuthContext";
 
@@ -10,6 +11,20 @@ const ClinicAppointmentsTableBody = () => {
   const clinicAppointments = appointments?.filter(
     (appointment) => appointment.clinicId?._id === user._id
   );
+
+  // ⬅️ function to call backend
+  const handleRespond = async (appointmentId, action) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:3000/appointment/respond/${appointmentId}`,
+        { action }
+      );
+      console.log("Response:", res.data);
+      alert(res.data)
+    } catch (error) {
+      console.error("Error responding:", error);
+    }
+  };
 
   return (
     <tbody>
@@ -57,6 +72,7 @@ const ClinicAppointmentsTableBody = () => {
                   type="button"
                   className="p-2 hover:bg-slate-100 rounded-md text-green-500"
                   aria-label="Accept"
+                  onClick={() => handleRespond(appointment._id, "approve")} 
                 >
                   <CheckCircle className="h-5 w-5" />
                 </button>
@@ -64,6 +80,7 @@ const ClinicAppointmentsTableBody = () => {
                   type="button"
                   className="p-2 hover:bg-slate-100 rounded-md text-red-500"
                   aria-label="Reject"
+                  onClick={() => handleRespond(appointment._id, "reject")} 
                 >
                   <XCircle className="h-5 w-5" />
                 </button>

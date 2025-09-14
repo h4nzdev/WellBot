@@ -34,7 +34,8 @@ export default function ClinicRegister() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3000/auth/clinic/register", formData
+        "http://localhost:3000/auth/clinic/register",
+        formData
       );
       alert(res.data.message);
       setFormData({

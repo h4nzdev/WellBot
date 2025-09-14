@@ -157,7 +157,7 @@ const ClientLogin = () => {
             <p className="text-sm text-slate-600">
               New patient?{" "}
               <a
-                href="/auth/register"
+                href="/client/register"
                 className="text-cyan-600 hover:text-cyan-700 font-semibold transition-colors"
               >
                 Create account
