@@ -8,6 +8,7 @@ import ClinicPatientsChat from "../page/ClinicPages/ClinicPatientsChat/ClinicPat
 import ClinicMedicalRecords from "../page/ClinicPages/ClinicMedicalRecords/ClinicMedicalRecords";
 import ClinicSubscriptions from "../page/ClinicPages/ClinicSubscriptions/ClinicSubscriptions";
 import ClinicDashboard from "../page/ClinicPages/ClinicDashboard/ClinicDashboard";
+import ClinicSettings from "../page/ClinicPages/ClinicSettings/ClinicSettings";
 
 const ClinicRoutes = () => {
   return (
@@ -66,6 +67,14 @@ const ClinicRoutes = () => {
           element={
             <ClinicLayout>
               <ClinicSubscriptions />
+            </ClinicLayout>
+          }
+        />
+        <Route
+          path="/clinic/settings"
+          element={
+            <ClinicLayout>
+              <ClinicSettings />
             </ClinicLayout>
           }
         />

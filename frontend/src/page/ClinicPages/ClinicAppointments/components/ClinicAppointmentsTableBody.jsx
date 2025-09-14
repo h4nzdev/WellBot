@@ -7,8 +7,8 @@ const ClinicAppointmentsTableBody = () => {
   const { appointments } = useContext(AppointmentContext);
   const { user } = useContext(AuthContext);
 
-  const clinicAppointments = appointments.filter(
-    (appointment) => appointment.clinicId === user._id
+  const clinicAppointments = appointments?.filter(
+    (appointment) => appointment.clinicId?._id === user._id
   );
 
   return (

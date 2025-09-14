@@ -56,12 +56,7 @@ export default function ClinicSidebar() {
       active: false,
       link: "/clinic/medical-records",
     },
-    {
-      icon: Bell,
-      label: "Notifications",
-      active: false,
-      link: "/clinic/notification",
-    },
+
     {
       icon: CreditCard,
       label: "Subscription",

@@ -7,11 +7,13 @@ const ClinicDoctorsTableBody = () => {
   const { doctors } = useContext(DoctorContext);
   const { user } = useContext(AuthContext);
 
-  const clinicDoctors = doctors.filter((doctor) => doctor.clinicId === user._id);
+  const clinicDoctors = doctors?.filter(
+    (doctor) => doctor.clinicId?._id === user._id
+  );
 
   return (
     <tbody>
-      {clinicDoctors.length > 0 ? (
+      {clinicDoctors?.length > 0 ? (
         clinicDoctors.map((doctor) => (
           <tr
             key={doctor._id}

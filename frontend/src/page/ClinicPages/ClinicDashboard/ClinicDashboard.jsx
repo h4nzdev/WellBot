@@ -26,21 +26,21 @@ export default function ClinicDashboard() {
   const { doctors } = useContext(DoctorContext);
   const { user } = useContext(AuthContext);
 
-  const clinicAppointments = appointments.filter(
-    (appointment) => appointment.clinicId === user._id
+  const clinicAppointments = appointments?.filter(
+    (appointment) => appointment.clinicId?._id === user._id
   );
 
-  const clinicPatients = patients.filter(
-    (patient) => patient.clinicId === user._id
+  const clinicPatients = patients?.filter(
+    (patient) => patient.clinicId?._id === user._id
   );
 
-  const clinicDoctors = doctors.filter((doctor) => doctor.clinicId === user._id);
+  const clinicDoctors = doctors?.filter((doctor) => doctor.clinicId?._id === user._id);
 
   // Static data for demonstration
   const stats = {
-    appointments: clinicAppointments.length,
-    patients: clinicPatients.length,
-    doctors: clinicDoctors.length,
+    appointments: clinicAppointments?.length,
+    patients: clinicPatients?.length,
+    doctors: clinicDoctors?.length,
     revenue: 12450,
   };
 
