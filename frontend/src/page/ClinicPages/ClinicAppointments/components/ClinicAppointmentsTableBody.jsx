@@ -1,27 +1,32 @@
 import { CheckCircle, MoreHorizontal, XCircle } from "lucide-react";
 import React, { useContext } from "react";
-import axios from "axios"; // ⬅️ added
+import axios from "axios";
+import { toast } from "react-toastify";
 import { AppointmentContext } from "../../../../context/AppointmentContext";
 import { AuthContext } from "../../../../context/AuthContext";
 
 const ClinicAppointmentsTableBody = () => {
-  const { appointments } = useContext(AppointmentContext);
+  const { appointments, fetchAppointments } = useContext(AppointmentContext);
   const { user } = useContext(AuthContext);
 
   const clinicAppointments = appointments?.filter(
     (appointment) => appointment.clinicId?._id === user._id
   );
 
-  // ⬅️ function to call backend
   const handleRespond = async (appointmentId, action) => {
     try {
       const res = await axios.patch(
         `http://localhost:3000/appointment/respond/${appointmentId}`,
         { action }
       );
-      console.log("Response:", res.data);
-      alert(res.data)
+      if (action === "approve") {
+        toast.success(res.data.message || "Appointment Approved!");
+      } else {
+        toast.error(res.data.message || "Appointment Rejected!");
+      }
+      fetchAppointments();
     } catch (error) {
+      toast.error("Failed to update appointment status.");
       console.error("Error responding:", error);
     }
   };
@@ -57,7 +62,12 @@ const ClinicAppointmentsTableBody = () => {
               </span>
             </td>
             <td className="px-4">
-              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-emerald-700 bg-emerald-50 border border-emerald-200 text-sm w-fit">
+              <span
+                className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm w-fit ${{
+                  Approved: "text-emerald-700 bg-emerald-50 border border-emerald-200",
+                  Rejected: "text-red-700 bg-red-50 border border-red-200",
+                  Pending: "text-amber-700 bg-amber-50 border border-amber-200",
+                }[appointment.status] || "text-slate-700 bg-slate-100 border border-slate-200"}`}>
                 <CheckCircle className="w-4 h-4" />
                 {appointment.status}
               </span>
@@ -72,16 +82,14 @@ const ClinicAppointmentsTableBody = () => {
                   type="button"
                   className="p-2 hover:bg-slate-100 rounded-md text-green-500"
                   aria-label="Accept"
-                  onClick={() => handleRespond(appointment._id, "approve")} 
-                >
+                  onClick={() => handleRespond(appointment._id, "approve")}>
                   <CheckCircle className="h-5 w-5" />
                 </button>
                 <button
                   type="button"
                   className="p-2 hover:bg-slate-100 rounded-md text-red-500"
                   aria-label="Reject"
-                  onClick={() => handleRespond(appointment._id, "reject")} 
-                >
+                  onClick={() => handleRespond(appointment._id, "reject")}>
                   <XCircle className="h-5 w-5" />
                 </button>
               </div>
