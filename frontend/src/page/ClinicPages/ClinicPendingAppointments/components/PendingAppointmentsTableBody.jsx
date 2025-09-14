@@ -5,21 +5,55 @@ import {
   CalendarCheck,
   CheckCheck,
   Ban,
-  MoreHorizontal,
 } from "lucide-react";
 import React, { useContext } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { AppointmentContext } from "../../../../context/AppointmentContext";
 import { AuthContext } from "../../../../context/AuthContext";
 
-const ClinicAppointmentsTableBody = () => {
-  const { appointments } = useContext(AppointmentContext);
+const PendingAppointmentsTableBody = () => {
+  const { appointments, fetchAppointments } = useContext(AppointmentContext);
   const { user } = useContext(AuthContext);
 
-  const scheduledAppointments = appointments?.filter(
-    (appointment) =>
-      appointment.clinicId?._id === user._id &&
-      appointment.status === "scheduled"
+  const pendingAppointments = appointments?.filter(
+    (appointment) => appointment.clinicId?._id === user._id && appointment.status === 'pending' 
   );
+
+  const handleRespond = async (appointmentId, action) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:3000/appointment/respond/${appointmentId}`,
+        { action }
+      );
+      if (action === "approve") {
+        toast.success(res.data.message || "Appointment Approved!");
+      } else {
+        toast.error(res.data.message || "Appointment Rejected!");
+      }
+      fetchAppointments();
+    } catch (error) {
+      toast.error("Failed to update appointment status.");
+      console.error("Error responding:", error);
+    }
+  };
+
+  const confirmAction = (appointmentId, action) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${action} it!`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleRespond(appointmentId, action);
+      }
+    });
+  };
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -42,8 +76,8 @@ const ClinicAppointmentsTableBody = () => {
 
   return (
     <tbody>
-      {scheduledAppointments.length > 0 ? (
-        scheduledAppointments.map((appointment) => (
+      {pendingAppointments.length > 0 ? (
+        pendingAppointments.map((appointment) => (
           <tr
             key={appointment._id}
             className="hover:bg-slate-50 transition-colors border-t border-slate-200"
@@ -98,20 +132,31 @@ const ClinicAppointmentsTableBody = () => {
               <p className="text-slate-500">{appointment.patientId.email}</p>
             </td>
             <td className="px-4 text-right">
-              <button
-                type="button"
-                className="p-2 hover:bg-slate-100 rounded-md text-slate-500"
-                aria-label="More"
-              >
-                <MoreHorizontal className="h-5 w-5" />
-              </button>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  className="p-2 hover:bg-slate-100 rounded-md text-green-500"
+                  aria-label="Accept"
+                  onClick={() => confirmAction(appointment._id, "approve")}
+                >
+                  <CheckCircle className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  className="p-2 hover:bg-slate-100 rounded-md text-red-500"
+                  aria-label="Reject"
+                  onClick={() => confirmAction(appointment._id, "reject")}
+                >
+                  <XCircle className="h-5 w-5" />
+                </button>
+              </div>
             </td>
           </tr>
         ))
       ) : (
         <tr>
           <td colSpan="7" className="text-center py-8 text-slate-500">
-            No scheduled appointments found.
+            No pending appointments found.
           </td>
         </tr>
       )}
@@ -119,4 +164,4 @@ const ClinicAppointmentsTableBody = () => {
   );
 };
 
-export default ClinicAppointmentsTableBody;
+export default PendingAppointmentsTableBody;

@@ -10,6 +10,7 @@ import {
   Bell,
   LogOut,
   Stethoscope,
+  Clock,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -31,6 +32,12 @@ export default function ClinicSidebar() {
       label: "Appointments",
       active: false,
       link: "/clinic/appointments",
+    },
+    {
+      icon: Clock,
+      label: "Pending Appointments",
+      active: false,
+      link: "/clinic/pending-appointments",
     },
     {
       icon: Users,

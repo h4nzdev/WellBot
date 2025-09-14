@@ -9,6 +9,7 @@ import ClinicMedicalRecords from "../page/ClinicPages/ClinicMedicalRecords/Clini
 import ClinicSubscriptions from "../page/ClinicPages/ClinicSubscriptions/ClinicSubscriptions";
 import ClinicDashboard from "../page/ClinicPages/ClinicDashboard/ClinicDashboard";
 import ClinicSettings from "../page/ClinicPages/ClinicSettings/ClinicSettings";
+import PendingAppointments from "../page/ClinicPages/ClinicPendingAppointments/ClinicPendingAppointments";
 
 const ClinicRoutes = () => {
   return (
@@ -27,6 +28,14 @@ const ClinicRoutes = () => {
           element={
             <ClinicLayout>
               <ClinicAppointments />
+            </ClinicLayout>
+          }
+        />
+        <Route
+          path="/clinic/pending-appointments"
+          element={
+            <ClinicLayout>
+              <PendingAppointments />
             </ClinicLayout>
           }
         />
