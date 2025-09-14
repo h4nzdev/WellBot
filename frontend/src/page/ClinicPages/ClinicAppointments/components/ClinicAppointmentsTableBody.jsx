@@ -1,4 +1,4 @@
-import { CheckCircle, MoreHorizontal } from "lucide-react";
+import { CheckCircle, MoreHorizontal, XCircle } from "lucide-react";
 import React, { useContext } from "react";
 import { AppointmentContext } from "../../../../context/AppointmentContext";
 import { AuthContext } from "../../../../context/AuthContext";
@@ -52,14 +52,20 @@ const ClinicAppointmentsTableBody = () => {
               <p className="text-slate-500">{appointment.patientId.email}</p>
             </td>
             <td className="px-4 text-right">
-              <div className="relative inline-block text-left">
+              <div className="flex justify-end gap-2">
                 <button
                   type="button"
-                  className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md flex items-center justify-center"
-                  disabled
-                  aria-label="Actions"
+                  className="p-2 hover:bg-slate-100 rounded-md text-green-500"
+                  aria-label="Accept"
                 >
-                  <MoreHorizontal className="h-4 w-4" />
+                  <CheckCircle className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  className="p-2 hover:bg-slate-100 rounded-md text-red-500"
+                  aria-label="Reject"
+                >
+                  <XCircle className="h-5 w-5" />
                 </button>
               </div>
             </td>
