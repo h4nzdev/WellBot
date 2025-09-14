@@ -170,7 +170,9 @@ export default function ClientAppointments() {
                         {appointment.doctorId.specialty}
                       </p>
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-slate-600">
-                        <span className="font-medium">{appointment.date}</span>
+                        <span className="font-medium">
+                          {appointment.date.slice(1, 10)}
+                        </span>
                         <span className="hidden sm:block">•</span>
                         <span className="font-medium">{appointment.date}</span>
                       </div>
@@ -218,7 +220,7 @@ export default function ClientAppointments() {
                         {appointment?.doctorId?.specialty}
                       </td>
                       <td className="py-4 md:py-5 px-4 md:px-6 text-slate-700 font-medium text-sm md:text-base">
-                        {appointment.date}
+                        {appointment.date.slice(1, 10)}
                       </td>
                       <td className="py-4 md:py-5 px-4 md:px-6 text-slate-700 font-medium text-sm md:text-base">
                         {appointment.time}
