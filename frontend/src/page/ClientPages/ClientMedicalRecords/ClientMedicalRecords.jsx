@@ -51,7 +51,7 @@ const ClientMedicalRecords = () => {
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
-      <div className="mx-auto p-6">
+      <div className="mx-auto">
         <header className="mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div className="mb-4 sm:mb-0">

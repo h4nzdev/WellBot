@@ -25,7 +25,7 @@ export default function ClientDashboard() {
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 to-slate-100/50">
-      <div className="mx-auto px-4">
+      <div className="mx-auto">
         {/* Header */}
         <header className="mb-6 md:mb-8">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
@@ -76,7 +76,7 @@ export default function ClientDashboard() {
           <h2 className="text-lg md:text-xl font-bold text-slate-800 mb-4 md:mb-6 tracking-tight">
             Quick Actions
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
             <button className="flex items-center justify-center p-4 md:p-6 bg-white/80 backdrop-blur-sm rounded-2xl md:rounded-3xl shadow-xl border border-white/20 hover:shadow-2xl hover:bg-white/90 transition-all duration-500 hover:-translate-y-2 text-slate-700 font-bold group text-sm md:text-base">
               <Plus className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-cyan-600 group-hover:scale-110 transition-transform duration-300" />
               Book Appointment
