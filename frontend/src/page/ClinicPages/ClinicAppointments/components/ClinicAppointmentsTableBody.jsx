@@ -1,7 +1,8 @@
-import { CheckCircle, MoreHorizontal, XCircle } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 import React, { useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { AppointmentContext } from "../../../../context/AppointmentContext";
 import { AuthContext } from "../../../../context/AuthContext";
 
@@ -29,6 +30,22 @@ const ClinicAppointmentsTableBody = () => {
       toast.error("Failed to update appointment status.");
       console.error("Error responding:", error);
     }
+  };
+
+  const confirmAction = (appointmentId, action) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${action} it!`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleRespond(appointmentId, action);
+      }
+    });
   };
 
   return (
@@ -63,11 +80,26 @@ const ClinicAppointmentsTableBody = () => {
             </td>
             <td className="px-4">
               <span
-                className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm w-fit ${{
-                  Approved: "text-emerald-700 bg-emerald-50 border border-emerald-200",
-                  Rejected: "text-red-700 bg-red-50 border border-red-200",
-                  Pending: "text-amber-700 bg-amber-50 border border-amber-200",
-                }[appointment.status] || "text-slate-700 bg-slate-100 border border-slate-200"}`}>
+                className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm w-fit ${
+                  {
+                    pending:
+                      "text-amber-700 bg-amber-50 border border-amber-200",
+                    accepted:
+                      "text-emerald-700 bg-emerald-50 border border-emerald-200",
+                    rejected:
+                      "text-red-700 bg-red-50 border border-red-200",
+                    scheduled:
+                      "text-blue-700 bg-blue-50 border border-blue-200",
+                    completed:
+                      "text-purple-700 bg-purple-50 border border-purple-200",
+                    cancelled:
+                      "text-gray-700 bg-gray-50 border border-gray-200",
+                    approved: // for backwards compatibility
+                      "text-emerald-700 bg-emerald-50 border border-emerald-200",
+                  }[appointment.status.toLowerCase()] ||
+                  "text-slate-700 bg-slate-100 border border-slate-200"
+                }`}
+              >
                 <CheckCircle className="w-4 h-4" />
                 {appointment.status}
               </span>
@@ -82,14 +114,16 @@ const ClinicAppointmentsTableBody = () => {
                   type="button"
                   className="p-2 hover:bg-slate-100 rounded-md text-green-500"
                   aria-label="Accept"
-                  onClick={() => handleRespond(appointment._id, "approve")}>
+                  onClick={() => confirmAction(appointment._id, "approve")}
+                >
                   <CheckCircle className="h-5 w-5" />
                 </button>
                 <button
                   type="button"
                   className="p-2 hover:bg-slate-100 rounded-md text-red-500"
                   aria-label="Reject"
-                  onClick={() => handleRespond(appointment._id, "reject")}>
+                  onClick={() => confirmAction(appointment._id, "reject")}
+                >
                   <XCircle className="h-5 w-5" />
                 </button>
               </div>
