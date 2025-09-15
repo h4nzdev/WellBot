@@ -1,9 +1,22 @@
 import { Download, Eye, FileText, Calendar, User, Clock } from "lucide-react";
 import useMedicalRecords from "../../../hooks/medicalRecords";
+import { useState } from "react";
+import MedicalRecordsModal from "../../../components/ClientComponents/MedicalRecordsModal/MedicalRecordsModal";
 
 const ClientMedicalRecords = () => {
   const { records } = useMedicalRecords();
-  console.log(records);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+
+  const openModal = (record) => {
+    setSelectedRecord(record);
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setSelectedRecord(null);
+  };
 
   const stats = [
     {
@@ -110,7 +123,10 @@ const ClientMedicalRecords = () => {
                   {record.diagnosis}
                 </p>
               </div>
-              <button className="mt-auto flex items-center justify-center p-3 bg-slate-100/80 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-slate-200 hover:shadow-md group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-all duration-300 border border-slate-200/50">
+              <button
+                onClick={() => openModal(record)}
+                className="mt-auto flex items-center justify-center p-3 bg-slate-100/80 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-slate-200 hover:shadow-md group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-all duration-300 border border-slate-200/50"
+              >
                 <Eye className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
                 <span className="font-semibold tracking-wide">
                   View Details
@@ -120,6 +136,11 @@ const ClientMedicalRecords = () => {
           ))}
         </section>
       </div>
+      <MedicalRecordsModal
+        isOpen={isOpen}
+        setIsOpen={closeModal}
+        record={selectedRecord}
+      />
     </div>
   );
 };
