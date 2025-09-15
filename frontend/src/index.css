@@ -3,3 +3,14 @@
 html {
     scroll-behavior: smooth;
 }
+
+/* For Chrome, Safari, Edge */
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+.hide-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* IE and old Edge */
+}
