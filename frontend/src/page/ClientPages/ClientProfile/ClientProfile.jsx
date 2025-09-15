@@ -81,7 +81,7 @@ const ClientProfile = () => {
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
-      <div className="mx-auto p-6">
+      <div className="mx-auto">
         <header className="mb-8">
           <div className="bg-white rounded-xl border border-slate-200 shadow-lg p-8">
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">

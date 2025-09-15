@@ -4,6 +4,7 @@ import { Shield, Star, Sparkles, Eye, EyeOff } from "lucide-react";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
+import logo from "../../../assets/medoralogo.png";
 
 export default function ClinicLogin() {
   const { setRole, setUser } = useContext(AuthContext);
@@ -51,7 +52,7 @@ export default function ClinicLogin() {
           <div className="flex items-center justify-center space-x-4 mb-8">
             <div className="relative">
               <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 p-4 rounded-2xl">
-                <Sparkles className="w-10 h-10 text-white" />
+                <img src={logo} className="w-10 h-10" />
               </div>
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white" />
             </div>

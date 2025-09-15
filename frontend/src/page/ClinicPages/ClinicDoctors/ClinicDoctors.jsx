@@ -16,8 +16,6 @@ import ClinicDoctorsStats from "./components/ClinicDoctorsStats";
 
 import AddDoctorModal from "../../../components/ClinicComponents/AddDoctorModal/AddDoctorModal";
 import { useContext, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import { DoctorContext } from "../../../context/DoctorContext";
 
 export default function ClinicDoctors() {
   const [isModalOpen, setIsModalOpen] = useState(false);

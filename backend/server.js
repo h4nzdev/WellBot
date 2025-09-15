@@ -6,6 +6,7 @@ import patientRouter from "./routes/patientsRoutes.js";
 import appointmentRouter from "./routes/appointmentRoutes.js";
 import clinicAuthRoutes from "./routes/clinicAuthRoute.js";
 import patientAuthRouter from "./routes/patientAuthRoute.js";
+import medicalRecordsRouter from "./routes/medicalRecordsRoutes.js";
 import cors from "cors";
 import dotenv from "dotenv";
 
@@ -26,3 +27,4 @@ app.use("/patient", patientRouter);
 app.use("/appointment", appointmentRouter);
 app.use("/auth/clinic", clinicAuthRoutes);
 app.use("/auth/patient", patientAuthRouter);
+app.use("/medical-records", medicalRecordsRouter)

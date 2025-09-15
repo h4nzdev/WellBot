@@ -1,18 +1,9 @@
 import { Download, Eye, FileText, Calendar, User, Clock } from "lucide-react";
+import useMedicalRecords from "../../../hooks/medicalRecords";
 
 const ClientMedicalRecords = () => {
-  const records = [
-    {
-      date: "2024-08-25",
-      doctor: "Dr. Sarah Wilson",
-      reason: "Follow-up Consultation",
-    },
-    {
-      date: "2024-07-12",
-      doctor: "Dr. Michael Brown",
-      reason: "Annual Check-up",
-    },
-  ];
+  const { records } = useMedicalRecords();
+  console.log(records);
 
   const stats = [
     {
@@ -25,7 +16,7 @@ const ClientMedicalRecords = () => {
     },
     {
       title: "This Year",
-      value: records.filter((r) => r.date.startsWith("2024")).length.toString(),
+      value: null,
       icon: Calendar,
       color: "text-cyan-600",
       bgColor: "bg-cyan-50",
@@ -33,7 +24,7 @@ const ClientMedicalRecords = () => {
     },
     {
       title: "Doctors Seen",
-      value: new Set(records.map((r) => r.doctor)).size.toString(),
+      value: null,
       icon: User,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50",
@@ -102,21 +93,21 @@ const ClientMedicalRecords = () => {
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {records.map((record, index) => (
+          {records?.map((record, index) => (
             <div
               key={index}
               className="group bg-white/80 backdrop-blur-sm rounded-xl border border-slate-200/50 shadow-lg p-6 flex flex-col hover:shadow-xl hover:shadow-cyan-100/50 hover:scale-105 hover:border-cyan-200/50 transition-all duration-300"
             >
               <div className="flex-grow">
                 <p className="text-xl font-bold text-slate-800 tracking-tight">
-                  {record.doctor}
+                  {record.doctorId?.name}
                 </p>
                 <p className="text-cyan-600 font-semibold text-sm tracking-wide uppercase mt-1">
-                  {record.date}
+                  {record.createdAt.slice(1, 10)}
                 </p>
                 <div className="my-4 h-px bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"></div>
                 <p className="text-slate-700 mb-4 font-medium leading-relaxed">
-                  {record.reason}
+                  {record.diagnosis}
                 </p>
               </div>
               <button className="mt-auto flex items-center justify-center p-3 bg-slate-100/80 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-slate-200 hover:shadow-md group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-all duration-300 border border-slate-200/50">

@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import { Shield, Star, Sparkles, Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
+import logo from "../../../assets/medoralogo.png";
 
 const ClientLogin = () => {
   const { setRole, setUser } = useContext(AuthContext);
@@ -48,7 +49,7 @@ const ClientLogin = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
             <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 p-4 rounded-2xl shadow-lg ring-1 ring-cyan-500/20">
-              <Sparkles className="w-10 h-10 text-white" />
+              <img src={logo} className="w-10 h-10" />
             </div>
             <div>
               <h1 className="text-4xl font-bold text-slate-800 tracking-tight">
