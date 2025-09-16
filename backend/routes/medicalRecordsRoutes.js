@@ -5,6 +5,7 @@ import {
   getMedicalRecordById,
   getRecordsByPatient,
   deleteMedicalRecord,
+  getRecordsByClinic,
 } from "../controller/medical_recordsController.js";
 
 const medicalRecordsRouter = express.Router();
@@ -24,6 +25,9 @@ medicalRecordsRouter.get("/:id", getMedicalRecordById);
 
 // Get all records for a specific patient
 medicalRecordsRouter.get("/patient/:patientId", getRecordsByPatient);
+
+// Get all records for a specific patient
+medicalRecordsRouter.get("/clinic/:clinicId", getRecordsByClinic);
 
 // Delete a medical record
 medicalRecordsRouter.delete("/:id", deleteMedicalRecord);

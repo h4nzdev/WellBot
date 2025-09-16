@@ -1,11 +1,11 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { AuthContext } from '../../../context/AuthContext';
-import { X, Clock, Bell, Check, Edit } from 'lucide-react';
+import React, { useState, useContext, useEffect } from "react";
+import { AuthContext } from "../../../context/AuthContext";
+import { X, Clock, Bell, Check, Edit } from "lucide-react";
 
 const AddReminderModal = ({ isOpen, onClose, onSave, reminderToEdit }) => {
   const { user } = useContext(AuthContext);
-  const [name, setName] = useState('');
-  const [time, setTime] = useState('');
+  const [name, setName] = useState("");
+  const [time, setTime] = useState("");
   const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
@@ -14,14 +14,15 @@ const AddReminderModal = ({ isOpen, onClose, onSave, reminderToEdit }) => {
       setTime(reminderToEdit.time);
       setIsActive(reminderToEdit.isActive);
     } else {
-      setName('');
-      setTime('');
+      setName("");
+      setTime("");
       setIsActive(true);
     }
   }, [reminderToEdit, isOpen]);
 
   const handleSave = () => {
     const reminder = {
+      userId: user._id,
       id: reminderToEdit ? reminderToEdit.id : Date.now(),
       name,
       time,
@@ -39,11 +40,13 @@ const AddReminderModal = ({ isOpen, onClose, onSave, reminderToEdit }) => {
         {/* Header */}
         <div className="relative px-6 py-5 border-b border-slate-100">
           <div className="flex items-center space-x-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-              reminderToEdit 
-                ? 'bg-gradient-to-br from-orange-500 to-amber-600' 
-                : 'bg-gradient-to-br from-blue-500 to-indigo-600'
-            }`}>
+            <div
+              className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                reminderToEdit
+                  ? "bg-gradient-to-br from-orange-500 to-amber-600"
+                  : "bg-gradient-to-br from-blue-500 to-indigo-600"
+              }`}
+            >
               {reminderToEdit ? (
                 <Edit className="w-5 h-5 text-white" />
               ) : (
@@ -51,7 +54,7 @@ const AddReminderModal = ({ isOpen, onClose, onSave, reminderToEdit }) => {
               )}
             </div>
             <h2 className="text-xl font-semibold text-slate-800">
-              {reminderToEdit ? 'Edit Reminder' : 'Set New Reminder'}
+              {reminderToEdit ? "Edit Reminder" : "Set New Reminder"}
             </h2>
           </div>
           <button
@@ -99,16 +102,24 @@ const AddReminderModal = ({ isOpen, onClose, onSave, reminderToEdit }) => {
           {/* Active Toggle */}
           <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
             <div className="flex items-center space-x-3">
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                isActive ? 'bg-green-100' : 'bg-slate-200'
-              }`}>
-                <Check className={`w-4 h-4 ${
-                  isActive ? 'text-green-600' : 'text-slate-400'
-                }`} />
+              <div
+                className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                  isActive ? "bg-green-100" : "bg-slate-200"
+                }`}
+              >
+                <Check
+                  className={`w-4 h-4 ${
+                    isActive ? "text-green-600" : "text-slate-400"
+                  }`}
+                />
               </div>
               <div>
-                <span className="text-sm font-medium text-slate-800">Active Reminder</span>
-                <p className="text-xs text-slate-500">Enable notifications for this reminder</p>
+                <span className="text-sm font-medium text-slate-800">
+                  Active Reminder
+                </span>
+                <p className="text-xs text-slate-500">
+                  Enable notifications for this reminder
+                </p>
               </div>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -135,11 +146,11 @@ const AddReminderModal = ({ isOpen, onClose, onSave, reminderToEdit }) => {
             onClick={handleSave}
             className={`flex-1 px-4 py-2.5 text-sm font-medium text-white rounded-xl transition-all duration-200 shadow-sm ${
               reminderToEdit
-                ? 'bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700'
-                : 'bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700'
+                ? "bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700"
+                : "bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
             }`}
           >
-            {reminderToEdit ? 'Save Changes' : 'Save'}
+            {reminderToEdit ? "Save Changes" : "Save"}
           </button>
         </div>
       </div>

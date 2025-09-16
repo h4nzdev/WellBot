@@ -120,3 +120,24 @@ export const deleteMedicalRecord = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getRecordsByClinic = async (req, res) => {
+  try {
+    const records = await MedicalRecord.find({
+      clinicId: req.params.clinicId,
+    })
+      .populate("patientId", "name age gender")
+      .populate("doctorId", "name specialty")
+      .populate("appointmentId", "date status");
+
+    if (!records || records.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No medical records found for this clinic" });
+    }
+
+    res.json(records);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

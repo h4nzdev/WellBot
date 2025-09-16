@@ -32,8 +32,8 @@ const ClinicSchema = new mongoose.Schema({
   },
   subscriptionPlan: {
     type: String,
-    enum: ["Free", "Basic", "Premium"], // added "Free" for your form
-    default: "Free",
+    enum: ["free", "basic", "pro"], // added "Free" for your form
+    default: "free",
   },
   dailyPatientLimit: {
     type: Number,

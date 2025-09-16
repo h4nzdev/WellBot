@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import { Shield, Star, Check } from "lucide-react";
 import axios from "axios";
 import { ClinicContext } from "../../../context/ClinicContext";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ClientRegister() {
   // Mock clinics data - replace with API call to fetch clinics
@@ -63,9 +63,9 @@ export default function ClientRegister() {
       });
     } catch (error) {
       console.error("Error:", error);
-<<<<<<< HEAD
+
       toast.error(error.response?.data?.message || "Registration failed");
-=======
+
       if (
         error.response &&
         error.response.data &&
@@ -77,13 +77,11 @@ export default function ClientRegister() {
         setError("Login failed. Please check your connection and try again.");
       }
       alert(error.response?.data?.message || "Registration failed");
->>>>>>> ad4f30a8ae4ffbfad78a2ef2e745e19142b2beff
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <ToastContainer />
       <div className="w-full max-w-xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-6">

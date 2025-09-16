@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import {
   FileText,
   Plus,
@@ -8,8 +9,26 @@ import {
   ChevronDown,
   MoreHorizontal,
 } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function ClinicMedicalRecords() {
+  const [records, setRecords] = useState([]);
+  const { user } = useContext(AuthContext);
+
+  const fetchRecords = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/medical-records/clinic/${user._id}`
+      );
+      setRecords(res.data);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchRecords();
+  }, []);
+
   return (
     <div className="w-full min-h-screen bg-slate-50">
       <div className="mx-auto">
@@ -38,7 +57,9 @@ export default function ClinicMedicalRecords() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Total Records
                 </p>
-                <p className="text-4xl font-semibold text-slate-800">24</p>
+                <p className="text-4xl font-semibold text-slate-800">
+                  {records?.length}
+                </p>
               </div>
               <div className="bg-slate-500 p-4 rounded-2xl shadow-md">
                 <FileText className="w-8 h-8 text-white" />
@@ -52,7 +73,9 @@ export default function ClinicMedicalRecords() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Recent Records
                 </p>
-                <p className="text-4xl font-semibold text-emerald-600">5</p>
+                <p className="text-4xl font-semibold text-emerald-600">
+                  {records?.length}
+                </p>
               </div>
               <div className="bg-emerald-500 p-4 rounded-2xl shadow-md">
                 <FileText className="w-8 h-8 text-white" />
@@ -66,7 +89,9 @@ export default function ClinicMedicalRecords() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Pending Reviews
                 </p>
-                <p className="text-4xl font-semibold text-amber-600">2</p>
+                <p className="text-4xl font-semibold text-amber-600">
+                  {records?.length}
+                </p>
               </div>
               <div className="bg-amber-500 p-4 rounded-2xl shadow-md">
                 <FileText className="w-8 h-8 text-white" />
@@ -136,82 +161,46 @@ export default function ClinicMedicalRecords() {
               </thead>
               <tbody>
                 {/* Record Row 1 */}
-                <tr className="hover:bg-slate-50 transition-colors border-t border-slate-200">
-                  <td className="py-4 px-4 font-mono text-slate-700">#0001</td>
-                  <td className="px-4 font-semibold text-slate-800">
-                    John Smith
-                  </td>
-                  <td className="px-4">2024-08-15</td>
-                  <td className="px-4">X-Ray</td>
-                  <td className="px-4">Dr. Sarah Wilson</td>
-                  <td className="px-4">
-                    <span className="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-md text-sm w-fit">
-                      Reviewed
-                    </span>
-                  </td>
-                  <td className="px-4 text-right">
-                    <button
-                      type="button"
-                      className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center mx-auto"
-                      disabled
-                      aria-label="Actions"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-
-                {/* Record Row 2 */}
-                <tr className="hover:bg-slate-50 transition-colors border-t border-slate-200">
-                  <td className="py-4 px-4 font-mono text-slate-700">#0002</td>
-                  <td className="px-4 font-semibold text-slate-800">
-                    Maria Garcia
-                  </td>
-                  <td className="px-4">2024-08-20</td>
-                  <td className="px-4">Blood Test</td>
-                  <td className="px-4">Dr. Michael Brown</td>
-                  <td className="px-4">
-                    <span className="inline-block bg-amber-50 text-amber-700 border border-amber-200 px-2 py-1 rounded-md text-sm w-fit">
-                      Pending Review
-                    </span>
-                  </td>
-                  <td className="px-4 text-right">
-                    <button
-                      type="button"
-                      className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center mx-auto"
-                      disabled
-                      aria-label="Actions"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-
-                {/* Record Row 3 */}
-                <tr className="hover:bg-slate-50 transition-colors border-t border-slate-200">
-                  <td className="py-4 px-4 font-mono text-slate-700">#0003</td>
-                  <td className="px-4 font-semibold text-slate-800">
-                    David Johnson
-                  </td>
-                  <td className="px-4">2024-08-25</td>
-                  <td className="px-4">MRI Scan</td>
-                  <td className="px-4">Dr. Robert Davis</td>
-                  <td className="px-4">
-                    <span className="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-md text-sm w-fit">
-                      Reviewed
-                    </span>
-                  </td>
-                  <td className="px-4 text-right">
-                    <button
-                      type="button"
-                      className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center mx-auto"
-                      disabled
-                      aria-label="Actions"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
+                {records?.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="text-center py-8 text-slate-500">
+                      No medical records in this clinic found.
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {records?.map((record) => (
+                      <tr className="hover:bg-slate-50 transition-colors border-t border-slate-200">
+                        <td className="py-4 px-4 font-mono text-slate-700">
+                          #0001
+                        </td>
+                        <td className="px-4 font-semibold text-slate-800">
+                          {record?.patientId?.name}
+                        </td>
+                        <td className="px-4">
+                          {record.createdAt.slice(1, 10)}
+                        </td>
+                        <td className="px-4">{record.diagnosis}</td>
+                        <td className="px-4">{record.doctorId?.name}</td>
+                        <td className="px-4">
+                          <span className="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-md text-sm w-fit">
+                            Reviewed
+                          </span>
+                        </td>
+                        <td className="px-4 text-right">
+                          <button
+                            type="button"
+                            className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center mx-auto"
+                            disabled
+                            aria-label="Actions"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                )}
 
                 {/* Add more rows as needed */}
               </tbody>

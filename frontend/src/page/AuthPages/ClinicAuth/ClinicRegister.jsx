@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Shield, Star, Sparkles, Check } from "lucide-react";
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import PaymentModal from "../../../components/ClinicComponents/PaymentModal/PaymentModal";
 
 export default function ClinicRegister() {
@@ -15,10 +15,11 @@ export default function ClinicRegister() {
     address: "",
     password: "",
     confirmPassword: "",
-    selectedPlan: "free", // default to free plan
+    subscriptionPlan: "free", // default to free plan
     agreeToTerms: false,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPaymentSetup, setIsPaymentSetup] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -31,9 +32,13 @@ export default function ClinicRegister() {
   const handlePlanSelect = (plan) => {
     setFormData((prev) => ({
       ...prev,
-      selectedPlan: plan,
+      subscriptionPlan: plan,
     }));
-    if (plan !== "free") {
+    // Reset payment setup when changing plans
+    if (plan === "free") {
+      setIsPaymentSetup(true);
+    } else {
+      setIsPaymentSetup(false);
       setIsModalOpen(true);
     }
   };
@@ -41,8 +46,8 @@ export default function ClinicRegister() {
   const handlePaymentSubmit = (bankDetails) => {
     console.log("Bank Details:", bankDetails); // Mock submission
     setIsModalOpen(false);
-    // Proceed with registration
-    registerClinic();
+    setIsPaymentSetup(true);
+    toast.success("Payment details saved successfully!");
   };
 
   const registerClinic = async () => {
@@ -60,7 +65,7 @@ export default function ClinicRegister() {
         address: "",
         password: "",
         confirmPassword: "",
-        selectedPlan: "free",
+        subscriptionPlan: "free",
         agreeToTerms: false,
       });
     } catch (error) {
@@ -68,9 +73,10 @@ export default function ClinicRegister() {
     }
   };
 
+  console.log(formData.subscriptionPlan);
+
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <ToastContainer />
       <PaymentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -92,7 +98,13 @@ export default function ClinicRegister() {
             Register Your Clinic
           </h2>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form
+            className="space-y-6"
+            onSubmit={(e) => {
+              e.preventDefault();
+              registerClinic();
+            }}
+          >
             {/* Clinic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -204,7 +216,7 @@ export default function ClinicRegister() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div
                   className={`border-2 rounded-xl p-4 transition-all cursor-pointer ${
-                    formData.selectedPlan === "free"
+                    formData.subscriptionPlan === "free"
                       ? "border-cyan-500 bg-cyan-50"
                       : "border-slate-200 hover:border-cyan-300"
                   }`}
@@ -234,13 +246,13 @@ export default function ClinicRegister() {
 
                 <div
                   className={`border-2 rounded-xl p-4 transition-all cursor-pointer relative ${
-                    formData.selectedPlan === "basic"
+                    formData.subscriptionPlan === "basic"
                       ? "border-cyan-500 bg-cyan-50"
                       : "border-slate-200 hover:border-cyan-300"
                   }`}
                   onClick={() => handlePlanSelect("basic")}
                 >
-                  {formData.selectedPlan === "basic" && (
+                  {formData.subscriptionPlan === "basic" && (
                     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
                       <span className="bg-cyan-500 text-white text-xs px-3 py-1 rounded-full">
                         Selected
@@ -275,13 +287,13 @@ export default function ClinicRegister() {
 
                 <div
                   className={`border-2 rounded-xl p-4 transition-all cursor-pointer relative ${
-                    formData.selectedPlan === "pro"
+                    formData.subscriptionPlan === "pro"
                       ? "border-cyan-500 bg-cyan-50"
                       : "border-slate-200 hover:border-cyan-300"
                   }`}
                   onClick={() => handlePlanSelect("pro")}
                 >
-                  {formData.selectedPlan === "pro" && (
+                  {formData.subscriptionPlan === "pro" && (
                     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
                       <span className="bg-cyan-500 text-white text-xs px-3 py-1 rounded-full">
                         Selected
@@ -342,10 +354,26 @@ export default function ClinicRegister() {
 
             <button
               type="submit"
-              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
+              disabled={formData.subscriptionPlan !== "free" && !isPaymentSetup}
+              className={`w-full font-medium py-3 px-4 rounded-xl shadow-md transition-all duration-300 transform 
+                ${
+                  formData.subscriptionPlan !== "free" && !isPaymentSetup
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-cyan-600 hover:bg-cyan-700 hover:shadow-lg hover:-translate-y-0.5"
+                } text-white`}
+              title={
+                formData.subscriptionPlan !== "free" && !isPaymentSetup
+                  ? "Please set up payment first"
+                  : ""
+              }
             >
               Create Account
             </button>
+            {formData.subscriptionPlan !== "free" && !isPaymentSetup && (
+              <p className="text-sm text-red-500 mt-2 text-center">
+                Please set up payment details before creating your account
+              </p>
+            )}
           </form>
 
           <div className="mt-6 pt-6 border-t border-slate-200">

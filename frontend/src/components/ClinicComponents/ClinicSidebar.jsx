@@ -111,8 +111,9 @@ export default function ClinicSidebar() {
         <div>
           <h1 className="text-lg font-bold text-slate-800">
             Medora{" "}
-            <span className="font-medium text-slate-600">
+            <span className="relative font-medium text-slate-600 capitalize">
               {user.subscriptionPlan}
+              <span className="absolute top-0 -right-3 h-3 w-3 bg-green-500 rounded-full"></span>
             </span>
           </h1>
           <p className="text-sm text-slate-500">Clinic Management</p>
