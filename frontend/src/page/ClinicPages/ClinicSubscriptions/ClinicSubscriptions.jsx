@@ -1,8 +1,11 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { CreditCard, CheckCircle, XCircle } from "lucide-react";
+import PaymentModal from "../../../components/ClinicComponents/PaymentModal/PaymentModal";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const plans = [
   {
@@ -10,7 +13,6 @@ const plans = [
     price: "$0",
     priceDetails: "/month",
     features: ["Up to 25 patients", "Basic scheduling", "Email support"],
-    upgrade: false,
   },
   {
     name: "Basic",
@@ -22,7 +24,6 @@ const plans = [
       "Priority support",
       "Basic analytics",
     ],
-    upgrade: false,
   },
   {
     name: "Pro",
@@ -35,16 +36,59 @@ const plans = [
       "Advanced analytics",
       "Custom integrations",
     ],
-    upgrade: false,
   },
 ];
 
 export default function ClinicSubscriptions() {
-  const { user } = useContext(AuthContext);
-  const currentPlan = user?.subscriptionPlan || "Free"; // Default to Free if no plan is set
+  const { user, setUser } = useContext(AuthContext);
+  const currentPlan = user?.subscriptionPlan || "Free";
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPaymentSetup, setIsPaymentSetup] = useState(false);
+
+  const handlePlanSelect = (plan) => {
+    if (plan.toLowerCase() === currentPlan.toLowerCase()) {
+      return; // Do nothing if the selected plan is the current plan
+    }
+    setSelectedPlan(plan);
+    if (plan.toLowerCase() === "free") {
+      updateSubscription(plan);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
+  const handlePaymentSubmit = (bankDetails) => {
+    console.log("Bank Details:", bankDetails); // Mock submission
+    setIsModalOpen(false);
+    setIsPaymentSetup(true);
+    updateSubscription(selectedPlan);
+    toast.success("Payment details saved successfully!");
+  };
+
+  const updateSubscription = async (plan) => {
+    try {
+      const res = await axios.put(
+        `http://localhost:3000/clinic/${user._id}/subscription`,
+        {
+          subscriptionPlan: plan,
+        }
+      );
+      toast.success(res.data.message);
+      setUser({ ...user, subscriptionPlan: plan });
+    } catch (error) {
+      console.error("Error updating subscription:", error);
+      toast.error("Failed to update subscription.");
+    }
+  };
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handlePaymentSubmit}
+      />
       <div className="mx-auto">
         {/* Header */}
         <div className="mb-8 flex items-center space-x-3">
@@ -71,7 +115,6 @@ export default function ClinicSubscriptions() {
               <p className="text-lg font-medium text-cyan-700 capitalize">
                 {currentPlan} Plan
               </p>
-              {/* Find the price for the current plan */}
               <p className="text-slate-600">
                 Billed monthly at{" "}
                 {
@@ -118,16 +161,15 @@ export default function ClinicSubscriptions() {
                 </ul>
                 <button
                   type="button"
+                  onClick={() => handlePlanSelect(plan.name)}
                   className={`w-full rounded-xl font-medium py-2 ${
                     isCurrentPlan
                       ? "bg-cyan-600 text-white cursor-not-allowed"
-                      : plan.upgrade
-                      ? "bg-cyan-600 text-white"
                       : "border border-cyan-600 text-cyan-600 hover:bg-cyan-50"
                   }`}
                   disabled={isCurrentPlan}
                 >
-                  {isCurrentPlan ? "Current Plan" : "Subscribe"}
+                  {isCurrentPlan ? "Current Plan" : "Update Plan"}
                 </button>
               </div>
             );

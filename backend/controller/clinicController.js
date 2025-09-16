@@ -69,3 +69,29 @@ export const addDoctorToClinic = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+// Update clinic subscription plan
+export const updateSubscriptionPlan = async (req, res) => {
+  try {
+    const { id } = req.params; // clinic id from the URL
+    const { subscriptionPlan } = req.body; // new plan from the request body
+
+    // find clinic and update subscriptionPlan field
+    const clinic = await Clinic.findByIdAndUpdate(
+      id,
+      { subscriptionPlan: subscriptionPlan },
+      { new: true }
+    );
+
+    if (!clinic) {
+      return res.status(404).json({ error: "Clinic not found" });
+    }
+
+    res.json({
+      message: "Subscription plan updated successfully",
+      clinic,
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};

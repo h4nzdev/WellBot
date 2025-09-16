@@ -4,6 +4,7 @@ import {
   getClinicById,
   updateClinic,
   deleteClinic,
+  updateSubscriptionPlan
 } from "../controller/clinicController.js";
 
 const clinicRouter = express.Router();
@@ -19,5 +20,8 @@ clinicRouter.put("/:id", updateClinic);
 
 // ✅ Delete a clinic
 clinicRouter.delete("/:id", deleteClinic);
+
+//Update the subscription plan
+clinicRouter.put("/:id/subscription", updateSubscriptionPlan);
 
 export default clinicRouter;
