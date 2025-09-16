@@ -27,24 +27,20 @@ export const getStatusIcon = (status) => {
 };
 
 export const getStatusBadge = (status) => {
-  const statusConfig = {
-    pending: "text-amber-700 bg-amber-50 border border-amber-200",
-    accepted: "text-green-700 bg-green-50 border border-green-200",
-    rejected: "text-red-700 bg-red-50 border border-red-200",
-    scheduled: "text-blue-700 bg-blue-50 border border-blue-200",
-    completed: "text-purple-700 bg-purple-50 border border-purple-200",
-    cancelled: "text-gray-700 bg-gray-50 border border-gray-200",
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm w-fit capitalize ${
-        statusConfig[status] ||
-        "text-slate-700 bg-slate-100 border border-slate-200"
-      }`}
-    >
-      {getStatusIcon(status)}
-      {status}
-    </span>
-  );
+  switch (status.toLowerCase()) {
+    case "approved":
+      return "bg-green-100 text-green-700";
+    case "pending":
+      return "bg-yellow-100 text-yellow-700";
+    case "rejected":
+      return "bg-red-100 text-red-700";
+    case "cancelled":
+      return "bg-gray-200 text-gray-700";
+    case "rescheduled":
+      return "bg-blue-100 text-blue-700";
+    case "completed":
+      return "bg-indigo-100 text-indigo-700";
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
 };

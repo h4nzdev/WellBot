@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 
-const AppointmentActions = ({ onComplete, onCancel, onDelete }) => {
+const AppointmentActions = ({
+  appointmentId,
+  onComplete,
+  onCancel,
+  onDelete,
+  status
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleToggle = () => {
@@ -9,7 +15,7 @@ const AppointmentActions = ({ onComplete, onCancel, onDelete }) => {
   };
 
   const handleAction = (action) => {
-    action();
+    action(appointmentId);
     setIsOpen(false);
   };
 
@@ -25,27 +31,28 @@ const AppointmentActions = ({ onComplete, onCancel, onDelete }) => {
       </button>
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
-          <a
+          <button
             href="#"
+            disabled={status === "completed"}
             onClick={() => handleAction(onComplete)}
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${status === "completed" ? "cursor-not-allowed" : ""}`}
           >
             Mark as complete
-          </a>
-          <a
+          </button>
+          <button
             href="#"
             onClick={() => handleAction(onCancel)}
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             Cancelled
-          </a>
-          <a
+          </button>
+          <button
             href="#"
             onClick={() => handleAction(onDelete)}
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
             Delete
-          </a>
+          </button>
         </div>
       )}
     </div>
