@@ -1,6 +1,13 @@
 "use client";
 
-import { Shield, Star, Sparkles, Eye, EyeOff } from "lucide-react";
+import {
+  Shield,
+  Star,
+  Sparkles,
+  Eye,
+  EyeOff,
+  AlertTriangle,
+} from "lucide-react";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
@@ -9,6 +16,7 @@ import logo from "../../../assets/medoralogo.png";
 export default function ClinicLogin() {
   const { setRole, setUser } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,6 +35,7 @@ export default function ClinicLogin() {
       if (res.data.clinic) {
         setRole(res.data.clinic.role);
         setUser(res.data.clinic);
+        setError(null);
       } else {
         console.error("Unexpected response from server:", res.data);
       }
@@ -37,6 +46,15 @@ export default function ClinicLogin() {
         password: "",
       });
     } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Login failed. Please check your connection and try again.");
+      }
       console.error("Error:", error);
     }
   };
@@ -144,6 +162,15 @@ export default function ClinicLogin() {
                 Forgot password?
               </a>
             </div>
+
+            {error ? (
+              <div className="border border-red-400 p-1 px-4 bg-red-100 flex items-center space-x-2 rounded">
+                <AlertTriangle className="text-red-600" />
+                <p className="text-red-600">{error}</p>
+              </div>
+            ) : (
+              ""
+            )}
 
             {/* Sign In Button */}
             <button

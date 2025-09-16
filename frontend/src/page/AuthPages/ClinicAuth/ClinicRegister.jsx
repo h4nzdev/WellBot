@@ -3,6 +3,7 @@ import { Shield, Star, Sparkles, Check } from "lucide-react";
 import axios from "axios";
 
 export default function ClinicRegister() {
+  const [error, setError] = useState();
   const [formData, setFormData] = useState({
     clinicName: "",
     contactPerson: "",
@@ -50,6 +51,16 @@ export default function ClinicRegister() {
         agreeToTerms: false,
       });
     } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+        alert(error.response.data.message)
+      } else {
+        setError("Login failed. Please check your connection and try again.");
+      }
       console.error("Error:", error);
     }
   };

@@ -6,6 +6,7 @@ import { ClinicContext } from "../../../context/ClinicContext";
 export default function ClientRegister() {
   // Mock clinics data - replace with API call to fetch clinics
   const { clinics } = useContext(ClinicContext);
+  const [error, setError] = useState();
   const [formData, setFormData] = useState({
     clinicId: "", // selected clinic id
     name: "",
@@ -60,6 +61,16 @@ export default function ClientRegister() {
       });
     } catch (error) {
       console.error("Error:", error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+        alert(error.response.data.message);
+      } else {
+        setError("Login failed. Please check your connection and try again.");
+      }
       alert(error.response?.data?.message || "Registration failed");
     }
   };
