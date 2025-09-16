@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import {MoreHorizontal} from "lucide-react"
+import { MoreHorizontal } from "lucide-react";
 
-const AppointmentActions = ({ appointmentId, onComplete, onCancel, onDelete }) => {
+const AppointmentActions = ({ onComplete, onCancel, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleToggle = () => {
@@ -9,7 +9,7 @@ const AppointmentActions = ({ appointmentId, onComplete, onCancel, onDelete }) =
   };
 
   const handleAction = (action) => {
-    action(appointmentId);
+    action();
     setIsOpen(false);
   };
 
@@ -24,7 +24,7 @@ const AppointmentActions = ({ appointmentId, onComplete, onCancel, onDelete }) =
         <MoreHorizontal className="h-5 w-5" />
       </button>
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-50 text-left">
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
           <a
             href="#"
             onClick={() => handleAction(onComplete)}
