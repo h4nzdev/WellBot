@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Shield, Star, Sparkles, Check } from "lucide-react";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import PaymentModal from "../../../components/ClinicComponents/PaymentModal/PaymentModal";
 
 export default function ClinicRegister() {
   const [formData, setFormData] = useState({
@@ -14,6 +17,7 @@ export default function ClinicRegister() {
     selectedPlan: "free", // default to free plan
     agreeToTerms: false,
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -28,16 +32,25 @@ export default function ClinicRegister() {
       ...prev,
       selectedPlan: plan,
     }));
+    if (plan !== "free") {
+      setIsModalOpen(true);
+    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handlePaymentSubmit = (bankDetails) => {
+    console.log("Bank Details:", bankDetails); // Mock submission
+    setIsModalOpen(false);
+    // Proceed with registration
+    registerClinic();
+  };
+
+  const registerClinic = async () => {
     try {
       const res = await axios.post(
         "http://localhost:3000/auth/clinic/register",
         formData
       );
-      alert(res.data.message);
+      toast.success(res.data.message);
       setFormData({
         clinicName: "",
         contactPerson: "",
@@ -50,12 +63,27 @@ export default function ClinicRegister() {
         agreeToTerms: false,
       });
     } catch (error) {
-      console.error("Error:", error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.selectedPlan === "free") {
+      registerClinic();
+    } else {
+      setIsModalOpen(true);
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <ToastContainer />
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handlePaymentSubmit}
+      />
       <div className="w-full max-w-2xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-6">

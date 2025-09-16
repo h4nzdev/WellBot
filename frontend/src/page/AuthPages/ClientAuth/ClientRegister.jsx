@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import { Shield, Star, Check } from "lucide-react";
 import axios from "axios";
 import { ClinicContext } from "../../../context/ClinicContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ClientRegister() {
   // Mock clinics data - replace with API call to fetch clinics
@@ -31,12 +33,12 @@ export default function ClientRegister() {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     if (!formData.agreeToTerms) {
-      alert("You must agree to the terms");
+      toast.error("You must agree to the terms");
       return;
     }
 
@@ -45,7 +47,7 @@ export default function ClientRegister() {
         "http://localhost:3000/auth/patient/register",
         formData
       );
-      alert(res.data.message);
+      toast.success(res.data.message);
       setFormData({
         clinicId: "",
         name: "",
@@ -60,12 +62,13 @@ export default function ClientRegister() {
       });
     } catch (error) {
       console.error("Error:", error);
-      alert(error.response?.data?.message || "Registration failed");
+      toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <ToastContainer />
       <div className="w-full max-w-xl">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-6">
