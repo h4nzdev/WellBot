@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function ClientRegister() {
   // Mock clinics data - replace with API call to fetch clinics
   const { clinics } = useContext(ClinicContext);
+  const [error, setError] = useState();
   const [formData, setFormData] = useState({
     clinicId: "", // selected clinic id
     name: "",
@@ -62,7 +63,21 @@ export default function ClientRegister() {
       });
     } catch (error) {
       console.error("Error:", error);
+<<<<<<< HEAD
       toast.error(error.response?.data?.message || "Registration failed");
+=======
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+        alert(error.response.data.message);
+      } else {
+        setError("Login failed. Please check your connection and try again.");
+      }
+      alert(error.response?.data?.message || "Registration failed");
+>>>>>>> ad4f30a8ae4ffbfad78a2ef2e745e19142b2beff
     }
   };
 

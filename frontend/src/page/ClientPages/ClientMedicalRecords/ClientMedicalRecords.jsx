@@ -2,7 +2,7 @@ import { Download, Eye, FileText, Calendar, User, Clock } from "lucide-react";
 import useMedicalRecords from "../../../hooks/medicalRecords";
 import { useState } from "react";
 import MedicalRecordsModal from "../../../components/ClientComponents/MedicalRecordsModal/MedicalRecordsModal";
-import jsPDF from 'jspdf';
+import jsPDF from "jspdf";
 
 const ClientMedicalRecords = () => {
   const { records } = useMedicalRecords();
@@ -18,8 +18,8 @@ const ClientMedicalRecords = () => {
     setIsOpen(false);
     setSelectedRecord(null);
   };
-  
-  const handleDownloadAll = () => {
+
+  const handleDownloadAll = (records) => {
     const doc = new jsPDF();
     let yPos = 10;
 
@@ -34,7 +34,13 @@ const ClientMedicalRecords = () => {
 
       doc.text(`Appointment ID: ${record.appointmentId?._id}`, 15, yPos);
       yPos += 5;
-      doc.text(`Appointment Date: ${new Date(record.appointmentId?.date).toLocaleDateString()}`, 15, yPos);
+      doc.text(
+        `Appointment Date: ${new Date(
+          record.appointmentId?.date
+        ).toLocaleDateString()}`,
+        15,
+        yPos
+      );
       yPos += 5;
       doc.text(`Clinic: ${record.clinicId?.clinicName}`, 15, yPos);
       yPos += 5;
@@ -97,9 +103,10 @@ const ClientMedicalRecords = () => {
                 Access your appointment history and medical records.
               </p>
             </div>
-            <button 
-              onClick={handleDownloadAll} 
-              className="group flex items-center justify-center px-6 py-3 bg-cyan-600/90 backdrop-blur-sm text-white rounded-xl shadow-lg hover:bg-cyan-700 hover:shadow-xl hover:scale-105 transition-all duration-300 w-full sm:w-auto border border-cyan-500/20">
+            <button
+              onClick={() => handleDownloadAll(records)}
+              className="group flex items-center justify-center px-6 py-3 bg-cyan-600/90 backdrop-blur-sm text-white rounded-xl shadow-lg hover:bg-cyan-700 hover:shadow-xl hover:scale-105 transition-all duration-300 w-full sm:w-auto border border-cyan-500/20"
+            >
               <Download className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
               <span className="font-semibold tracking-wide">
                 Download All Records

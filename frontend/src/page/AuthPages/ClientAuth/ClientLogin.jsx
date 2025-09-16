@@ -1,13 +1,14 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { Shield, Star, Sparkles, Eye, EyeOff } from "lucide-react";
+import { Shield, Star, Sparkles, Eye, EyeOff, AlertTriangle } from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import logo from "../../../assets/medoralogo.png";
 
 const ClientLogin = () => {
   const { setRole, setUser } = useContext(AuthContext);
+  const [error, setError] = useState();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -37,6 +38,15 @@ const ClientLogin = () => {
         password: "",
       });
     } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Login failed. Please check your connection and try again.");
+      }
       console.error("Error:", error);
     }
   };
@@ -137,6 +147,15 @@ const ClientLogin = () => {
                 Forgot password?
               </a>
             </div>
+
+            {error ? (
+              <div className="border border-red-400 p-1 px-4 bg-red-100 flex items-center space-x-2 rounded">
+                <AlertTriangle className="text-red-600" />
+                <p className="text-red-600">{error}</p>
+              </div>
+            ) : (
+              ""
+            )}
 
             <button
               type="submit"

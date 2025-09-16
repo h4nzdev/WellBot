@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import PaymentModal from "../../../components/ClinicComponents/PaymentModal/PaymentModal";
 
 export default function ClinicRegister() {
+  const [error, setError] = useState();
   const [formData, setFormData] = useState({
     clinicName: "",
     contactPerson: "",
@@ -63,16 +64,7 @@ export default function ClinicRegister() {
         agreeToTerms: false,
       });
     } catch (error) {
-      toast.error(error.response.data.message);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formData.selectedPlan === "free") {
-      registerClinic();
-    } else {
-      setIsModalOpen(true);
+      console.error("Error:", error);
     }
   };
 
