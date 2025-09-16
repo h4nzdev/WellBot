@@ -17,6 +17,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { toast } from "react-toastify";
 
 export default function ClinicSidebar() {
   const { user } = useContext(AuthContext);
@@ -96,7 +97,7 @@ export default function ClinicSidebar() {
         setUser(false);
         setRole("Clinic");
         navigate("/auth/login");
-        Swal.fire("Logged out!", "You have been logged out.", "success");
+        toast.success("Logout successfully!");
       }
     });
   };

@@ -1,4 +1,4 @@
-import { Bot, Send, User } from "lucide-react";
+import { Bot, Send, User, Shield } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
@@ -54,88 +54,140 @@ const ClientChat = () => {
   }, [chatHistory, loading]);
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 flex flex-col">
-      <div className="flex-1 mx-auto w-full flex flex-col">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
-            AI Symptom Checker
-          </h1>
-          <p className="text-slate-600 mt-2 text-lg font-medium">
-            Get basic advice for your symptoms. This is not a substitute for
-            professional medical advice.
-          </p>
-        </header>
-
-        <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200/50 p-6 flex flex-col">
-          {/* Chat messages */}
-          <div className="flex-1 space-y-6 overflow-y-auto pr-4">
-            {chatHistory.map((chat, index) => (
-              <div
-                key={index}
-                className={`flex items-start gap-4 ${
-                  chat.role === "user" ? "flex-row-reverse" : ""
-                }`}
-              >
-                <div
-                  className={`p-3 rounded-full shadow-lg ring-2 ${
-                    chat.role === "user"
-                      ? "bg-gradient-to-br from-slate-600 to-slate-800 ring-slate-100"
-                      : "bg-gradient-to-br from-cyan-500 to-cyan-700 ring-cyan-100"
-                  }`}
-                >
-                  {chat.role === "user" ? (
-                    <User className="w-6 h-6 text-white" />
-                  ) : (
-                    <Bot className="w-6 h-6 text-white" />
-                  )}
-                </div>
-                <div
-                  className={`rounded-2xl p-4 max-w-lg shadow-sm border hover:shadow-md transition-all duration-200 ${
-                    chat.role === "user"
-                      ? "bg-cyan-50/80 backdrop-blur-sm border-cyan-100"
-                      : "bg-slate-50/80 backdrop-blur-sm border-slate-100"
-                  }`}
-                >
-                  <p className="font-bold text-slate-800 text-sm tracking-wide mb-1">
-                    {chat.role === "user" ? "You" : "AI Assistant"}
-                  </p>
-                  <p className="text-slate-700 leading-relaxed">{chat.text}</p>
-                </div>
-              </div>
-            ))}
-            {loading && (
-              <div className="flex items-start gap-4">
-                <div className="bg-gradient-to-br from-cyan-500 to-cyan-700 p-3 rounded-full shadow-lg ring-2 ring-cyan-100">
-                  <Bot className="w-6 h-6 text-white" />
-                </div>
-                <div className="bg-slate-50/80 backdrop-blur-sm rounded-2xl p-4 max-w-lg shadow-sm border border-slate-100 hover:shadow-md transition-all duration-200">
-                  <p className="font-bold text-slate-800 text-sm tracking-wide mb-1">
-                    AI Assistant
-                  </p>
-                  <p className="text-slate-700 leading-relaxed">Typing...</p>
-                </div>
-              </div>
-            )}
-            <div ref={bottomRef}></div>
+    <div className="w-full h-full flex flex-col">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="flex items-center space-x-3">
+          <div className="bg-cyan-100 p-3 rounded-full">
+            <Bot className="h-6 w-6 text-cyan-600" />
           </div>
+          <div>
+            <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
+              AI Symptom Checker
+            </h1>
+            <p className="text-gray-600">
+              Get basic advice for your symptoms. This is not a substitute for
+              professional medical advice.
+            </p>
+          </div>
+        </div>
+      </div>
 
-          <div className="mt-6 flex items-center gap-4">
-            <input
-              type="text"
-              placeholder="Type your message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-              className="flex-1 p-4 rounded-xl border border-slate-200 bg-white/80 backdrop-blur-sm focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 focus:outline-none transition-all duration-200 shadow-sm hover:shadow-md font-medium placeholder:text-slate-400"
-            />
-            <button
-              onClick={handleSendMessage}
-              disabled={loading}
-              className="p-4 bg-gradient-to-r from-cyan-500 to-cyan-700 text-white rounded-xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 ring-2 ring-cyan-100 hover:ring-cyan-200 disabled:opacity-50"
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
+        {chatHistory.map((chat, index) => (
+          <div
+            key={index}
+            className={`flex ${
+              chat.role === "user" ? "justify-end" : "justify-start"
+            }`}
+          >
+            <div
+              className={`max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg ${
+                chat.role === "user"
+                  ? "bg-cyan-600 text-white"
+                  : "bg-white border border-gray-200 text-gray-900"
+              }`}
             >
-              <Send className="w-6 h-6" />
-            </button>
+              {chat.role === "bot" && (
+                <div className="flex items-center space-x-2 mb-2">
+                  <Bot className="h-4 w-4 text-cyan-600" />
+                  <span className="text-sm font-medium text-cyan-600">
+                    AI Assistant
+                  </span>
+                </div>
+              )}
+              <p className="text-sm">{chat.text}</p>
+            </div>
           </div>
+        ))}
+
+        {loading && (
+          <div className="flex justify-start">
+            <div className="max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg bg-white border border-gray-200 text-gray-900">
+              <div className="flex items-center space-x-2 mb-2">
+                <Bot className="h-4 w-4 text-cyan-600" />
+                <span className="text-sm font-medium text-cyan-600">
+                  AI Assistant
+                </span>
+              </div>
+              <p className="text-sm">Typing...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Sample health questions */}
+        <div className="bg-blue-50 rounded-xl p-4 lg:p-6 border border-blue-200">
+          <h3 className="font-medium text-blue-900 mb-3">
+            Common Questions You Can Ask:
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
+            <div
+              onClick={() => setMessage("I have a headache and feel tired")}
+              className="text-left p-3 bg-white rounded-lg border border-blue-200 cursor-default select-none"
+            >
+              <p className="text-sm text-blue-800">
+                "I have a headache and feel tired"
+              </p>
+            </div>
+            <div
+              onClick={() => setMessage("What are symptoms of flu?")}
+              className="text-left p-3 bg-white rounded-lg border border-blue-200 cursor-default select-none"
+            >
+              <p className="text-sm text-blue-800">
+                "What are symptoms of flu?"
+              </p>
+            </div>
+            <div
+              onClick={() => setMessage("When should I see a doctor?")}
+              className="text-left p-3 bg-white rounded-lg border border-blue-200 cursor-default select-none"
+            >
+              <p className="text-sm text-blue-800">
+                "When should I see a doctor?"
+              </p>
+            </div>
+            <div
+              onClick={() => setMessage("How to manage stress?")}
+              className="text-left p-3 bg-white rounded-lg border border-blue-200 cursor-default select-none"
+            >
+              <p className="text-sm text-blue-800">"How to manage stress?"</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Health Tips */}
+        <div className="bg-cyan-50 rounded-xl p-4 lg:p-6 border border-cyan-200 md:block hidden">
+          <div className="flex items-center space-x-2 mb-3">
+            <Shield className="h-5 w-5 text-cyan-600" />
+            <h3 className="font-medium text-cyan-900">Daily Health Reminder</h3>
+          </div>
+          <p className="text-sm text-cyan-800">
+            Remember to stay hydrated throughout the day. Aim for 8 glasses of
+            water to maintain optimal health and energy levels.
+          </p>
+        </div>
+
+        <div ref={bottomRef}></div>
+      </div>
+
+      {/* Message Input */}
+      <div className="bg-white border-t border-gray-200 p-4 lg:p-6">
+        <div className="flex space-x-3">
+          <input
+            type="text"
+            placeholder="Type your message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 focus:outline-none"
+          />
+          <button
+            onClick={handleSendMessage}
+            disabled={loading}
+            className="bg-cyan-600 text-white px-6 py-3 rounded-lg flex items-center hover:bg-cyan-700 disabled:opacity-50"
+          >
+            <Send className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </div>

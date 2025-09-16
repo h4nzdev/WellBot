@@ -72,7 +72,6 @@ export default function ClientRegister() {
         error.response.data.message
       ) {
         setError(error.response.data.message);
-        alert(error.response.data.message);
       } else {
         setError("Login failed. Please check your connection and try again.");
       }

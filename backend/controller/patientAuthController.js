@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import Patient from "../model/patientsModel.js";;
+import Patient from "../model/patientsModel.js";
 
 // Login patient with sessions
 export const loginClient = async (req, res) => {
@@ -30,9 +30,17 @@ export const registerClient = async (req, res) => {
       req.body;
 
     // ✅ Check if email already exists
-    const existingPatient = await Patient.findOne({ email });
-    if (existingPatient) {
+    const existingPatientByEmail = await Patient.findOne({ email });
+    if (existingPatientByEmail) {
       return res.status(400).json({ message: "Email already registered" });
+    }
+
+    // ✅ Check if phone already exists
+    const existingPatientByPhone = await Patient.findOne({ phone });
+    if (existingPatientByPhone) {
+      return res
+        .status(400)
+        .json({ message: "Phone number already registered" });
     }
 
     // ✅ Hash password
@@ -61,6 +69,14 @@ export const registerClient = async (req, res) => {
       },
     });
   } catch (error) {
+    // Extra check: catch Mongo duplicate error
+    if (error.code === 11000) {
+      const duplicateField = Object.keys(error.keyPattern)[0];
+      return res
+        .status(400)
+        .json({ message: `${duplicateField} already registered` });
+    }
+
     res.status(500).json({
       message: "Error registering patient",
       error: error.message,

@@ -63,7 +63,6 @@ export default function ClinicSubscriptions() {
     setIsModalOpen(false);
     setIsPaymentSetup(true);
     updateSubscription(selectedPlan);
-    toast.success("Payment details saved successfully!");
   };
 
   const updateSubscription = async (plan) => {
