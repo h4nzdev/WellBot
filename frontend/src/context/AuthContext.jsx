@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { getInitials } from "../utils/getInitials";
 
 export const AuthContext = createContext();
 
@@ -19,14 +20,7 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.setItem("role", role);
   }, [user, role]);
 
-  const initials =
-    user && user.name
-      ? user.name
-          .split(" ")
-          .map((word) => word[0])
-          .join("")
-          .toUpperCase()
-      : "";
+  const initials = getInitials(user.name);
 
   return (
     <AuthContext.Provider value={{ user, setUser, role, setRole, initials }}>

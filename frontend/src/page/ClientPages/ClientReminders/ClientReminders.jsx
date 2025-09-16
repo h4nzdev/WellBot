@@ -1,28 +1,12 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useContext
-} from "react";
-import {
-  BellRing,
-  Plus,
-  MoreVertical,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  X,
-  Edit3,
-  Trash2,
-  Bell,
-  ChevronDown,
-} from "lucide-react";
-import AddReminderModal from "../../../components/ClientComponents/AddReminderModal/AddReminderModal";
+import { useState, useEffect, useContext } from "react";
+import { Plus, BellRing, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../../context/AuthContext";
+import AddReminderModal from "../../../components/ClientComponents/AddReminderModal/AddReminderModal";
 import ReminderDropdown from "../../../components/ClientComponents/ReminderDropdown/ReminderDropdown";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const ClientReminders = () => {
   const { user } = useContext(AuthContext);
@@ -30,39 +14,48 @@ const ClientReminders = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reminderToEdit, setReminderToEdit] = useState(null);
 
+  // Load reminders for this user
   useEffect(() => {
-    const storedReminders = localStorage.getItem(`reminders_${user.id}`);
-    if (storedReminders) {
-      setReminders(JSON.parse(storedReminders));
-    }
-  }, [user.id]);
+    const stored = localStorage.getItem(`reminders_${user._id}`);
+    if (stored) setReminders(JSON.parse(stored));
+  }, [user._id]);
 
+  // Check reminder notifications
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      reminders.forEach(reminder => {
-        if (reminder.time === currentTime && reminder.isActive) {
-          toast(`It's time for your reminder: ${reminder.name}`);
+      const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(
+        now.getMinutes()
+      ).padStart(2, "0")}`;
+      reminders.forEach((r) => {
+        if (r.time === currentTime && r.isActive) {
+          toast(`It's time for your reminder: ${r.name}`);
         }
       });
-    }, 60000); // Check every minute
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [reminders]);
 
-  const handleSaveReminder = (reminder) => {
-    let updatedReminders;
-    if (reminderToEdit) {
-      updatedReminders = reminders.map((r) =>
-        r.id === reminder.id ? reminder : r
-      );
-    } else {
-      updatedReminders = [...reminders, reminder];
-    }
-    setReminders(updatedReminders);
-    localStorage.setItem(`reminders_${user.id}`, JSON.stringify(updatedReminders));
+  const saveReminders = (updated) => {
+    setReminders(updated);
+    localStorage.setItem(`reminders_${user._id}`, JSON.stringify(updated));
     setReminderToEdit(null);
+  };
+
+  const handleSaveReminder = (reminder) => {
+    const updated = reminderToEdit
+      ? reminders.map((r) => (r.id === reminder.id ? reminder : r))
+      : [...reminders, reminder];
+    saveReminders(updated);
+  };
+
+  const handleRemove = (id) => {
+    if (window.confirm("Are you sure you want to remove this reminder?")) {
+      const updated = reminders.filter((r) => r.id !== id);
+      saveReminders(updated);
+      toast.success("Reminder removed!");
+    }
   };
 
   const handleEdit = (reminder) => {
@@ -70,165 +63,135 @@ const ClientReminders = () => {
     setIsModalOpen(true);
   };
 
-  const handleNotified = () => {
-    // Implement notified functionality here
-    console.log("Notified clicked");
-  };
-
-  const handleAddEmergencyContact = () => {
-    // Implement add emergency contact functionality here
-    console.log("Add emergency contact clicked");
-  };
-
   const openModal = () => {
     setReminderToEdit(null);
     setIsModalOpen(true);
-  }
+  };
 
+  // Stats
   const stats = {
     total: reminders.length,
     active: reminders.filter((r) => r.isActive).length,
     inactive: reminders.filter((r) => !r.isActive).length,
-    today: reminders.length, // You might want to filter this for today's reminders
+    today: reminders.length,
   };
 
   return (
     <>
       <div className="w-full min-h-screen bg-slate-50">
-        <div className="mx-auto">
-          <header className="mb-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-              <div className="mb-4 sm:mb-0">
-                <h1 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
-                  My Reminders
-                </h1>
-                <p className="text-slate-600 mt-2 font-medium tracking-wide">
-                  Manage your personal health reminders.
-                </p>
-              </div>
-              <button
-                onClick={openModal}
-                className="group flex items-center justify-center px-6 py-3 bg-cyan-600/90 backdrop-blur-sm text-white rounded-xl shadow-lg hover:bg-cyan-700 hover:shadow-xl hover:scale-105 transition-all duration-300 w-full sm:w-auto border border-cyan-500/20"
-              >
-                <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-                <span className="font-semibold tracking-wide">
-                  Set New Reminder
-                </span>
-              </button>
+        <div className="mx-auto px-4">
+          <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div className="mb-4 sm:mb-0">
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-800">
+                My Reminders
+              </h1>
+              <p className="text-slate-600 mt-2 font-medium tracking-wide">
+                Manage your personal health reminders.
+              </p>
             </div>
+            <button
+              onClick={openModal}
+              className="group flex items-center justify-center px-6 py-3 bg-cyan-600/90 text-white rounded-xl shadow-lg hover:bg-cyan-700 hover:scale-105 transition-all duration-300 w-full sm:w-auto"
+            >
+              <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+              Set New Reminder
+            </button>
           </header>
 
-          <section className="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200/50 shadow-lg p-6 hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center justify-between">
+          {/* Stats */}
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="bg-white/70 rounded-xl p-6 shadow hover:shadow-xl transition-all">
+              <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-2xl font-bold text-slate-800 tracking-tight">
-                    {stats.total}
-                  </p>
-                  <p className="text-slate-600 font-medium tracking-wide">
-                    Total Reminders
-                  </p>
+                  <p className="text-2xl font-bold">{stats.total}</p>
+                  <p className="text-slate-600 font-medium">Total Reminders</p>
                 </div>
-                <div className="p-3 bg-slate-100/80 rounded-lg">
-                  <BellRing className="w-6 h-6 text-slate-600" />
-                </div>
+                <BellRing className="w-6 h-6 text-slate-600" />
               </div>
             </div>
 
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-emerald-200/50 shadow-lg p-6 hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center justify-between">
+            <div className="bg-white/70 rounded-xl p-6 shadow hover:shadow-xl transition-all">
+              <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-2xl font-bold text-emerald-700 tracking-tight">
+                  <p className="text-2xl font-bold text-emerald-700">
                     {stats.active}
                   </p>
-                  <p className="text-slate-600 font-medium tracking-wide">
-                    Active
-                  </p>
+                  <p className="text-slate-600 font-medium">Active</p>
                 </div>
-                <div className="p-3 bg-emerald-100/80 rounded-lg">
-                  <CheckCircle className="w-6 h-6 text-emerald-600" />
-                </div>
+                <CheckCircle className="w-6 h-6 text-emerald-600" />
               </div>
             </div>
 
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200/50 shadow-lg p-6 hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center justify-between">
+            <div className="bg-white/70 rounded-xl p-6 shadow hover:shadow-xl transition-all">
+              <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-2xl font-bold text-slate-600 tracking-tight">
+                  <p className="text-2xl font-bold text-slate-600">
                     {stats.inactive}
                   </p>
-                  <p className="text-slate-600 font-medium tracking-wide">
-                    Inactive
-                  </p>
+                  <p className="text-slate-600 font-medium">Inactive</p>
                 </div>
-                <div className="p-3 bg-slate-100/80 rounded-lg">
-                  <AlertCircle className="w-6 h-6 text-slate-500" />
-                </div>
+                <AlertCircle className="w-6 h-6 text-slate-500" />
               </div>
             </div>
 
-            <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-cyan-200/50 shadow-lg p-6 hover:shadow-xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center justify-between">
+            <div className="bg-white/70 rounded-xl p-6 shadow hover:shadow-xl transition-all">
+              <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-2xl font-bold text-cyan-700 tracking-tight">
+                  <p className="text-2xl font-bold text-cyan-700">
                     {stats.today}
                   </p>
-                  <p className="text-slate-600 font-medium tracking-wide">
-                    Due Today
-                  </p>
+                  <p className="text-slate-600 font-medium">Due Today</p>
                 </div>
-                <div className="p-3 bg-cyan-100/80 rounded-lg">
-                  <Clock className="w-6 h-6 text-cyan-600" />
-                </div>
+                <Clock className="w-6 h-6 text-cyan-600" />
               </div>
             </div>
           </section>
 
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reminders.map((reminder) => (
-              <div
-                key={reminder.id}
-                className="group bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200/50 shadow-lg p-6 flex flex-col hover:shadow-xl hover:scale-105 transition-all duration-300"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <p className="text-lg font-bold text-slate-800 tracking-tight leading-tight">
-                    {reminder.name}
-                  </p>
-                  <span
-                    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold tracking-wide transition-all duration-300 ${
-                      reminder.isActive
-                        ? "text-emerald-700 bg-emerald-50/80 border border-emerald-200/50 shadow-sm"
-                        : "text-slate-700 bg-slate-100/80 border border-slate-200/50 shadow-sm"
-                    }`}
-                  >
-                    <BellRing className="w-4 h-4" />
-                    {reminder.isActive ? "Active" : "Inactive"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 mb-6">
-                  <Clock className="w-4 h-4 text-cyan-600" />
-                  <p className="text-cyan-700 font-bold tracking-wide">
-                    {reminder.time}
-                  </p>
-                </div>
-                <div className="mt-auto flex gap-2">
-                  <button className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200">
-                    Remove
-                  </button>
-
-                  <div className="relative flex-1">
-                   <ReminderDropdown
-                      onEdit={() => handleEdit(reminder)}
-                      onNotified={handleNotified}
-                      onAddEmergencyContact={handleAddEmergencyContact}
-                    />
+          {/* Reminders */}
+          {reminders.length === 0 ? (
+            <div className="text-center text-slate-600 font-medium mt-12">
+              No reminders yet. Click "Set New Reminder" to add one!
+            </div>
+          ) : (
+            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {reminders.map((r) => (
+                <div
+                  key={r.id}
+                  className="bg-white/70 rounded-xl p-6 shadow flex flex-col hover:shadow-xl transition-all"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <p className="text-lg font-bold">{r.name}</p>
+                    <span
+                      className={`inline-flex items-center px-3 py-1.5 text-sm rounded-lg ${
+                        r.isActive
+                          ? "text-emerald-700 bg-emerald-50"
+                          : "text-slate-700 bg-slate-100"
+                      }`}
+                    >
+                      <BellRing className="w-4 h-4 mr-1" />
+                      {r.isActive ? "Active" : "Inactive"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 mb-6">
+                    <Clock className="w-4 h-4 text-cyan-600" />
+                    <p className="text-cyan-700 font-bold">{r.time}</p>
+                  </div>
+                  <div className="mt-auto flex gap-2">
+                    <button
+                      onClick={() => handleRemove(r.id)}
+                      className="px-3 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200"
+                    >
+                      Remove
+                    </button>
+                    <ReminderDropdown onEdit={() => handleEdit(r)} />
                   </div>
                 </div>
-              </div>
-            ))}
-          </section>
+              ))}
+            </section>
+          )}
         </div>
       </div>
+
       <ToastContainer />
       <AddReminderModal
         isOpen={isModalOpen}

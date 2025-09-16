@@ -95,7 +95,7 @@ export default function ClientRegister() {
 
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           <h2 className="text-2xl font-semibold text-slate-800 mb-6">
-            Register as a Client
+            Register as a Patient
           </h2>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
