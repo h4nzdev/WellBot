@@ -12,8 +12,28 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import ClinicPatientsTableBody from "./components/ClinicPatientsTableBody";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../context/AuthContext";
+import axios from "axios";
 
 export default function ClinicPatients() {
+  const [patients, setPatients] = useState([]);
+  const { user } = useContext(AuthContext);
+
+  const fetchPatients = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/patient/clinic/${user._id}`
+      );
+      setPatients(res.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPatients();
+  }, []);
   return (
     <div className="w-full min-h-screen bg-slate-50">
       <div className="mx-auto">
@@ -42,7 +62,9 @@ export default function ClinicPatients() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Total Patients
                 </p>
-                <p className="text-4xl font-semibold text-slate-800">12</p>
+                <p className="text-4xl font-semibold text-slate-800">
+                  {patients.length}
+                </p>
               </div>
               <div className="bg-slate-500 p-4 rounded-2xl shadow-md">
                 <User className="w-8 h-8 text-white" />
@@ -56,7 +78,9 @@ export default function ClinicPatients() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Active Patients
                 </p>
-                <p className="text-4xl font-semibold text-emerald-600">9</p>
+                <p className="text-4xl font-semibold text-emerald-600">
+                  {patients.length}
+                </p>
               </div>
               <div className="bg-emerald-500 p-4 rounded-2xl shadow-md">
                 <User className="w-8 h-8 text-white" />
@@ -70,7 +94,7 @@ export default function ClinicPatients() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Inactive Patients
                 </p>
-                <p className="text-4xl font-semibold text-amber-600">3</p>
+                <p className="text-4xl font-semibold text-amber-600">0</p>
               </div>
               <div className="bg-amber-500 p-4 rounded-2xl shadow-md">
                 <User className="w-8 h-8 text-white" />
@@ -84,7 +108,9 @@ export default function ClinicPatients() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   New Patients (30d)
                 </p>
-                <p className="text-4xl font-semibold text-cyan-600">2</p>
+                <p className="text-4xl font-semibold text-cyan-600">
+                  {patients.length}
+                </p>
               </div>
               <div className="bg-cyan-500 p-4 rounded-2xl shadow-md">
                 <User className="w-8 h-8 text-white" />
@@ -150,7 +176,7 @@ export default function ClinicPatients() {
                   </th>
                 </tr>
               </thead>
-              <ClinicPatientsTableBody />
+              <ClinicPatientsTableBody patients={patients} />
             </table>
           </div>
 

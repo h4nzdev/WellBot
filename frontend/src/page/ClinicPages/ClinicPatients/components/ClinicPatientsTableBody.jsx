@@ -1,20 +1,10 @@
 import { MoreHorizontal } from "lucide-react";
-import React, { useContext } from "react";
-import { PatientsContext } from "../../../../context/PatientsContext";
-import { AuthContext } from "../../../../context/AuthContext";
 
-const ClinicPatientsTableBody = () => {
-  const { patients } = useContext(PatientsContext);
-  const { user } = useContext(AuthContext);
-
-  const clinicPatients = patients?.filter(
-    (patient) => patient.clinicId?._id === user._id
-  );
-
+const ClinicPatientsTableBody = ({ patients }) => {
   return (
     <tbody>
-      {clinicPatients.length > 0 ? (
-        clinicPatients.map((patient) => (
+      {patients.length > 0 ? (
+        patients.map((patient) => (
           <tr
             key={patient._id}
             className="hover:bg-slate-50 transition-colors border-t border-slate-200"

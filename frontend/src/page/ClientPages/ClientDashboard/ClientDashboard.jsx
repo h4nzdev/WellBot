@@ -225,44 +225,60 @@ export default function ClientDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {patientAppointments.map((appointment) => (
-                    <tr className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5">
-                      <td className="py-6 px-4">
-                        <p className="font-semibold text-slate-800 text-lg">
-                          {appointment?.doctorId?.name}
+                  {patientAppointments.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="text-center py-16">
+                        <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 w-fit mx-auto mb-6">
+                          <Calendar className="w-20 h-20 text-slate-400 mx-auto" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-700 mb-3">
+                          No appointments found
+                        </h3>
+                        <p className="text-slate-500 text-lg">
+                          Click "New Appointment" to schedule one.
                         </p>
-                        <p className="text-sm text-slate-500">ID: #0001</p>
-                      </td>
-                      <td className="px-4">
-                        <p className="font-medium text-slate-700">
-                          {appointment?.doctorId?.specialty}
-                        </p>
-                      </td>
-                      <td className="px-4">
-                        <p className="font-medium text-slate-700">
-                          {appointment.date.slice(1, 10)}
-                        </p>
-                        <p className="text-sm text-slate-500">09:00 AM</p>
-                      </td>
-                      <td className="px-4">
-                        <span className="inline-block bg-slate-100 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium">
-                          {appointment.type}
-                        </span>
-                      </td>
-                      <td className="px-4">
-                        {getStatusBadge(appointment.status)}
-                      </td>
-                      <td className="px-4 text-right">
-                        <button
-                          type="button"
-                          className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors"
-                          aria-label="More options"
-                        >
-                          <MoreHorizontal className="h-5 w-5" />
-                        </button>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    patientAppointments.map((appointment) => (
+                      <tr className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5">
+                        <td className="py-6 px-4">
+                          <p className="font-semibold text-slate-800 text-lg">
+                            {appointment?.doctorId?.name}
+                          </p>
+                          <p className="text-sm text-slate-500">ID: #0001</p>
+                        </td>
+                        <td className="px-4">
+                          <p className="font-medium text-slate-700">
+                            {appointment?.doctorId?.specialty}
+                          </p>
+                        </td>
+                        <td className="px-4">
+                          <p className="font-medium text-slate-700">
+                            {appointment.date.slice(1, 10)}
+                          </p>
+                          <p className="text-sm text-slate-500">09:00 AM</p>
+                        </td>
+                        <td className="px-4">
+                          <span className="inline-block bg-slate-100 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium">
+                            {appointment.type}
+                          </span>
+                        </td>
+                        <td className="px-4">
+                          {getStatusBadge(appointment.status)}
+                        </td>
+                        <td className="px-4 text-right">
+                          <button
+                            type="button"
+                            className="p-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors"
+                            aria-label="More options"
+                          >
+                            <MoreHorizontal className="h-5 w-5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

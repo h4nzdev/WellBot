@@ -1,10 +1,10 @@
 import express from "express";
 import {
-  addPatient,
   getPatients,
   getPatientById,
   updatePatient,
   deletePatient,
+  getPatientsByClinic,
 } from "../controller/patientsController.js";
 
 const patientRouter = express.Router();
@@ -19,5 +19,8 @@ patientRouter.put("/:id", updatePatient);
 
 // Delete patient
 patientRouter.delete("/:id", deletePatient);
+
+// get all patients in a clinic
+patientRouter.get("/clinic/:clinicId", getPatientsByClinic);
 
 export default patientRouter;

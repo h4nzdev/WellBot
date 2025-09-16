@@ -146,34 +146,48 @@ const ClientMedicalRecords = () => {
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {records?.map((record, index) => (
-            <div
-              key={index}
-              className="group bg-white/80 backdrop-blur-sm rounded-xl border border-slate-200/50 shadow-lg p-6 flex flex-col hover:shadow-xl hover:shadow-cyan-100/50 hover:scale-105 hover:border-cyan-200/50 transition-all duration-300"
-            >
-              <div className="flex-grow">
-                <p className="text-xl font-bold text-slate-800 tracking-tight">
-                  {record.doctorId?.name}
-                </p>
-                <p className="text-cyan-600 font-semibold text-sm tracking-wide uppercase mt-1">
-                  {record.createdAt.slice(1, 10)}
-                </p>
-                <div className="my-4 h-px bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"></div>
-                <p className="text-slate-700 mb-4 font-medium leading-relaxed">
-                  {record.diagnosis}
-                </p>
+          {records.length === 0 ? (
+            <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-16">
+              <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 w-fit mx-auto mb-6">
+                <FileText className="w-20 h-20 text-slate-400 mx-auto" />
               </div>
-              <button
-                onClick={() => openModal(record)}
-                className="mt-auto flex items-center justify-center p-3 bg-slate-100/80 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-slate-200 hover:shadow-md group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-all duration-300 border border-slate-200/50"
-              >
-                <Eye className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
-                <span className="font-semibold tracking-wide">
-                  View Details
-                </span>
-              </button>
+              <h3 className="text-2xl font-bold text-slate-700 mb-3">
+                No medical records found
+              </h3>
+              <p className="text-slate-500 text-lg">
+                Your medical records will appear here after appointments.
+              </p>
             </div>
-          ))}
+          ) : (
+            records?.map((record, index) => (
+              <div
+                key={index}
+                className="group bg-white/80 backdrop-blur-sm rounded-xl border border-slate-200/50 shadow-lg p-6 flex flex-col hover:shadow-xl hover:shadow-cyan-100/50 hover:scale-105 hover:border-cyan-200/50 transition-all duration-300"
+              >
+                <div className="flex-grow">
+                  <p className="text-xl font-bold text-slate-800 tracking-tight">
+                    {record.doctorId?.name}
+                  </p>
+                  <p className="text-cyan-600 font-semibold text-sm tracking-wide uppercase mt-1">
+                    {record.createdAt.slice(1, 10)}
+                  </p>
+                  <div className="my-4 h-px bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"></div>
+                  <p className="text-slate-700 mb-4 font-medium leading-relaxed">
+                    {record.diagnosis}
+                  </p>
+                </div>
+                <button
+                  onClick={() => openModal(record)}
+                  className="mt-auto flex items-center justify-center p-3 bg-slate-100/80 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-slate-200 hover:shadow-md group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-all duration-300 border border-slate-200/50"
+                >
+                  <Eye className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="font-semibold tracking-wide">
+                    View Details
+                  </span>
+                </button>
+              </div>
+            ))
+          )}
         </section>
       </div>
       <MedicalRecordsModal

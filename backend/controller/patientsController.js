@@ -1,5 +1,5 @@
 import Patient from "../model/patientsModel.js";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
 // Add new patient (Register)
 export const addPatient = async (req, res) => {
@@ -118,5 +118,31 @@ export const deletePatient = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error deleting patient", error: error.message });
+  }
+};
+
+// Get patients by clinic ID
+export const getPatientsByClinic = async (req, res) => {
+  try {
+    const { clinicId } = req.params;
+
+    // find patients with this clinicId
+    const patients = await Patient.find({ clinicId }).populate(
+      "clinicId",
+      "name plan"
+    );
+
+    if (!patients || patients.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No patients found for this clinic" });
+    }
+
+    res.status(200).json(patients);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching patients by clinic",
+      error: error.message,
+    });
   }
 };
