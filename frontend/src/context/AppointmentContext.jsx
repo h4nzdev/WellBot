@@ -17,9 +17,13 @@ export const AppointmentProvider = ({ children }) => {
 
   useEffect(() => {
     fetchAppointments();
+    const interval = setInterval(() => {
+      fetchAppointments();
+    }, 5000); // 5000ms = 5 seconds
+    return () => clearInterval(interval);
   }, []);
 
-  console.log(appointments)
+  console.log(appointments);
 
   return (
     <AppointmentContext.Provider
