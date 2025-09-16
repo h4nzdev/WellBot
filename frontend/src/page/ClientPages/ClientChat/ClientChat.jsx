@@ -1,10 +1,16 @@
 import { Bot, Send, User } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
 const ClientChat = () => {
   const [message, setMessage] = useState("");
-  const [chatHistory, setChatHistory] = useState([]);
+  const bottomRef = useRef(null);
+  const [chatHistory, setChatHistory] = useState([
+    {
+      role: "bot",
+      text: "Hello! I'm Medora, your clinic appointment and symptoms checker assistant. I can help you with:\n\n• Checking your symptoms\n• Providing basic health information\n• Guiding you through the appointment booking process\n• Answering questions about clinic services\n\nHow may I assist you today?",
+    },
+  ]);
   const [loading, setLoading] = useState(false);
 
   const handleSendMessage = async () => {
@@ -27,7 +33,7 @@ const ClientChat = () => {
 
       const botMessage = {
         role: "bot",
-        text: response.data.message,
+        text: response.data.reply,
       };
 
       setChatHistory((prev) => [...prev, botMessage]);
@@ -42,6 +48,10 @@ const ClientChat = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatHistory, loading]);
 
   return (
     <div className="w-full min-h-screen bg-slate-50 flex flex-col">
@@ -89,9 +99,7 @@ const ClientChat = () => {
                   <p className="font-bold text-slate-800 text-sm tracking-wide mb-1">
                     {chat.role === "user" ? "You" : "AI Assistant"}
                   </p>
-                  <p className="text-slate-700 leading-relaxed">
-                    {chat.text}
-                  </p>
+                  <p className="text-slate-700 leading-relaxed">{chat.text}</p>
                 </div>
               </div>
             ))}
@@ -104,12 +112,11 @@ const ClientChat = () => {
                   <p className="font-bold text-slate-800 text-sm tracking-wide mb-1">
                     AI Assistant
                   </p>
-                  <p className="text-slate-700 leading-relaxed">
-                    Typing...
-                  </p>
+                  <p className="text-slate-700 leading-relaxed">Typing...</p>
                 </div>
               </div>
             )}
+            <div ref={bottomRef}></div>
           </div>
 
           <div className="mt-6 flex items-center gap-4">

@@ -75,7 +75,7 @@ export default function ClientAppointments() {
         onClose={() => setIsModalOpen(false)}
       />
       <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100/30">
-        <div className="mx-auto p-4 md:p-6 lg:p-8">
+        <div className="mx-auto">
           <header className="mb-8 md:mb-10">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
               <div className="flex-1">
