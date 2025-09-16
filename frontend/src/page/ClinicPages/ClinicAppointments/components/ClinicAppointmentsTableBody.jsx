@@ -10,6 +10,7 @@ import {
 import React, { useContext } from "react";
 import { AppointmentContext } from "../../../../context/AppointmentContext";
 import { AuthContext } from "../../../../context/AuthContext";
+import AppointmentActions from "./AppointmentActions";
 
 const ClinicAppointmentsTableBody = () => {
   const { appointments } = useContext(AppointmentContext);
@@ -38,6 +39,21 @@ const ClinicAppointmentsTableBody = () => {
       default:
         return <CheckCircle className="w-4 h-4" />;
     }
+  };
+
+  const handleComplete = (appointmentId) => {
+    // logic to mark appointment as complete
+    console.log(`Marking appointment ${appointmentId} as complete`);
+  };
+
+  const handleCancel = (appointmentId) => {
+    // logic to cancel appointment
+    console.log(`Cancelling appointment ${appointmentId}`);
+  };
+
+  const handleDelete = (appointmentId) => {
+    // logic to delete appointment
+    console.log(`Deleting appointment ${appointmentId}`);
   };
 
   return (
@@ -98,13 +114,12 @@ const ClinicAppointmentsTableBody = () => {
               <p className="text-slate-500">{appointment.patientId.email}</p>
             </td>
             <td className="px-4 text-right">
-              <button
-                type="button"
-                className="p-2 hover:bg-slate-100 rounded-md text-slate-500"
-                aria-label="More"
-              >
-                <MoreHorizontal className="h-5 w-5" />
-              </button>
+              <AppointmentActions
+                appointmentId={appointment._id}
+                onComplete={handleComplete}
+                onCancel={handleCancel}
+                onDelete={handleDelete}
+              />
             </td>
           </tr>
         ))
