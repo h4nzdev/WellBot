@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {MoreHorizontal} from "lucide-react"
 
 const AppointmentActions = ({ appointmentId, onComplete, onCancel, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +24,7 @@ const AppointmentActions = ({ appointmentId, onComplete, onCancel, onDelete }) =
         <MoreHorizontal className="h-5 w-5" />
       </button>
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-50 text-left">
           <a
             href="#"
             onClick={() => handleAction(onComplete)}

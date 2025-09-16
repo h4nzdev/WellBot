@@ -170,7 +170,7 @@ export default function ClinicAppointments() {
           </div>
 
           {/* Table */}
-          <div className="rounded-xl border border-slate-200 overflow-hidden">
+          <div className="rounded-xl border border-slate-200 overflow-visible">
             <table className="w-full text-left">
               <thead className="bg-slate-50">
                 <tr>
