@@ -56,7 +56,7 @@ const ClientChat = () => {
   return (
     <div className="w-full h-full flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white border-b border-gray-200 p-4">
         <div className="flex items-center space-x-3">
           <div className="bg-cyan-100 p-3 rounded-full">
             <Bot className="h-6 w-6 text-cyan-600" />
@@ -97,7 +97,7 @@ const ClientChat = () => {
                   </span>
                 </div>
               )}
-              <p className="text-sm">{chat.text}</p>
+              <p className="md:text-lg text-sm">{chat.text}</p>
             </div>
           </div>
         ))}

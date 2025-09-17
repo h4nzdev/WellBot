@@ -26,6 +26,8 @@ const AddMedicalRecordModal = ({
     { medicine: "", dosage: "", duration: "" },
   ]);
 
+  console.log(appointmentId)
+
   const handlePrescriptionChange = (index, event) => {
     const values = [...prescriptions];
     values[index][event.target.name] = event.target.value;

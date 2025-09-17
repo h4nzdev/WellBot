@@ -7,12 +7,16 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../../context/AuthContext";
 import AddReminderModal from "../../../components/ClientComponents/AddReminderModal/AddReminderModal";
 import ReminderDropdown from "../../../components/ClientComponents/ReminderDropdown/ReminderDropdown";
+import sound from "../../../assets/reminder2.mp3"
 
 const ClientReminders = () => {
   const { user } = useContext(AuthContext);
   const [reminders, setReminders] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reminderToEdit, setReminderToEdit] = useState(null);
+
+  // 🔔 NEW - Alarm sound (replace "alarm.mp3" with your file)
+  const alarmSound = new Audio(sound);
 
   // Load reminders for this user
   useEffect(() => {
@@ -29,7 +33,13 @@ const ClientReminders = () => {
       ).padStart(2, "0")}`;
       reminders.forEach((r) => {
         if (r.time === currentTime && r.isActive) {
-          toast(`It's time for your reminder: ${r.name}`);
+          toast(`💊 It's time for your reminder: ${r.name}`);
+
+          // 🔔 NEW - Play alarm sound
+          alarmSound.currentTime = 0; // reset to start
+          alarmSound.play().catch((err) => {
+            console.warn("Sound play blocked by browser:", err);
+          });
         }
       });
     }, 10000);

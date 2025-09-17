@@ -9,6 +9,8 @@ const ClientMedicalRecords = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
 
+  console.log(records)
+
   const openModal = (record) => {
     setSelectedRecord(record);
     setIsOpen(true);
