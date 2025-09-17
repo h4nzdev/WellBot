@@ -200,7 +200,7 @@ const MedicalRecordsModal = ({ isOpen, setIsOpen, record }) => {
                           Medication
                         </p>
                         <p className="font-bold text-slate-800">
-                          {p.medication}
+                          {p.medicine}
                         </p>
                       </div>
                       <div>
@@ -214,7 +214,7 @@ const MedicalRecordsModal = ({ isOpen, setIsOpen, record }) => {
                           Instructions
                         </p>
                         <p className="text-slate-600 font-medium">
-                          {p.instructions}
+                          {p.duration}
                         </p>
                       </div>
                     </div>
