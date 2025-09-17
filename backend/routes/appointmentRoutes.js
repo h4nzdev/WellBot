@@ -6,6 +6,7 @@ import {
   updateAppointment,
   deleteAppointment,
   respondToAppointment,
+  getAppointmentsByPatientId
 } from "../controller/appointmentController.js";
 
 const appointmentRouter = express.Router();
@@ -27,5 +28,8 @@ appointmentRouter.delete("/:id", deleteAppointment);
 
 //Clinic accept/reject appointment
 appointmentRouter.patch("/respond/:id", respondToAppointment);
+
+//
+appointmentRouter.get("/patient/:patientId", getAppointmentsByPatientId);
 
 export default appointmentRouter;

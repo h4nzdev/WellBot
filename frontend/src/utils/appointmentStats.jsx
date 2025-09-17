@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 export const getStatusIcon = (status) => {
-  switch (status) {
+  switch (status.toLowerCase()) {
     case "pending":
       return <Clock className="w-4 h-4" />;
     case "accepted":

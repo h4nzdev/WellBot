@@ -99,7 +99,7 @@ const ClientReminders = () => {
           </header>
 
           {/* Stats */}
-          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <section className="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-white/70 rounded-xl p-6 shadow hover:shadow-xl transition-all">
               <div className="flex justify-between items-center">
                 <div>

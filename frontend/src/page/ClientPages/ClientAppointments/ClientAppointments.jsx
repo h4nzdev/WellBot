@@ -12,7 +12,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AppointmentContext } from "../../../context/AppointmentContext";
 import { AuthContext } from "../../../context/AuthContext";
-import { getStatusBadge } from "../../../utils/appointmentStats.jsx";
+import { getStatusIcon } from "../../../utils/appointmentStats.jsx";
+import { getStatusBadge } from "../../../utils/clientAppointment.jsx";
 
 export default function ClientAppointments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -275,8 +276,15 @@ export default function ClientAppointments() {
                             Consultation
                           </span>
                         </td>
-                        <td className="px-6">
-                          {getStatusBadge(appointment.status)}
+                        <td className="px-4">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm w-fit ${getStatusBadge(
+                              appointment.status
+                            )}`}
+                          >
+                            {getStatusIcon(appointment.status)}
+                            {appointment.status}
+                          </span>
                         </td>
                         <td className="px-6 text-base">
                           <p className="text-slate-700 font-medium">

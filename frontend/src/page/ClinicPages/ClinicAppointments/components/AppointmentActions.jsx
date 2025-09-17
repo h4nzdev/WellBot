@@ -6,7 +6,7 @@ const AppointmentActions = ({
   onComplete,
   onCancel,
   onDelete,
-  status
+  status,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -18,6 +18,8 @@ const AppointmentActions = ({
     action(appointmentId);
     setIsOpen(false);
   };
+
+  console.log(appointmentId);
 
   return (
     <div className="relative">
@@ -33,9 +35,13 @@ const AppointmentActions = ({
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
           <button
             href="#"
-            disabled={status === "completed"}
+            disabled={status === "completed" || status === "pending"}
             onClick={() => handleAction(onComplete)}
-            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${status === "completed" ? "cursor-not-allowed" : ""}`}
+            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+              status === "completed" || status === "pending"
+                ? "cursor-not-allowed"
+                : ""
+            }`}
           >
             Mark as complete
           </button>

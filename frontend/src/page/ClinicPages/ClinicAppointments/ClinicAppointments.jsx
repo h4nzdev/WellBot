@@ -5,15 +5,10 @@ import {
   Plus,
   Search,
   Filter,
-  Edit,
-  Trash2,
-  Eye,
   Clock,
   CheckCircle,
-  XCircle,
   Users,
   ChevronDown,
-  MoreHorizontal,
 } from "lucide-react";
 import ClinicAppointmentsTableBody from "./components/ClinicAppointmentsTableBody";
 import { useContext } from "react";

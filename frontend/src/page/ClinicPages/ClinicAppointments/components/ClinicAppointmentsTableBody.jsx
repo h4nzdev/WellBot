@@ -1,12 +1,3 @@
-import {
-  CheckCircle,
-  XCircle,
-  Clock,
-  CalendarCheck,
-  CheckCheck,
-  Ban,
-  MoreHorizontal,
-} from "lucide-react";
 import React, { useContext, useState } from "react";
 import { AppointmentContext } from "../../../../context/AppointmentContext";
 import { AuthContext } from "../../../../context/AuthContext";
@@ -16,6 +7,9 @@ import {
   getStatusBadge,
   getStatusIcon,
 } from "../../../../utils/appointmentStats";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const ClinicAppointmentsTableBody = () => {
   const { appointments } = useContext(AppointmentContext);
@@ -40,9 +34,33 @@ const ClinicAppointmentsTableBody = () => {
     console.log(`Cancelling appointment ${appointmentId}`);
   };
 
-  const handleDelete = (appointmentId) => {
-    // logic to delete appointment
-    console.log(`Deleting appointment ${appointmentId}`);
+  const handleDelete = async (appointmentId) => {
+    // Show confirmation first
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to undo this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33", // red button
+        cancelButtonColor: "#3085d6", // blue button
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          // Only delete if confirmed
+          const res = await axios.delete(
+            `http://localhost:3000/appointment/${appointmentId}`
+          );
+          toast.success(res.data.message);
+        }
+      });
+    } catch (error) {
+      if (error.response.data.message && error.response.data) {
+        toast.error(error.data.message);
+      }
+
+      console.log("Error:", error);
+    }
   };
 
   const closeModal = () => {

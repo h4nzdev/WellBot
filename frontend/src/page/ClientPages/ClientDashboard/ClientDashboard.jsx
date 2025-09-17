@@ -2,8 +2,6 @@
 
 import {
   Calendar,
-  CheckCircle,
-  Clock,
   Heart,
   Plus,
   Bot,
@@ -12,16 +10,16 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import { AppointmentContext } from "../../../context/AppointmentContext";
+import axios from "axios";
+import { getStatusBadge } from "../../../utils/clientAppointment";
+import { Link } from "react-router-dom";
 
 export default function ClientDashboard() {
   const { user } = useContext(AuthContext);
-  const { appointments } = useContext(AppointmentContext);
-  const patientAppointments = appointments.filter(
-    (app) => app.patientId._id === user._id
-  );
+  const [appointments, setAppointments] = useState([]);
+
   const healthTips = [
     "Stay hydrated by drinking at least 8 glasses of water a day.",
     "Incorporate at least 30 minutes of moderate-intensity exercise into your daily routine.",
@@ -31,31 +29,20 @@ export default function ClientDashboard() {
 
   const randomTip = healthTips[Math.floor(Math.random() * healthTips.length)];
 
-  const getStatusBadge = (status) => {
-    const statusConfig = {
-      pending: "text-amber-700 bg-amber-50 border border-amber-200",
-      accepted: "text-green-700 bg-green-50 border border-green-200",
-      rejected: "text-red-700 bg-red-50 border border-red-200",
-      scheduled: "text-blue-700 bg-blue-50 border border-blue-200",
-      completed: "text-purple-700 bg-purple-50 border border-purple-200",
-      cancelled: "text-gray-700 bg-gray-50 border border-gray-200",
-    };
-
-    const icons = {
-      confirmed: <CheckCircle className="w-4 h-4" />,
-      pending: <Clock className="w-4 h-4" />,
-      completed: <CheckCircle className="w-4 h-4" />,
-    };
-
-    return (
-      <span
-        className={`inline-flex items-center gap-1 px-3 py-2 rounded-full text-sm font-medium shadow-sm ${statusConfig[status]}`}
-      >
-        {icons[status]}
-        <span className="ml-1 capitalize">{status}</span>
-      </span>
-    );
+  const fetchAppointments = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/appointment/patient/${user._id}`
+      );
+      setAppointments(res.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   return (
     <div className="w-full">
@@ -83,7 +70,9 @@ export default function ClientDashboard() {
                 <p className="text-sm font-medium text-slate-600 uppercase tracking-wide">
                   Upcoming Appointments
                 </p>
-                <p className="text-4xl font-semibold text-cyan-600">3</p>
+                <p className="text-4xl font-semibold text-cyan-600">
+                  {appointments.length}
+                </p>
                 <p className="text-sm text-emerald-600 mt-1 flex items-center">
                   <TrendingUp className="w-4 h-4 mr-1" />
                   Next: Tomorrow 9:00 AM
@@ -121,36 +110,42 @@ export default function ClientDashboard() {
               <div className="bg-cyan-500 p-3 rounded-xl shadow-md group-hover:shadow-lg transition-shadow duration-300">
                 <Plus className="w-6 h-6 text-white" />
               </div>
-              <div className="text-left">
-                <h3 className="font-semibold text-slate-800 text-lg">
-                  Book Appointment
-                </h3>
-                <p className="text-slate-600">Schedule your next visit</p>
-              </div>
+              <Link to="/client/appointments">
+                <div className="text-left">
+                  <h3 className="font-semibold text-slate-800 text-lg">
+                    Book Appointment
+                  </h3>
+                  <p className="text-slate-600">Schedule your next visit</p>
+                </div>
+              </Link>
             </button>
 
             <button className="group w-full flex items-center space-x-4 p-6 bg-sky-50 hover:bg-sky-100 rounded-xl transition-all duration-300 border border-sky-200 hover:shadow-md hover:-translate-y-0.5">
               <div className="bg-sky-500 p-3 rounded-xl shadow-md group-hover:shadow-lg transition-shadow duration-300">
                 <Bot className="w-6 h-6 text-white" />
               </div>
-              <div className="text-left">
-                <h3 className="font-semibold text-slate-800 text-lg">
-                  Start AI Chat
-                </h3>
-                <p className="text-slate-600">Get instant health advice</p>
-              </div>
+              <Link to="/client/chats">
+                <div className="text-left">
+                  <h3 className="font-semibold text-slate-800 text-lg">
+                    Start AI Chat
+                  </h3>
+                  <p className="text-slate-600">Get instant health advice</p>
+                </div>
+              </Link>
             </button>
 
             <button className="group w-full flex items-center space-x-4 p-6 bg-blue-50 hover:bg-blue-100 rounded-xl transition-all duration-300 border border-blue-200 hover:shadow-md hover:-translate-y-0.5">
               <div className="bg-blue-500 p-3 rounded-xl shadow-md group-hover:shadow-lg transition-shadow duration-300">
                 <BellRing className="w-6 h-6 text-white" />
               </div>
-              <div className="text-left">
-                <h3 className="font-semibold text-slate-800 text-lg">
-                  Set Reminder
-                </h3>
-                <p className="text-slate-600">Never miss medication</p>
-              </div>
+              <Link to="/client/reminders">
+                <div className="text-left">
+                  <h3 className="font-semibold text-slate-800 text-lg">
+                    Set Reminder
+                  </h3>
+                  <p className="text-slate-600">Never miss medication</p>
+                </div>
+              </Link>
             </button>
           </div>
         </section>
@@ -225,7 +220,7 @@ export default function ClientDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {patientAppointments.length === 0 ? (
+                  {appointments?.length === 0 ? (
                     <tr>
                       <td colSpan="6" className="text-center py-16">
                         <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 w-fit mx-auto mb-6">
@@ -240,8 +235,11 @@ export default function ClientDashboard() {
                       </td>
                     </tr>
                   ) : (
-                    patientAppointments.map((appointment) => (
-                      <tr className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5">
+                    appointments?.map((appointment) => (
+                      <tr
+                        key={appointment._id}
+                        className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5"
+                      >
                         <td className="py-6 px-4">
                           <p className="font-semibold text-slate-800 text-lg">
                             {appointment?.doctorId?.name}

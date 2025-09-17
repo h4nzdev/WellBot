@@ -170,3 +170,29 @@ export const respondToAppointment = async (req, res) => {
     });
   }
 };
+
+// Get appointments by Patient ID
+export const getAppointmentsByPatientId = async (req, res) => {
+  try {
+    const { patientId } = req.params; // get patientId from the route
+
+    // check if patient exists
+    const patient = await Patient.findById(patientId);
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    // find appointments for this patient
+    const appointments = await Appointment.find({ patientId })
+      .populate("clinicId", "name plan")
+      .populate("doctorId", "name specialty")
+      .populate("patientId", "name email phone");
+
+    res.status(200).json(appointments);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching patient appointments",
+      error: error.message,
+    });
+  }
+};

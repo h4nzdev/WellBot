@@ -19,6 +19,7 @@ import { AppointmentContext } from "../../../context/AppointmentContext";
 import { AuthContext } from "../../../context/AuthContext";
 import { PatientsContext } from "../../../context/PatientsContext";
 import { DoctorContext } from "../../../context/DoctorContext";
+import { getStatusBadge, getStatusIcon } from "../../../utils/appointmentStats";
 
 export default function ClinicDashboard() {
   const { appointments } = useContext(AppointmentContext);
@@ -75,32 +76,6 @@ export default function ClinicDashboard() {
     { id: 2, message: "Payment pending from John Smith", priority: "high" },
     { id: 3, message: "Monthly report is ready", priority: "low" },
   ];
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Scheduled":
-        return "bg-emerald-50 text-emerald-700 border border-emerald-200";
-      case "pending":
-        return "bg-amber-50 text-amber-700 border border-amber-200";
-      case "completed":
-        return "bg-cyan-50 text-cyan-700 border border-cyan-200";
-      default:
-        return "bg-slate-50 text-slate-700 border border-slate-200";
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Scheduled":
-        return <CheckCircle className="w-4 h-4" />;
-      case "pending":
-        return <Clock className="w-4 h-4" />;
-      case "completed":
-        return <CheckCircle className="w-4 h-4" />;
-      default:
-        return <XCircle className="w-4 h-4" />;
-    }
-  };
 
   return (
     <div className="w-full">
@@ -241,7 +216,7 @@ export default function ClinicDashboard() {
                         </div>
                         <div className="flex items-center space-x-2">
                           <span
-                            className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
+                            className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${getStatusBadge(
                               appointment.status
                             )} shadow-sm`}
                           >
