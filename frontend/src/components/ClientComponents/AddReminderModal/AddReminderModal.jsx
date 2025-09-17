@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { X, Clock, Bell, Check, Edit } from "lucide-react";
+import { toast } from "react-toastify";
 
 const AddReminderModal = ({ isOpen, onClose, onSave, reminderToEdit }) => {
   const { user } = useContext(AuthContext);
@@ -29,6 +30,7 @@ const AddReminderModal = ({ isOpen, onClose, onSave, reminderToEdit }) => {
       isActive,
     };
     onSave(reminder);
+    toast.success("Reminder added successfully");
     onClose();
   };
 

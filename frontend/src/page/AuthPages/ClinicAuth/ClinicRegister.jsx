@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { Shield, Star, Sparkles, Check } from "lucide-react";
+import { Shield, Star, Check } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PaymentModal from "../../../components/ClinicComponents/PaymentModal/PaymentModal";
+import logo from "../../../assets/medoralogo.png";
+import { useNavigate } from "react-router-dom";
 
 export default function ClinicRegister() {
   const [error, setError] = useState();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     clinicName: "",
     contactPerson: "",
@@ -68,7 +71,17 @@ export default function ClinicRegister() {
         subscriptionPlan: "free",
         agreeToTerms: false,
       });
+      navigate("/clinic/login")
     } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Login failed. Please check your connection and try again.");
+      }
       console.error("Error:", error);
     }
   };
@@ -86,7 +99,7 @@ export default function ClinicRegister() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-6">
             <div className="bg-cyan-500 p-4 rounded-2xl shadow-lg">
-              <Sparkles className="w-10 h-10 text-white" />
+              <img src={logo} alt="img" className="w-10 h-10" />
             </div>
             <h1 className="text-4xl font-semibold text-slate-800">Medora</h1>
           </div>

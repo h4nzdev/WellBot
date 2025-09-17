@@ -4,11 +4,13 @@ import axios from "axios";
 import { ClinicContext } from "../../../context/ClinicContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 export default function ClientRegister() {
   // Mock clinics data - replace with API call to fetch clinics
   const { clinics } = useContext(ClinicContext);
   const [error, setError] = useState();
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     clinicId: "", // selected clinic id
     name: "",
@@ -61,6 +63,7 @@ export default function ClientRegister() {
         confirmPassword: "",
         agreeToTerms: false,
       });
+      navigate("/client/login")
     } catch (error) {
       console.error("Error:", error);
 

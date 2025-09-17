@@ -33,9 +33,7 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
       });
       toast.success("Doctor added successfully!");
       fetchDoctors();
-      setTimeout(() => {
-        onClose();
-      }, 1500);
+      onClose();
     } catch (error) {
       toast.error("Error adding doctor");
     }
