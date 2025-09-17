@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Calendar,
+  Calendar as CalendarIcon,
   Heart,
   Plus,
   Bot,
@@ -15,10 +15,13 @@ import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
 import { getStatusBadge } from "../../../utils/clientAppointment";
 import { Link } from "react-router-dom";
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 export default function ClientDashboard() {
   const { user } = useContext(AuthContext);
   const [appointments, setAppointments] = useState([]);
+  const [date, setDate] = useState(new Date());
 
   const healthTips = [
     "Stay hydrated by drinking at least 8 glasses of water a day.",
@@ -45,7 +48,7 @@ export default function ClientDashboard() {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full flex">
       <div className="mx-auto">
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-4">
@@ -79,7 +82,7 @@ export default function ClientDashboard() {
                 </p>
               </div>
               <div className="bg-cyan-500 p-4 rounded-2xl shadow-md">
-                <Calendar className="w-8 h-8 text-white" />
+                <CalendarIcon className="w-8 h-8 text-white" />
               </div>
             </div>
           </div>
@@ -224,7 +227,7 @@ export default function ClientDashboard() {
                     <tr>
                       <td colSpan="6" className="text-center py-16">
                         <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 w-fit mx-auto mb-6">
-                          <Calendar className="w-20 h-20 text-slate-400 mx-auto" />
+                          <CalendarIcon className="w-20 h-20 text-slate-400 mx-auto" />
                         </div>
                         <h3 className="text-2xl font-bold text-slate-700 mb-3">
                           No appointments found
@@ -288,6 +291,11 @@ export default function ClientDashboard() {
             </div>
           </div>
         </section>
+      </div>
+      <div className="w-1/4 p-4">
+        <div className="bg-white p-4 rounded-2xl shadow-lg border border-slate-200">
+          <Calendar onChange={setDate} value={date} />
+        </div>
       </div>
     </div>
   );
