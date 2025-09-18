@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Calendar as CalendarIcon,
@@ -9,12 +9,12 @@ import {
   MoreHorizontal,
   Sparkles,
   TrendingUp,
-} from "lucide-react";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
-import axios from "axios";
-import { getStatusBadge } from "../../../utils/clientAppointment";
-import { Link } from "react-router-dom";
+} from 'lucide-react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../../context/AuthContext';
+import axios from 'axios';
+import { getStatusBadge } from '../../../utils/clientAppointment';
+import { Link } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -24,10 +24,10 @@ export default function ClientDashboard() {
   const [date, setDate] = useState(new Date());
 
   const healthTips = [
-    "Stay hydrated by drinking at least 8 glasses of water a day.",
-    "Incorporate at least 30 minutes of moderate-intensity exercise into your daily routine.",
-    "Ensure you get 7-9 hours of quality sleep per night for better health.",
-    "A balanced diet rich in fruits, vegetables, and whole grains is key to a healthy lifestyle.",
+    'Stay hydrated by drinking at least 8 glasses of water a day.',
+    'Incorporate at least 30 minutes of moderate-intensity exercise into your daily routine.',
+    'Ensure you get 7-9 hours of quality sleep per night for better health.',
+    'A balanced diet rich in fruits, vegetables, and whole grains is key to a healthy lifestyle.',
   ];
 
   const randomTip = healthTips[Math.floor(Math.random() * healthTips.length)];
@@ -39,7 +39,7 @@ export default function ClientDashboard() {
       );
       setAppointments(res.data);
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
   };
 
@@ -47,9 +47,22 @@ export default function ClientDashboard() {
     fetchAppointments();
   }, []);
 
+  const upcomingAppointments = appointments.filter(
+    (app) => new Date(app.date) > new Date()
+  );
+
+  const tileContent = ({ date, view }) => {
+    if (view === 'month') {
+      const hasAppointment = appointments.some(
+        (app) => new Date(app.date).toDateString() === date.toDateString()
+      );
+      return hasAppointment ? <div className="appointment-indicator"></div> : null;
+    }
+  };
+
   return (
     <div className="w-full flex">
-      <div className="mx-auto">
+      <div className="mx-auto flex-1">
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-4">
             <div className="bg-cyan-500 p-3 rounded-2xl shadow-lg">
@@ -74,7 +87,7 @@ export default function ClientDashboard() {
                   Upcoming Appointments
                 </p>
                 <p className="text-4xl font-semibold text-cyan-600">
-                  {appointments.length}
+                  {upcomingAppointments.length}
                 </p>
                 <p className="text-sm text-emerald-600 mt-1 flex items-center">
                   <TrendingUp className="w-4 h-4 mr-1" />
@@ -176,7 +189,7 @@ export default function ClientDashboard() {
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
-                  {getStatusBadge("confirmed")}
+                  {getStatusBadge('confirmed')}
                 </div>
               </div>
 
@@ -292,11 +305,32 @@ export default function ClientDashboard() {
           </div>
         </section>
       </div>
-      <div className="w-1/4 p-4">
+      <div className="w-1/3 p-4">
         <div className="bg-white p-4 rounded-2xl shadow-lg border border-slate-200">
-          <Calendar onChange={setDate} value={date} />
+          <Calendar
+            onChange={setDate}
+            value={date}
+            tileContent={tileContent}
+          />
+        </div>
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold mb-2">Upcoming Appointments</h3>
+          {upcomingAppointments.length > 0 ? (
+            <ul className="space-y-2">
+              {upcomingAppointments.map((app) => (
+                <li key={app._id} className="bg-white p-3 rounded-lg shadow-sm border border-slate-200">
+                  <p className="font-semibold">{app.doctorId.name}</p>
+                  <p className="text-sm text-slate-500">{new Date(app.date).toLocaleDateString()}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-slate-500">No upcoming appointments.</p>
+          )}
         </div>
       </div>
     </div>
   );
 }
+
+
