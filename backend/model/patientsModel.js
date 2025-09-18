@@ -43,6 +43,14 @@ const PatientSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+
+  // ✅ Emergency Contact
+  emergencyContact: {
+    name: { type: String },
+    phone: { type: String },
+    email: { type: String },
+    relationship: { type: String }, // e.g., Mom, Dad, Friend
+  },
 });
 
 const Patient = mongoose.model("Patient", PatientSchema, "patients");

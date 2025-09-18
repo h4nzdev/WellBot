@@ -26,8 +26,17 @@ export const loginClient = async (req, res) => {
 
 export const registerClient = async (req, res) => {
   try {
-    const { clinicId, name, age, gender, phone, email, address, password } =
-      req.body;
+    const {
+      clinicId,
+      name,
+      age,
+      gender,
+      phone,
+      email,
+      address,
+      password,
+      emergencyContact,
+    } = req.body;
 
     // ✅ Check if email already exists
     const existingPatientByEmail = await Patient.findOne({ email });
@@ -46,7 +55,7 @@ export const registerClient = async (req, res) => {
     // ✅ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Create new patient
+    // ✅ Create new patient with emergency contact
     const newPatient = new Patient({
       clinicId,
       name,
@@ -56,6 +65,7 @@ export const registerClient = async (req, res) => {
       email,
       address,
       password: hashedPassword,
+      emergencyContact, // 👈 added this line
     });
 
     await newPatient.save();
@@ -66,6 +76,7 @@ export const registerClient = async (req, res) => {
         id: newPatient._id,
         name: newPatient.name,
         email: newPatient.email,
+        emergencyContact: newPatient.emergencyContact, // 👈 optional return
       },
     });
   } catch (error) {
