@@ -10,7 +10,7 @@ export default function ClientRegister() {
   // Mock clinics data - replace with API call to fetch clinics
   const { clinics } = useContext(ClinicContext);
   const [error, setError] = useState();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     clinicId: "", // selected clinic id
     name: "",
@@ -22,14 +22,24 @@ export default function ClientRegister() {
     password: "",
     confirmPassword: "",
     agreeToTerms: false,
+    emergencyContact: { name: "", email: "", mobile: "" }, // 👈 added emergency contact
   });
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    // Handle nested emergencyContact inputs
+    if (name.startsWith("emergencyContact.")) {
+      const key = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        emergencyContact: { ...prev.emergencyContact, [key]: value },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -62,8 +72,9 @@ export default function ClientRegister() {
         password: "",
         confirmPassword: "",
         agreeToTerms: false,
+        emergencyContact: { name: "", email: "", mobile: "" }, // reset emergency contact
       });
-      navigate("/client/login")
+      navigate("/client/login");
     } catch (error) {
       console.error("Error:", error);
 
@@ -224,6 +235,54 @@ export default function ClientRegister() {
                 />
               </div>
             </div>
+            <hr className="text-slate-200" />
+            <h2 className="font-semibold">Emergency Contact</h2>
+            {/* Emergency Contact */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Contact Name
+                </label>
+                <input
+                  type="text"
+                  name="emergencyContact.name"
+                  value={formData.emergencyContact.name}
+                  onChange={handleInputChange}
+                  placeholder="John Davis"
+                  required
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Contact Email
+                </label>
+                <input
+                  type="email"
+                  name="emergencyContact.email"
+                  value={formData.emergencyContact.email}
+                  onChange={handleInputChange}
+                  placeholder="john.davis@example.com"
+                  required
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Contact Number
+                </label>
+                <input
+                  type="tel"
+                  name="emergencyContact.mobile"
+                  value={formData.emergencyContact.mobile}
+                  onChange={handleInputChange}
+                  placeholder="+1 555-123-4567"
+                  required
+                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+            </div>
+            <hr className="text-slate-200" />
 
             {/* Password and Confirm Password */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

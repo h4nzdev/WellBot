@@ -9,12 +9,10 @@ import { AuthContext } from "../../../context/AuthContext";
 import AddReminderModal from "../../../components/ClientComponents/AddReminderModal/AddReminderModal";
 import ReminderDropdown from "../../../components/ClientComponents/ReminderDropdown/ReminderDropdown";
 import sound from "../../../assets/reminder2.mp3";
-import EmergencyContactList from "../../../components/ClientComponents/EmergencyContactList/EmergencyContactList";
 
 const ClientReminders = () => {
   const { user } = useContext(AuthContext);
   const [reminders, setReminders] = useState([]);
-  const [emergencyContacts, setEmergencyContacts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reminderToEdit, setReminderToEdit] = useState(null);
 
@@ -25,10 +23,6 @@ const ClientReminders = () => {
       const storedReminders = localStorage.getItem(`reminders_${user._id}`);
       if (storedReminders) setReminders(JSON.parse(storedReminders));
 
-      const storedContacts = localStorage.getItem(
-        `emergencyContacts_${user._id}`
-      );
-      if (storedContacts) setEmergencyContacts(JSON.parse(storedContacts));
     }
   }, [user]);
 
@@ -201,7 +195,6 @@ const ClientReminders = () => {
               ))}
             </section>
           )}
-          <EmergencyContactList contacts={emergencyContacts} />
         </div>
       </div>
 

@@ -12,26 +12,83 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { AppointmentContext } from "../../../../context/AppointmentContext";
 import { AuthContext } from "../../../../context/AuthContext";
+import {
+  sendApprovalEmail,
+  sendRejectionEmail,
+} from "../../../../utils/emailService";
+import { useDate, useTime } from "../../../../utils/date";
 
 const PendingAppointmentsTableBody = () => {
   const { appointments, fetchAppointments } = useContext(AppointmentContext);
   const { user } = useContext(AuthContext);
 
   const pendingAppointments = appointments?.filter(
-    (appointment) => appointment.clinicId?._id === user._id && appointment.status === 'pending' 
+    (appointment) =>
+      appointment.clinicId?._id === user._id && appointment.status === "pending"
   );
 
   const handleRespond = async (appointmentId, action) => {
     try {
+      // Find the appointment details for email
+      const appointment = pendingAppointments.find(
+        (apt) => apt._id === appointmentId
+      );
+
+      // Update appointment status first
       const res = await axios.patch(
         `http://localhost:3000/appointment/respond/${appointmentId}`,
         { action }
       );
-      if (action === "approve") {
-        toast.success(res.data.message || "Appointment Approved!");
+
+      // Send email notification after successful status update
+      if (appointment && appointment.patientId) {
+        const appointmentDetails = {
+          date: useDate(appointment.date),
+          time: useTime(appointment.date), // use real time, fallback to 09:00 AM if missing
+          doctorName: appointment.doctorId?.name || "Dr. Unknown",
+          clinicName: user?.clinicName || "Our Clinic",
+        };
+
+        try {
+          if (action === "approve") {
+            await sendApprovalEmail(
+              appointment.patientId.email,
+              appointment.patientId.name,
+              appointmentDetails
+            );
+            toast.success("Appointment approved and email sent!");
+          } else {
+            await sendRejectionEmail(
+              appointment.patientId.email,
+              appointment.patientId.name,
+              appointmentDetails
+            );
+            toast.success("Appointment rejected and email sent!");
+          }
+        } catch (emailError) {
+          // If email fails, still show success for the appointment update
+          console.error("Email sending failed:", emailError);
+          if (action === "approve") {
+            toast.success(
+              res.data.message ||
+                "Appointment Approved! (Email notification failed)"
+            );
+          } else {
+            toast.success(
+              res.data.message ||
+                "Appointment Rejected! (Email notification failed)"
+            );
+          }
+        }
       } else {
-        toast.error(res.data.message || "Appointment Rejected!");
+        // Fallback if no appointment found or no patient email
+        if (action === "approve") {
+          toast.success(res.data.message || "Appointment Approved!");
+        } else {
+          toast.success(res.data.message || "Appointment Rejected!");
+        }
       }
+
       fetchAppointments();
     } catch (error) {
       toast.error("Failed to update appointment status.");

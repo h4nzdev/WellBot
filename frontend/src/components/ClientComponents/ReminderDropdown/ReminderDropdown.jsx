@@ -1,13 +1,11 @@
 
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { MoreVertical, Edit3, Bell, UserPlus, ChevronDown } from 'lucide-react';
-import AddEmergencyContactModal from '../AddEmergencyContactModal/AddEmergencyContactModal'; 
+import { MoreVertical, Edit3, Bell, ChevronDown } from 'lucide-react';
 import { AuthContext } from '../../../context/AuthContext';
 
 const ReminderDropdown = ({ onEdit, onNotified }) => { 
   const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
   const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
@@ -27,18 +25,6 @@ const ReminderDropdown = ({ onEdit, onNotified }) => {
     };
   }, []);
 
-  const handleAddEmergencyContact = () => {
-    setIsModalOpen(true);
-    setIsOpen(false);
-  };
-
-  const handleSaveContact = (newContact) => {
-    if (user && user._id) {
-      const existingContacts = JSON.parse(localStorage.getItem(`emergencyContacts_${user._id}`)) || [];
-      const updatedContacts = [...existingContacts, newContact];
-      localStorage.setItem(`emergencyContacts_${user._id}`, JSON.stringify(updatedContacts));
-    }
-  };
 
 
   return (
@@ -73,23 +59,9 @@ const ReminderDropdown = ({ onEdit, onNotified }) => {
               <Bell className="w-4 h-4 mr-2" />
               Notified
             </a>
-            <a
-              href="#"
-              onClick={(e) => { e.preventDefault(); handleAddEmergencyContact(); }}
-              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Add emergency contact
-            </a>
           </div>
         </div>
       )}
-       <AddEmergencyContactModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveContact}
-        user={user}
-      />
     </div>
   );
 };
