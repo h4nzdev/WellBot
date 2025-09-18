@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useContext } from "react";
@@ -7,24 +8,30 @@ import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../../context/AuthContext";
 import AddReminderModal from "../../../components/ClientComponents/AddReminderModal/AddReminderModal";
 import ReminderDropdown from "../../../components/ClientComponents/ReminderDropdown/ReminderDropdown";
-import sound from "../../../assets/reminder2.mp3"
+import sound from "../../../assets/reminder2.mp3";
+import EmergencyContactList from "../../../components/ClientComponents/EmergencyContactList/EmergencyContactList";
 
 const ClientReminders = () => {
   const { user } = useContext(AuthContext);
   const [reminders, setReminders] = useState([]);
+  const [emergencyContacts, setEmergencyContacts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reminderToEdit, setReminderToEdit] = useState(null);
 
-  // 🔔 NEW - Alarm sound (replace "alarm.mp3" with your file)
   const alarmSound = new Audio(sound);
 
-  // Load reminders for this user
   useEffect(() => {
-    const stored = localStorage.getItem(`reminders_${user._id}`);
-    if (stored) setReminders(JSON.parse(stored));
-  }, [user._id]);
+    if (user && user._id) {
+      const storedReminders = localStorage.getItem(`reminders_${user._id}`);
+      if (storedReminders) setReminders(JSON.parse(storedReminders));
 
-  // Check reminder notifications
+      const storedContacts = localStorage.getItem(
+        `emergencyContacts_${user._id}`
+      );
+      if (storedContacts) setEmergencyContacts(JSON.parse(storedContacts));
+    }
+  }, [user]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
@@ -34,9 +41,7 @@ const ClientReminders = () => {
       reminders.forEach((r) => {
         if (r.time === currentTime && r.isActive) {
           toast(`💊 It's time for your reminder: ${r.name}`);
-
-          // 🔔 NEW - Play alarm sound
-          alarmSound.currentTime = 0; // reset to start
+          alarmSound.currentTime = 0;
           alarmSound.play().catch((err) => {
             console.warn("Sound play blocked by browser:", err);
           });
@@ -45,7 +50,7 @@ const ClientReminders = () => {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [reminders]);
+  }, [reminders, alarmSound]);
 
   const saveReminders = (updated) => {
     setReminders(updated);
@@ -78,7 +83,6 @@ const ClientReminders = () => {
     setIsModalOpen(true);
   };
 
-  // Stats
   const stats = {
     total: reminders.length,
     active: reminders.filter((r) => r.isActive).length,
@@ -108,7 +112,6 @@ const ClientReminders = () => {
             </button>
           </header>
 
-          {/* Stats */}
           <section className="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-white/70 rounded-xl p-6 shadow hover:shadow-xl transition-all">
               <div className="flex justify-between items-center">
@@ -157,7 +160,6 @@ const ClientReminders = () => {
             </div>
           </section>
 
-          {/* Reminders */}
           {reminders.length === 0 ? (
             <div className="text-center text-slate-600 font-medium mt-12">
               No reminders yet. Click "Set New Reminder" to add one!
@@ -199,6 +201,7 @@ const ClientReminders = () => {
               ))}
             </section>
           )}
+          <EmergencyContactList contacts={emergencyContacts} />
         </div>
       </div>
 
