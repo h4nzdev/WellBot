@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { useDate, useTime } from "../../../../utils/date";
 
 const ClinicAppointmentsTableBody = () => {
   const { appointments } = useContext(AppointmentContext);
@@ -97,9 +98,9 @@ const ClinicAppointmentsTableBody = () => {
                 </td>
                 <td className="px-4">
                   <p className="font-medium text-slate-700">
-                    {appointment.date.slice(1, 10)}
+                    {useDate(appointment.date)}
                   </p>
-                  <p className="text-sm text-slate-500">09:00 AM</p>
+                  <p className="text-sm text-slate-500">{useTime(appointment.date)}</p>
                 </td>
                 <td className="px-4">
                   <span className="inline-block bg-slate-100 text-slate-700 px-2 py-1 rounded-md text-sm">

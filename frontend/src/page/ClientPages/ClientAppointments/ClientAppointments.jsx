@@ -12,8 +12,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AppointmentContext } from "../../../context/AppointmentContext";
 import { AuthContext } from "../../../context/AuthContext";
-import { getStatusIcon } from "../../../utils/appointmentStats.jsx";
+import {
+  getStatusIcon,
+  getStatusBadge1,
+} from "../../../utils/appointmentStats.jsx";
 import { getStatusBadge } from "../../../utils/clientAppointment.jsx";
+import { useDate, useTime } from "../../../utils/date.jsx";
 
 export default function ClientAppointments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -265,10 +269,10 @@ export default function ClientAppointments() {
                         </td>
                         <td className="px-6">
                           <p className="font-semibold text-slate-700 text-base">
-                            {appointment.date?.slice(0, 10)}
+                            {useDate(appointment.date)}
                           </p>
                           <p className="text-base text-slate-500 font-medium">
-                            {appointment.time || "09:00 AM"}
+                            {useTime(appointment.date)}
                           </p>
                         </td>
                         <td className="px-6">
@@ -278,7 +282,7 @@ export default function ClientAppointments() {
                         </td>
                         <td className="px-4">
                           <span
-                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm w-fit ${getStatusBadge(
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm w-fit ${getStatusBadge1(
                               appointment.status
                             )}`}
                           >

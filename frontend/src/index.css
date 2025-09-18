@@ -1,12 +1,68 @@
 @import "tailwindcss";
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 /* For Chrome, Safari, Edge */
 .hide-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* Calendar customization */
+.react-calendar {
+  border: none !important;
+  background: none !important;
+  width: 100% !important;
+  font-family: inherit !important;
+}
+
+.react-calendar button {
+  border-radius: 0.5rem;
+  padding: 0.5rem !important;
+  font-weight: 500 !important;
+  color: #475569 !important;
+}
+
+.react-calendar__navigation button {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+}
+
+.react-calendar__navigation button:disabled {
+  background: none !important;
+  opacity: 0.5;
+}
+
+.react-calendar__tile:disabled {
+  background: none !important;
+  opacity: 1 !important;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: #dc2626 !important;
+}
+
+.react-calendar__tile--now {
+  background: #e2e8f0 !important;
+}
+
+/* Appointment date styling */
+.appointment-date {
+  font-weight: 600 !important;
+  position: relative !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.appointment-date:hover {
+  background-color: #cffafe !important;
+  transform: translateY(-1px);
+}
+
+.appointment-date abbr {
+  position: relative;
+  z-index: 1;
 }
 
 /* For Firefox */

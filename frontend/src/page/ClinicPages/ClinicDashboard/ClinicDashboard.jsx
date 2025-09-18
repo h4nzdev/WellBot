@@ -20,6 +20,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { PatientsContext } from "../../../context/PatientsContext";
 import { DoctorContext } from "../../../context/DoctorContext";
 import { getStatusBadge, getStatusIcon } from "../../../utils/appointmentStats";
+import { useDate, useTime } from "../../../utils/date";
 
 export default function ClinicDashboard() {
   const { appointments } = useContext(AppointmentContext);
@@ -211,7 +212,7 @@ export default function ClinicDashboard() {
                             {appointment.doctorId.name}
                           </p>
                           <p className="text-slate-500 text-sm mt-1">
-                            {appointment.date.slice(1, 10)} at {appointment.time}
+                            {useDate(appointment.date)} at {useTime(appointment.date)}
                           </p>
                         </div>
                         <div className="flex items-center space-x-2">
