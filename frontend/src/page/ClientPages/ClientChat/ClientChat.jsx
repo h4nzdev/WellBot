@@ -5,13 +5,28 @@ import axios from "axios";
 const ClientChat = () => {
   const [message, setMessage] = useState("");
   const bottomRef = useRef(null);
-  const [chatHistory, setChatHistory] = useState([
-    {
-      role: "bot",
-      text: "Hello! I'm Medora, your clinic appointment and symptoms checker assistant. I can help you with:\n\n• Checking your symptoms\n• Providing basic health information\n• Guiding you through the appointment booking process\n• Answering questions about clinic services\n\nHow may I assist you today?",
-    },
-  ]);
+  const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const storedChatHistory = localStorage.getItem("chatHistory");
+    if (storedChatHistory) {
+      setChatHistory(JSON.parse(storedChatHistory));
+    } else {
+      setChatHistory([
+        {
+          role: "bot",
+          text: "Hello! I'm Medora, your clinic appointment and symptoms checker assistant. I can help you with:\n\n• Checking your symptoms\n• Providing basic health information\n• Guiding you through the appointment booking process\n• Answering questions about clinic services\n\nHow may I assist you today?",
+        },
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (chatHistory.length > 0) {
+        localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+    }
+  }, [chatHistory]);
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;

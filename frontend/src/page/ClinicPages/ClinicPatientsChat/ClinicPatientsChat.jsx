@@ -1,5 +1,5 @@
 "use client";
-
+import { useState, useEffect } from "react";
 import {
   User,
   MessageCircle,
@@ -7,9 +7,27 @@ import {
   ChevronDown,
   Filter,
   MoreHorizontal,
+  X,
 } from "lucide-react";
 
 export default function ClinicPatientsChat() {
+  const [chatHistory, setChatHistory] = useState([]);
+  const [selectedChat, setSelectedChat] = useState(null);
+
+  useEffect(() => {
+    const storedChatHistory = localStorage.getItem("chatHistory");
+    if (storedChatHistory) {
+      const parsedHistory = JSON.parse(storedChatHistory);
+      // Assuming single patient for now, will need to group by patient in a real app
+      setChatHistory([{ patient: "Patient", chat: parsedHistory }]);
+    }
+  }, []);
+
+  const lastUserMessage = (chat) => {
+    const userMessages = chat.filter((message) => message.role === "user");
+    return userMessages[userMessages.length - 1];
+  };
+
   return (
     <div className="w-full min-h-screen bg-slate-50">
       <div className="mx-auto">
@@ -71,129 +89,82 @@ export default function ClinicPatientsChat() {
               </tr>
             </thead>
             <tbody>
-              {/* Row 1 */}
-              <tr className="border-t border-slate-200 hover:bg-slate-50 transition-colors">
-                <td className="py-4 px-4 flex items-center gap-3">
-                  <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
-                    JS
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-800">John Smith</p>
-                    <p className="text-sm text-slate-500">ID: #0001</p>
-                  </div>
-                </td>
-                <td
-                  className="py-4 px-4 text-slate-700 max-w-xl truncate"
-                  title="I have been having a severe headache and some migraine symptoms for the last two days."
+              {chatHistory.map((item, index) => (
+                <tr
+                  key={index}
+                  className="border-t border-slate-200 hover:bg-slate-50 transition-colors"
                 >
-                  I have been having a severe headache and some migraine
-                  symptoms for the last two days.
-                </td>
-                <td className="py-4 px-4 text-slate-600">
-                  2024-09-10 09:15 AM
-                </td>
-                <td className="py-4 px-4 text-right">
-                  <button
-                    type="button"
-                    className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
-                    disabled
-                    aria-label="View chat details"
+                  <td className="py-4 px-4 flex items-center gap-3">
+                    <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
+                      {item.patient.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-800">
+                        {item.patient}
+                      </p>
+                      <p className="text-sm text-slate-500">ID: #0001</p>
+                    </div>
+                  </td>
+                  <td
+                    className="py-4 px-4 text-slate-700 max-w-xl truncate"
+                    title={lastUserMessage(item.chat)?.text}
                   >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
-                </td>
-              </tr>
-
-              {/* Row 2 */}
-              <tr className="border-t border-slate-200 hover:bg-slate-50 transition-colors">
-                <td className="py-4 px-4 flex items-center gap-3">
-                  <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
-                    MG
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-800">Maria Garcia</p>
-                    <p className="text-sm text-slate-500">ID: #0002</p>
-                  </div>
-                </td>
-                <td
-                  className="py-4 px-4 text-slate-700 max-w-xl truncate"
-                  title="I have a persistent cough and mild fever. What should I do?"
-                >
-                  I have a persistent cough and mild fever. What should I do?
-                </td>
-                <td className="py-4 px-4 text-slate-600">
-                  2024-09-10 10:45 AM
-                </td>
-                <td className="py-4 px-4 text-right">
-                  <button
-                    type="button"
-                    className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
-                    disabled
-                    aria-label="View chat details"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
-                </td>
-              </tr>
-
-              {/* Row 3 */}
-              <tr className="border-t border-slate-200 hover:bg-slate-50 transition-colors">
-                <td className="py-4 px-4 flex items-center gap-3">
-                  <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
-                    DW
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-800">David Wilson</p>
-                    <p className="text-sm text-slate-500">ID: #0003</p>
-                  </div>
-                </td>
-                <td
-                  className="py-4 px-4 text-slate-700 max-w-xl truncate"
-                  title="Experiencing shortness of breath and chest tightness."
-                >
-                  Experiencing shortness of breath and chest tightness.
-                </td>
-                <td className="py-4 px-4 text-slate-600">
-                  2024-09-11 08:30 AM
-                </td>
-                <td className="py-4 px-4 text-right">
-                  <button
-                    type="button"
-                    className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
-                    disabled
-                    aria-label="View chat details"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </button>
-                </td>
-              </tr>
-
-              {/* Add more rows as needed */}
+                    {lastUserMessage(item.chat)?.text}
+                  </td>
+                  <td className="py-4 px-4 text-slate-600">
+                    {new Date().toLocaleString()}
+                  </td>
+                  <td className="py-4 px-4 text-right">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedChat(item.chat)}
+                      className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
+                      aria-label="View chat details"
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
-
-          {/* Pagination */}
-          <div className="mt-6 flex items-center justify-between text-sm text-slate-600">
-            <p>Showing 3 of 10 patients</p>
-            <div className="flex items-center gap-2">
+        </div>
+      </div>
+      {selectedChat && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">Chat History</h2>
               <button
-                type="button"
-                disabled
-                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
+                onClick={() => setSelectedChat(null)}
+                className="text-gray-500 hover:text-gray-700"
               >
-                Previous
+                <X size={24} />
               </button>
-              <button
-                type="button"
-                disabled
-                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
-              >
-                Next
-              </button>
+            </div>
+            <div className="space-y-4 h-96 overflow-y-auto">
+              {selectedChat.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
+                >
+                  <div
+                    className={`max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg ${
+                      message.role === "user"
+                        ? "bg-cyan-600 text-white"
+                        : "bg-white border border-gray-200 text-gray-900"
+                    }`}
+                  >
+                    <p className="md:text-lg text-sm">{message.text}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
