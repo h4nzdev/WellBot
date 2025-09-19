@@ -23,6 +23,8 @@ export default function ClinicPatientsChat() {
     }
   }, []);
 
+  console.log(chatHistory);
+
   const lastUserMessage = (chat) => {
     const userMessages = chat.filter((message) => message.role === "user");
     return userMessages[userMessages.length - 1];

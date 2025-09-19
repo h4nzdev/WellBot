@@ -8,6 +8,8 @@ const ClientChat = () => {
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  console.log(chatHistory);
+
   useEffect(() => {
     const storedChatHistory = localStorage.getItem("chatHistory");
     if (storedChatHistory) {
@@ -24,7 +26,7 @@ const ClientChat = () => {
 
   useEffect(() => {
     if (chatHistory.length > 0) {
-        localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+      localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
     }
   }, [chatHistory]);
 
