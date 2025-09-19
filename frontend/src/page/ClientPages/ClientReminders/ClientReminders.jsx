@@ -29,13 +29,18 @@ const ClientReminders = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
+      const today = now.toISOString().split("T")[0];
       const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(
         now.getMinutes()
       ).padStart(2, "0")}`;
+
       reminders.forEach((r) => {
-        if (r.time === currentTime && r.isActive) {
+        if (
+          r.time === currentTime &&
+          r.isActive &&
+          r.lastAcknowledgedDate !== today
+        ) {
           if (!dueReminder) {
-            // To avoid opening multiple modals for the same reminder
             setDueReminder(r);
             setIsNotificationModalOpen(true);
             alarmSound.currentTime = 0;
@@ -65,9 +70,14 @@ const ClientReminders = () => {
 
   const handleAcknowledge = () => {
     if (dueReminder) {
+      const today = new Date().toISOString().split("T")[0];
       const updatedReminders = reminders.map((r) =>
         r.id === dueReminder.id
-          ? { ...r, notifiedCount: (r.notifiedCount || 0) + 1 }
+          ? {
+              ...r,
+              notifiedCount: (r.notifiedCount || 0) + 1,
+              lastAcknowledgedDate: today,
+            }
           : r
       );
       saveReminders(updatedReminders);
@@ -119,7 +129,9 @@ const ClientReminders = () => {
               onClick={openModal}
               className="group flex items-center justify-center px-6 py-3 bg-cyan-600/90 text-white rounded-xl shadow-lg hover:bg-cyan-700 hover:scale-105 transition-all duration-300 w-full sm:w-auto"
             >
-              <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+              <Plus
+                className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300"
+              />
               Set New Reminder
             </button>
           </header>

@@ -29,6 +29,7 @@ const AddReminderModal = ({ isOpen, onClose, onSave, reminderToEdit }) => {
       time,
       isActive,
       notifiedCount: reminderToEdit ? reminderToEdit.notifiedCount : 0,
+      lastAcknowledgedDate: reminderToEdit ? reminderToEdit.lastAcknowledgedDate : null,
     };
     onSave(reminder);
     toast.success("Reminder added successfully");
