@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useContext } from "react";
@@ -18,14 +17,12 @@ const ClientReminders = () => {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [dueReminder, setDueReminder] = useState(null);
 
-
   const alarmSound = new Audio(sound);
 
   useEffect(() => {
     if (user && user._id) {
       const storedReminders = localStorage.getItem(`reminders_${user._id}`);
       if (storedReminders) setReminders(JSON.parse(storedReminders));
-
     }
   }, [user]);
 
@@ -37,7 +34,8 @@ const ClientReminders = () => {
       ).padStart(2, "0")}`;
       reminders.forEach((r) => {
         if (r.time === currentTime && r.isActive) {
-          if (!dueReminder) { // To avoid opening multiple modals for the same reminder
+          if (!dueReminder) {
+            // To avoid opening multiple modals for the same reminder
             setDueReminder(r);
             setIsNotificationModalOpen(true);
             alarmSound.currentTime = 0;
@@ -78,7 +76,6 @@ const ClientReminders = () => {
       alarmSound.pause();
     }
   };
-
 
   const handleRemove = (id) => {
     if (window.confirm("Are you sure you want to remove this reminder?")) {
@@ -210,7 +207,10 @@ const ClientReminders = () => {
                     >
                       Remove
                     </button>
-                    <ReminderDropdown onEdit={() => handleEdit(r)} reminder={r} />
+                    <ReminderDropdown
+                      onEdit={() => handleEdit(r)}
+                      reminder={r}
+                    />
                   </div>
                 </div>
               ))}
@@ -220,11 +220,14 @@ const ClientReminders = () => {
       </div>
 
       {isNotificationModalOpen && dueReminder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-2xl transform transition-all scale-100">
-            <h2 className="text-3xl font-bold mb-4 text-slate-800">Reminder!</h2>
-            <p className="mb-6 text-lg text-slate-600">
-              It's time for your reminder: <strong className="text-cyan-700">{dueReminder.name}</strong>
+            <h2 className="text-4xl font-bold mb-4 text-slate-800">
+              Reminder!
+            </h2>
+            <p className="mb-6 text-2xl text-slate-600">
+              It's time for your reminder:{" "}
+              <strong className="text-cyan-700">{dueReminder.name}</strong>
             </p>
             <button
               onClick={handleAcknowledge}
@@ -236,7 +239,6 @@ const ClientReminders = () => {
         </div>
       )}
 
-      <ToastContainer />
       <AddReminderModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
