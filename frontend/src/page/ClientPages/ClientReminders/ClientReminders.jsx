@@ -1,73 +1,13 @@
-
 "use client";
 
 import { useState, useEffect, useContext } from "react";
 import { Plus, BellRing, Clock, CheckCircle, AlertCircle } from "lucide-react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../../context/AuthContext";
 import AddReminderModal from "../../../components/ClientComponents/AddReminderModal/AddReminderModal";
 import ReminderDropdown from "../../../components/ClientComponents/ReminderDropdown/ReminderDropdown";
 import sound from "../../../assets/reminder2.mp3";
-
-const RealTimeClock = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      second: '2-digit'
-    });
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString([], {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 text-white shadow-2xl border border-slate-700">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-cyan-600/20 rounded-full flex items-center justify-center">
-            <Clock className="w-5 h-5 text-cyan-400" />
-          </div>
-          <h3 className="text-lg font-semibold text-slate-200">Current Time</h3>
-        </div>
-      </div>
-      
-      <div className="text-center">
-        <div className="text-4xl md:text-5xl font-mono font-bold text-white tracking-wider mb-2">
-          {formatTime(currentTime)}
-        </div>
-        <div className="text-slate-400 text-sm font-medium">
-          {formatDate(currentTime)}
-        </div>
-      </div>
-      
-      {/* Decorative elements */}
-      <div className="mt-4 flex justify-center space-x-2">
-        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-        <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-        <div className="w-2 h-2 bg-cyan-600 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-      </div>
-    </div>
-  );
-};
-
 
 const ClientReminders = () => {
   const { user } = useContext(AuthContext);
@@ -77,14 +17,12 @@ const ClientReminders = () => {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [dueReminder, setDueReminder] = useState(null);
 
-
   const alarmSound = new Audio(sound);
 
   useEffect(() => {
     if (user && user._id) {
       const storedReminders = localStorage.getItem(`reminders_${user._id}`);
       if (storedReminders) setReminders(JSON.parse(storedReminders));
-
     }
   }, [user]);
 
@@ -96,7 +34,8 @@ const ClientReminders = () => {
       ).padStart(2, "0")}`;
       reminders.forEach((r) => {
         if (r.time === currentTime && r.isActive) {
-          if (!dueReminder) { // To avoid opening multiple modals for the same reminder
+          if (!dueReminder) {
+            // To avoid opening multiple modals for the same reminder
             setDueReminder(r);
             setIsNotificationModalOpen(true);
             alarmSound.currentTime = 0;
@@ -138,7 +77,6 @@ const ClientReminders = () => {
     }
   };
 
-
   const handleRemove = (id) => {
     if (window.confirm("Are you sure you want to remove this reminder?")) {
       const updated = reminders.filter((r) => r.id !== id);
@@ -167,7 +105,7 @@ const ClientReminders = () => {
   return (
     <>
       <div className="w-full min-h-screen bg-slate-50">
-        <div className="mx-auto px-4">
+        <div className="mx-auto">
           <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div className="mb-4 sm:mb-0">
               <h1 className="text-3xl md:text-4xl font-bold text-slate-800">
@@ -185,11 +123,6 @@ const ClientReminders = () => {
               Set New Reminder
             </button>
           </header>
-
-          {/* Clock Section */}
-          <section className="mb-8">
-            <RealTimeClock />
-          </section>
 
           <section className="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-white/70 rounded-xl p-6 shadow hover:shadow-xl transition-all transform hover:-translate-y-1">
@@ -252,8 +185,12 @@ const ClientReminders = () => {
               <div className="w-24 h-24 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4">
                 <BellRing className="w-12 h-12 text-slate-400" />
               </div>
-              <p className="text-slate-600 font-medium text-lg">No reminders yet.</p>
-              <p className="text-slate-500 mt-2">Click "Set New Reminder" to add one!</p>
+              <p className="text-slate-600 font-medium text-lg">
+                No reminders yet.
+              </p>
+              <p className="text-slate-500 mt-2">
+                Click "Set New Reminder" to add one!
+              </p>
             </div>
           ) : (
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -265,9 +202,17 @@ const ClientReminders = () => {
                 >
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-start gap-3">
-                      <div className={`w-3 h-3 rounded-full mt-2 ${r.isActive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-300'}`}></div>
+                      <div
+                        className={`w-3 h-3 rounded-full mt-2 ${
+                          r.isActive
+                            ? "bg-emerald-400 animate-pulse"
+                            : "bg-slate-300"
+                        }`}
+                      ></div>
                       <div>
-                        <p className="text-lg font-bold text-slate-800 group-hover:text-slate-900">{r.name}</p>
+                        <p className="text-lg font-bold text-slate-800 group-hover:text-slate-900">
+                          {r.name}
+                        </p>
                       </div>
                     </div>
                     <span
@@ -277,17 +222,23 @@ const ClientReminders = () => {
                           : "text-slate-700 bg-slate-100 border border-slate-200"
                       }`}
                     >
-                      <BellRing className={`w-4 h-4 mr-1 ${r.isActive ? 'animate-pulse' : ''}`} />
+                      <BellRing
+                        className={`w-4 h-4 mr-1 ${
+                          r.isActive ? "animate-pulse" : ""
+                        }`}
+                      />
                       {r.isActive ? "Active" : "Inactive"}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-3 mb-6 p-3 bg-cyan-50 rounded-lg border border-cyan-100">
                     <div className="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center">
                       <Clock className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <p className="text-cyan-700 font-bold text-xl">{r.time}</p>
+                      <p className="text-cyan-700 font-bold text-xl">
+                        {r.time}
+                      </p>
                       <p className="text-cyan-600 text-sm">Reminder Time</p>
                     </div>
                   </div>
@@ -299,7 +250,10 @@ const ClientReminders = () => {
                     >
                       Remove
                     </button>
-                    <ReminderDropdown onEdit={() => handleEdit(r)} reminder={r} />
+                    <ReminderDropdown
+                      onEdit={() => handleEdit(r)}
+                      reminder={r}
+                    />
                   </div>
 
                   {/* Decorative gradient overlay */}
@@ -314,9 +268,12 @@ const ClientReminders = () => {
       {isNotificationModalOpen && dueReminder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-2xl transform transition-all scale-100">
-            <h2 className="text-3xl font-bold mb-4 text-slate-800">Reminder!</h2>
+            <h2 className="text-3xl font-bold mb-4 text-slate-800">
+              Reminder!
+            </h2>
             <p className="mb-6 text-lg text-slate-600">
-              It's time for your reminder: <strong className="text-cyan-700">{dueReminder.name}</strong>
+              It's time for your reminder:{" "}
+              <strong className="text-cyan-700">{dueReminder.name}</strong>
             </p>
             <button
               onClick={handleAcknowledge}
@@ -328,7 +285,6 @@ const ClientReminders = () => {
         </div>
       )}
 
-      <ToastContainer />
       <AddReminderModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

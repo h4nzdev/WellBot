@@ -7,6 +7,7 @@ import {
   LogOut,
   Stethoscope,
   User,
+  Settings,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
@@ -28,6 +29,7 @@ export default function ClientSidebar() {
     },
     { icon: User, label: "Profile", link: "/client/profile" },
     { icon: Bell, label: "Reminders", link: "/client/reminders" },
+    { icon: Settings, label: "Settings", link: "/client/settings" },
   ];
 
   const path = useLocation();

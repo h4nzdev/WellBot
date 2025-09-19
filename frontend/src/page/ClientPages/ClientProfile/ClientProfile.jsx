@@ -1,6 +1,18 @@
 import { useContext } from "react";
-import { User, Mail, Phone, MapPin, Calendar, UserCheck } from "lucide-react";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  UserCheck,
+  Activity,
+  FileText,
+  Clock,
+  Download,
+} from "lucide-react";
 import { AuthContext } from "../../../context/AuthContext";
+import { useDate } from "../../../utils/date";
 
 const ClientProfile = () => {
   const { user } = useContext(AuthContext);
@@ -36,7 +48,7 @@ const ClientProfile = () => {
     },
     {
       title: "Gender",
-      value: user.gender.charAt(0).toUpperCase() + user.gender.slice(1),
+      value: user.gender,
       icon: UserCheck,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50",
@@ -79,6 +91,58 @@ const ClientProfile = () => {
     },
   ];
 
+  // Mock patient history data - you can replace this with real data from your user object
+  const patientHistory = [
+    {
+      date: "20 Jan, 2023",
+      diagnosis: "Malaria",
+      severity: "High",
+      visits: 2,
+      status: "Under Treatment",
+      documents: true,
+    },
+    {
+      date: "15 Jan, 2022",
+      diagnosis: "Viral Fever",
+      severity: "Low",
+      visits: 1,
+      status: "Cured",
+      documents: true,
+    },
+    {
+      date: "28 Jun, 2021",
+      diagnosis: "Covid-19",
+      severity: "High",
+      visits: 3,
+      status: "Cured",
+      documents: true,
+    },
+  ];
+
+  const getSeverityColor = (severity) => {
+    switch (severity.toLowerCase()) {
+      case "high":
+        return "bg-red-100 text-red-700 border-red-200";
+      case "medium":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      case "low":
+        return "bg-green-100 text-green-700 border-green-200";
+      default:
+        return "bg-slate-100 text-slate-700 border-slate-200";
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "cured":
+        return "bg-emerald-100 text-emerald-700 border-emerald-200";
+      case "under treatment":
+        return "bg-orange-100 text-orange-700 border-orange-200";
+      default:
+        return "bg-slate-100 text-slate-700 border-slate-200";
+    }
+  };
+
   return (
     <div className="w-full min-h-screen bg-slate-50">
       <div className="mx-auto">
@@ -93,16 +157,33 @@ const ClientProfile = () => {
                     .join("")}
                 </span>
               </div>
-              <div className="text-center sm:text-left">
+              <div className="text-center sm:text-left flex-1">
                 <h1 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
                   {user.name}
                 </h1>
                 <p className="text-slate-600 mt-2 text-lg font-medium">
                   {user.email}
                 </p>
-                <span className="inline-block bg-cyan-100 text-cyan-700 px-4 py-2 rounded-lg text-sm font-semibold tracking-wide uppercase mt-3 border border-cyan-200">
-                  {user.role}
-                </span>
+                <div className="flex flex-wrap gap-3 mt-4">
+                  <span className="inline-block bg-cyan-100 text-cyan-700 px-4 py-2 rounded-lg text-sm font-semibold tracking-wide uppercase border border-cyan-200">
+                    {user.role}
+                  </span>
+                  <span className="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg text-sm font-semibold tracking-wide border border-emerald-200">
+                    Active
+                  </span>
+                </div>
+              </div>
+              <div className="text-center sm:text-right">
+                <p className="text-sm font-medium text-slate-600 tracking-wide uppercase">
+                  Registered Date
+                </p>
+                <p className="text-lg font-bold text-slate-800 mt-1">
+                  {useDate(user.createdAt)}
+                </p>
+                <p className="text-sm font-medium text-slate-600 tracking-wide uppercase mt-3">
+                  Patient ID
+                </p>
+                <p className="text-lg font-bold text-cyan-700">{user._id}</p>
               </div>
             </div>
           </div>
@@ -126,7 +207,7 @@ const ClientProfile = () => {
                         {stat.title}
                       </p>
                       <p
-                        className={`text-lg font-bold ${stat.color} mt-1 text-balance`}
+                        className={`text-lg font-bold ${stat.color} mt-1 text-balance capitalize`}
                       >
                         {stat.value}
                       </p>
@@ -143,7 +224,7 @@ const ClientProfile = () => {
           </div>
         </section>
 
-        <section>
+        <section className="mb-8">
           <h2 className="text-2xl font-bold text-slate-800 tracking-tight mb-6">
             Contact Information
           </h2>
@@ -175,6 +256,100 @@ const ClientProfile = () => {
                 </div>
               );
             })}
+          </div>
+        </section>
+
+        {/* Patient History */}
+        <section className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-slate-800 tracking-tight">
+              Patient History
+            </h2>
+            <p className="text-sm text-slate-600">Total 35 Visits</p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="text-left p-4 text-sm font-semibold text-slate-700">
+                      Date Of Visit
+                    </th>
+                    <th className="text-left p-4 text-sm font-semibold text-slate-700">
+                      Diagnosis
+                    </th>
+                    <th className="text-left p-4 text-sm font-semibold text-slate-700">
+                      Severity
+                    </th>
+                    <th className="text-left p-4 text-sm font-semibold text-slate-700">
+                      Total Visits
+                    </th>
+                    <th className="text-left p-4 text-sm font-semibold text-slate-700">
+                      Status
+                    </th>
+                    <th className="text-left p-4 text-sm font-semibold text-slate-700">
+                      Documents
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {patientHistory.map((record, index) => (
+                    <tr
+                      key={index}
+                      className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors"
+                    >
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-slate-500" />
+                          <span className="text-sm font-medium text-slate-700">
+                            {record.date}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-sm font-medium text-slate-800">
+                          {record.diagnosis}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${getSeverityColor(
+                            record.severity
+                          )}`}
+                        >
+                          {record.severity}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-sm font-medium text-slate-700">
+                          {record.visits}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
+                            record.status
+                          )}`}
+                        >
+                          {record.status}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        {record.documents && (
+                          <button className="flex items-center gap-2 text-cyan-600 hover:text-cyan-700 transition-colors">
+                            <Download className="w-4 h-4" />
+                            <span className="text-sm font-medium">
+                              Download
+                            </span>
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
       </div>
