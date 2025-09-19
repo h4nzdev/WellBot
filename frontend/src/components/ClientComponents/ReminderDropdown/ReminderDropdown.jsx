@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import { MoreVertical, Edit3, Bell, ChevronDown } from 'lucide-react';
 import { AuthContext } from '../../../context/AuthContext';
 
-const ReminderDropdown = ({ onEdit, onNotified }) => { 
+const ReminderDropdown = ({ onEdit, reminder }) => { 
   const { user } = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -51,14 +51,10 @@ const ReminderDropdown = ({ onEdit, onNotified }) => {
               <Edit3 className="w-4 h-4 mr-2" />
               Edit
             </a>
-            <a
-              href="#"
-              onClick={(e) => { e.preventDefault(); onNotified(); setIsOpen(false); }}
-              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
+            <div className="flex items-center px-4 py-2 text-sm text-gray-700">
               <Bell className="w-4 h-4 mr-2" />
-              Notified
-            </a>
+              Notified: {reminder.notifiedCount || 0}
+            </div>
           </div>
         </div>
       )}

@@ -15,6 +15,9 @@ const ClientReminders = () => {
   const [reminders, setReminders] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reminderToEdit, setReminderToEdit] = useState(null);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [dueReminder, setDueReminder] = useState(null);
+
 
   const alarmSound = new Audio(sound);
 
@@ -34,17 +37,20 @@ const ClientReminders = () => {
       ).padStart(2, "0")}`;
       reminders.forEach((r) => {
         if (r.time === currentTime && r.isActive) {
-          toast(`💊 It's time for your reminder: ${r.name}`);
-          alarmSound.currentTime = 0;
-          alarmSound.play().catch((err) => {
-            console.warn("Sound play blocked by browser:", err);
-          });
+          if (!dueReminder) { // To avoid opening multiple modals for the same reminder
+            setDueReminder(r);
+            setIsNotificationModalOpen(true);
+            alarmSound.currentTime = 0;
+            alarmSound.play().catch((err) => {
+              console.warn("Sound play blocked by browser:", err);
+            });
+          }
         }
       });
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [reminders, alarmSound]);
+  }, [reminders, alarmSound, dueReminder]);
 
   const saveReminders = (updated) => {
     setReminders(updated);
@@ -58,6 +64,21 @@ const ClientReminders = () => {
       : [...reminders, reminder];
     saveReminders(updated);
   };
+
+  const handleAcknowledge = () => {
+    if (dueReminder) {
+      const updatedReminders = reminders.map((r) =>
+        r.id === dueReminder.id
+          ? { ...r, notifiedCount: (r.notifiedCount || 0) + 1 }
+          : r
+      );
+      saveReminders(updatedReminders);
+      setIsNotificationModalOpen(false);
+      setDueReminder(null);
+      alarmSound.pause();
+    }
+  };
+
 
   const handleRemove = (id) => {
     if (window.confirm("Are you sure you want to remove this reminder?")) {
@@ -189,7 +210,7 @@ const ClientReminders = () => {
                     >
                       Remove
                     </button>
-                    <ReminderDropdown onEdit={() => handleEdit(r)} />
+                    <ReminderDropdown onEdit={() => handleEdit(r)} reminder={r} />
                   </div>
                 </div>
               ))}
@@ -197,6 +218,23 @@ const ClientReminders = () => {
           )}
         </div>
       </div>
+
+      {isNotificationModalOpen && dueReminder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-2xl transform transition-all scale-100">
+            <h2 className="text-3xl font-bold mb-4 text-slate-800">Reminder!</h2>
+            <p className="mb-6 text-lg text-slate-600">
+              It's time for your reminder: <strong className="text-cyan-700">{dueReminder.name}</strong>
+            </p>
+            <button
+              onClick={handleAcknowledge}
+              className="w-full px-6 py-3 bg-cyan-600 text-white rounded-lg shadow-md hover:bg-cyan-700 transition-colors"
+            >
+              Acknowledge
+            </button>
+          </div>
+        </div>
+      )}
 
       <ToastContainer />
       <AddReminderModal
