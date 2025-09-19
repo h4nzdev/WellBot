@@ -1,12 +1,15 @@
 import { Bot, Send, User, Shield } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 const ClientChat = () => {
   const [message, setMessage] = useState("");
   const bottomRef = useRef(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { user } = useContext(AuthContext);
 
   console.log(chatHistory);
 
@@ -30,6 +33,17 @@ const ClientChat = () => {
     }
   }, [chatHistory]);
 
+  const handleClearHistory = () => {
+    localStorage.removeItem("chatHistory");
+    setChatHistory([
+      {
+        role: "bot",
+        text:
+          "Hello! I'm Medora, your clinic appointment and symptoms checker assistant. I can help you with:\n\n• Checking your symptoms\n• Providing basic health information\n• Guiding you through the appointment booking process\n• Answering questions about clinic services\n\nHow may I assist you today?",
+      },
+    ]);
+  };
+
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
@@ -43,9 +57,18 @@ const ClientChat = () => {
     setLoading(true);
 
     try {
+      // 1) Save the user's message immediately
+      if (user && user._id) {
+        await axios.post("http://localhost:3000/chat/save-chat", {
+          patientId: user._id,
+          role: "Client",
+          message,
+        });
+      }
+
+      // 2) Ask AI for a reply
       const response = await axios.post("http://localhost:3000/chat", {
         message: message,
-        history: chatHistory,
       });
 
       const botMessage = {
@@ -54,6 +77,15 @@ const ClientChat = () => {
       };
 
       setChatHistory((prev) => [...prev, botMessage]);
+
+      // 3) Save AI reply immediately
+      if (user && user._id) {
+        await axios.post("http://localhost:3000/chat/save-chat", {
+          patientId: user._id,
+          role: "ai",
+          message: response.data.reply,
+        });
+      }
     } catch (error) {
       console.error("Error fetching bot response:", error);
       const errorMessage = {
@@ -66,6 +98,8 @@ const ClientChat = () => {
     }
   };
 
+  // no buffered save; messages persist immediately
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, loading]);
@@ -74,7 +108,8 @@ const ClientChat = () => {
     <div className="w-full h-full flex flex-col">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 p-4">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
           <div className="bg-cyan-100 p-3 rounded-full">
             <Bot className="h-6 w-6 text-cyan-600" />
           </div>
@@ -87,6 +122,13 @@ const ClientChat = () => {
               professional medical advice.
             </p>
           </div>
+          </div>
+          <button
+            onClick={handleClearHistory}
+            className="text-sm text-cyan-700 hover:text-cyan-900 border border-cyan-200 hover:border-cyan-400 px-3 py-1 rounded-md"
+          >
+            Clear history
+          </button>
         </div>
       </div>
 
