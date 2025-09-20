@@ -1,4 +1,4 @@
-import { Download, Eye, FileText, Calendar, User, Clock } from "lucide-react";
+import { Download, Eye, FileText, Calendar, User, Clock, MoreHorizontal } from "lucide-react";
 import useMedicalRecords from "../../../hooks/medicalRecords";
 import { useState } from "react";
 import MedicalRecordsModal from "../../../components/ClientComponents/MedicalRecordsModal/MedicalRecordsModal";
@@ -93,52 +93,52 @@ const ClientMedicalRecords = () => {
   ];
 
   return (
-    <div className="w-full min-h-screen bg-slate-50">
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100/30">
       <div className="mx-auto">
-        <header className="mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-            <div className="mb-4 sm:mb-0">
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
+        <header className="mb-8 md:mb-10">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+            <div className="flex-1">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent tracking-tight">
                 Medical Records
               </h1>
-              <p className="text-slate-600 mt-2 text-lg font-medium">
+              <p className="text-slate-600 mt-3 text-lg sm:text-xl leading-relaxed">
                 Access your appointment history and medical records.
               </p>
             </div>
             <button
               onClick={() => handleDownloadAll(records)}
-              className="group flex items-center justify-center px-6 py-3 bg-cyan-600/90 backdrop-blur-sm text-white rounded-xl shadow-lg hover:bg-cyan-700 hover:shadow-xl hover:scale-105 transition-all duration-300 w-full sm:w-auto border border-cyan-500/20"
+              className="group flex items-center justify-center px-6 md:px-8 py-4 bg-gradient-to-r from-cyan-500 to-sky-500 text-white rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-base md:text-lg font-semibold"
             >
-              <Download className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-              <span className="font-semibold tracking-wide">
-                Download All Records
-              </span>
+              <Download className="w-5 h-5 md:w-6 md:h-6 mr-3 group-hover:scale-110 transition-transform duration-300" />
+              Download All Records
             </button>
           </div>
         </header>
 
-        <section className="mb-8">
-          <div className="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-4">
+        <section className="mb-8 md:mb-10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {stats.map((stat, index) => {
               const IconComponent = stat.icon;
               return (
                 <div
                   key={index}
-                  className={`${stat.bgColor} backdrop-blur-sm rounded-xl p-6 border ${stat.borderColor} shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300`}
+                  className={`${stat.bgColor} backdrop-blur-sm border border-white/20 rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group`}
                 >
                   <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-slate-600 tracking-wide uppercase">
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className={`${stat.color} text-sm md:text-base font-semibold uppercase tracking-wider mb-3 truncate opacity-80`}
+                      >
                         {stat.title}
                       </p>
-                      <p className={`text-2xl font-bold ${stat.color} mt-1`}>
+                      <p className="text-3xl md:text-4xl font-bold text-slate-800 group-hover:scale-105 transition-transform duration-300">
                         {stat.value}
                       </p>
                     </div>
                     <div
-                      className={`p-3 ${stat.bgColor} rounded-lg border ${stat.borderColor}`}
+                      className={`p-3 md:p-4 rounded-xl ${stat.bgColor} ml-3 flex-shrink-0 shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300 border ${stat.borderColor}`}
                     >
-                      <IconComponent className={`w-6 h-6 ${stat.color}`} />
+                      <IconComponent className={`w-6 h-6 md:w-7 md:h-7 ${stat.color}`} />
                     </div>
                   </div>
                 </div>
@@ -147,49 +147,163 @@ const ClientMedicalRecords = () => {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {records.length === 0 ? (
-            <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-16">
-              <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 w-fit mx-auto mb-6">
-                <FileText className="w-20 h-20 text-slate-400 mx-auto" />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-700 mb-3">
-                No medical records found
-              </h3>
-              <p className="text-slate-500 text-lg">
-                Your medical records will appear here after appointments.
-              </p>
-            </div>
-          ) : (
-            records?.map((record, index) => (
-              <div
-                key={index}
-                className="group bg-white/80 backdrop-blur-sm rounded-xl border border-slate-200/50 shadow-lg p-6 flex flex-col hover:shadow-xl hover:shadow-cyan-100/50 hover:scale-105 hover:border-cyan-200/50 transition-all duration-300"
-              >
-                <div className="flex-grow">
-                  <p className="text-xl font-bold text-slate-800 tracking-tight">
-                    {record.doctorId?.name}
-                  </p>
-                  <p className="text-cyan-600 font-semibold text-sm tracking-wide uppercase mt-1">
-                    {record.createdAt.slice(1, 10)}
-                  </p>
-                  <div className="my-4 h-px bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"></div>
-                  <p className="text-slate-700 mb-4 font-medium leading-relaxed">
-                    {record.diagnosis}
-                  </p>
-                </div>
-                <button
-                  onClick={() => openModal(record)}
-                  className="mt-auto flex items-center justify-center p-3 bg-slate-100/80 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-slate-200 hover:shadow-md group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-all duration-300 border border-slate-200/50"
+        <section>
+          <div className="mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+              All Medical Records
+            </h2>
+            <p className="text-slate-600 mt-2 text-lg">
+              {records.length} medical record{records.length !== 1 ? "s" : ""} found
+            </p>
+          </div>
+
+          {/* Mobile View */}
+          <div className="block lg:hidden space-y-4">
+            {records.length > 0 ? (
+              records?.map((record, index) => (
+                <div
+                  key={index}
+                  className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
                 >
-                  <Eye className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
-                  <span className="font-semibold tracking-wide">
-                    View Details
-                  </span>
-                </button>
+                  <div className="flex-grow">
+                    <p className="text-xl font-bold text-slate-800 tracking-tight group-hover:text-cyan-600 transition-colors duration-300">
+                      {record.doctorId?.name}
+                    </p>
+                    <p className="text-cyan-600 font-semibold text-sm tracking-wide uppercase mt-1">
+                      {record.createdAt.slice(1, 10)}
+                    </p>
+                    <div className="my-4 h-px bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200"></div>
+                    <p className="text-slate-700 mb-4 font-medium leading-relaxed">
+                      {record.diagnosis}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => openModal(record)}
+                    className="mt-auto flex items-center justify-center p-3 bg-slate-100/80 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-slate-200 hover:shadow-md group-hover:bg-cyan-50 group-hover:text-cyan-700 transition-all duration-300 border border-slate-200/50 w-full"
+                  >
+                    <Eye className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
+                    <span className="font-semibold tracking-wide">
+                      View Details
+                    </span>
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-12 text-center">
+                <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-6 w-fit mx-auto mb-6">
+                  <FileText className="w-16 h-16 text-slate-400 mx-auto" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-700 mb-2">
+                  No medical records found
+                </h3>
+                <p className="text-slate-500 text-lg">
+                  Your medical records will appear here after appointments.
+                </p>
               </div>
-            ))
-          )}
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block overflow-hidden rounded-2xl border border-white/20 bg-white/80 backdrop-blur-sm shadow-lg">
+            <table className="w-full text-left">
+              <thead className="bg-gradient-to-r from-slate-50 to-slate-100/50">
+                <tr>
+                  <th className="py-6 px-6 font-bold text-slate-700 text-base">
+                    Doctor
+                  </th>
+                  <th className="py-6 px-6 font-bold text-slate-700 text-base">
+                    Clinic
+                  </th>
+                  <th className="py-6 px-6 font-bold text-slate-700 text-base">
+                    Date
+                  </th>
+                  <th className="py-6 px-6 font-bold text-slate-700 text-base">
+                    Diagnosis
+                  </th>
+                  <th className="py-6 px-6 font-bold text-slate-700 text-base">
+                    Treatment
+                  </th>
+                  <th className="py-6 px-6 font-bold text-slate-700 text-base">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {records.length > 0 ? (
+                  records?.map((record, index) => (
+                    <tr
+                      key={index}
+                      className="hover:bg-slate-50/50 transition-all duration-300 border-t border-slate-200/30 group"
+                    >
+                      <td className="py-6 px-6">
+                        <p className="font-bold text-slate-800 text-lg group-hover:text-cyan-600 transition-colors duration-300">
+                          {record.doctorId?.name}
+                        </p>
+                        <p className="text-base text-slate-500 font-medium">
+                          Appointment: #{record.appointmentId?._id?.slice(-4)}
+                        </p>
+                      </td>
+                      <td className="px-6">
+                        <p className="font-semibold text-slate-700 text-base">
+                          {record.clinicId?.clinicName}
+                        </p>
+                      </td>
+                      <td className="px-6">
+                        <p className="font-semibold text-slate-700 text-base">
+                          {new Date(record.appointmentId?.date).toLocaleDateString()}
+                        </p>
+                        <p className="text-base text-slate-500 font-medium">
+                          {record.createdAt.slice(1, 10)}
+                        </p>
+                      </td>
+                      <td className="px-6">
+                        <p className="font-semibold text-slate-700 text-base leading-relaxed">
+                          {record.diagnosis}
+                        </p>
+                      </td>
+                      <td className="px-6">
+                        <p className="font-semibold text-slate-700 text-base leading-relaxed">
+                          {record.treatment}
+                        </p>
+                      </td>
+                      <td className="px-6 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => openModal(record)}
+                            className="flex items-center justify-center px-4 py-2 bg-gradient-to-r from-cyan-500 to-sky-500 text-white rounded-xl hover:shadow-md hover:scale-105 transition-all duration-300 text-sm font-semibold"
+                          >
+                            <Eye className="w-4 h-4 mr-1" />
+                            View
+                          </button>
+                          <button
+                            type="button"
+                            className="p-3 hover:bg-slate-100 rounded-xl text-slate-500 hover:text-slate-700 transition-all duration-300 hover:scale-110"
+                            aria-label="More options"
+                          >
+                            <MoreHorizontal className="h-5 w-5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="text-center py-16">
+                      <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 w-fit mx-auto mb-6">
+                        <FileText className="w-20 h-20 text-slate-400 mx-auto" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-slate-700 mb-3">
+                        No medical records found
+                      </h3>
+                      <p className="text-slate-500 text-lg">
+                        Your medical records will appear here after appointments.
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </section>
       </div>
       <MedicalRecordsModal
