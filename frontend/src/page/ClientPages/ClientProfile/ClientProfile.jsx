@@ -6,9 +6,6 @@ import {
   MapPin,
   Calendar,
   UserCheck,
-  Activity,
-  FileText,
-  Clock,
   Download,
 } from "lucide-react";
 import { AuthContext } from "../../../context/AuthContext";

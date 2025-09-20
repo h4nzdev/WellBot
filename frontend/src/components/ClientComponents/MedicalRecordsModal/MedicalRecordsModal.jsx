@@ -19,13 +19,13 @@ const MedicalRecordsModal = ({ isOpen, setIsOpen, record }) => {
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-md p-4">
       <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200/50 w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-out hover:shadow-2xl hover:shadow-cyan-100/20 hide-scroll">
-        <div className="sticky top-0 bg-gradient-to-r from-slate-800 to-slate-700 text-white p-6 rounded-t-xl border-b border-slate-600/20 z-50">
+        <div className="sticky top-0 bg-cyan-500 text-white p-6 rounded-t-xl border-b border-slate-600/20 z-50">
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-2xl font-bold tracking-tight">
                 Medical Record Details
               </h2>
-              <p className="text-slate-300 text-sm mt-1 font-medium">
+              <p className="text-slate-200 text-sm mt-1 font-medium">
                 Comprehensive patient information
               </p>
             </div>
@@ -43,7 +43,7 @@ const MedicalRecordsModal = ({ isOpen, setIsOpen, record }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="bg-slate-50/80 backdrop-blur-sm border border-slate-200/50 p-5 rounded-xl hover:shadow-md hover:scale-105 hover:border-slate-300/50 transition-all duration-300">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-slate-600 rounded-lg">
+                  <div className="p-2 bg-cyan-600 rounded-lg">
                     <FileText size={16} className="text-white" />
                   </div>
                   <p className="font-semibold text-slate-700 tracking-wide">
