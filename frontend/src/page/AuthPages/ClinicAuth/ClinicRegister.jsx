@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { Shield, Star, Check } from "lucide-react";
+import { Shield, Star, Check, ArrowLeft } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -71,7 +73,7 @@ export default function ClinicRegister() {
         subscriptionPlan: "free",
         agreeToTerms: false,
       });
-      navigate("/clinic/login")
+      navigate("/clinic/login");
     } catch (error) {
       if (
         error.response &&
@@ -86,31 +88,119 @@ export default function ClinicRegister() {
     }
   };
 
-  console.log(formData.subscriptionPlan);
-
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <PaymentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handlePaymentSubmit}
-      />
-      <div className="w-full max-w-2xl">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-3 mb-6">
-            <div className="bg-cyan-500 p-4 rounded-2xl shadow-lg">
-              <img src={logo} alt="img" className="w-10 h-10" />
+    <div className="min-h-screen bg-slate-50 flex">
+      {/* Left Side - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 fixed top-0 left-0 h-screen bg-gradient-to-br from-cyan-600 via-cyan-700 to-cyan-800">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.1),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.08),transparent_60%)]" />
+
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute bottom-32 right-16 w-24 h-24 bg-white/5 rounded-full blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/3 right-1/4 w-16 h-16 bg-white/15 rounded-full blur-lg animate-pulse delay-500"></div>
+
+        <div className="flex flex-col justify-center items-center w-full px-12 relative z-10">
+          {/* Logo and Brand */}
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center mb-8">
+              <img
+                src={logo}
+                className="w-20 h-20 rounded-3xl shadow-2xl shadow-black/20"
+                alt="Medora Logo"
+              />
+              <div className="ml-6 text-left">
+                <h1 className="text-4xl font-bold text-white tracking-tight">
+                  Medora
+                </h1>
+                <p className="text-cyan-100 font-medium tracking-wider">
+                  Healthcare Platform
+                </p>
+              </div>
             </div>
-            <h1 className="text-4xl font-semibold text-slate-800">Medora</h1>
+
+            <div className="space-y-6 text-center">
+              <h2 className="text-3xl font-bold text-white leading-tight">
+                Empowering Healthcare
+                <br />
+                <span className="text-cyan-200">Providers Worldwide</span>
+              </h2>
+              <p className="text-cyan-100 text-lg leading-relaxed max-w-md">
+                Join thousands of clinics and healthcare professionals who trust
+                Medora to streamline their patient care and practice management.
+              </p>
+            </div>
           </div>
-          <p className="text-lg text-slate-600">Create your clinic account</p>
+
+          {/* Trust Indicators */}
+          <div className="grid grid-cols-2 gap-6 w-full max-w-sm">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+              <Shield className="w-8 h-8 text-white mx-auto mb-3" />
+              <h3 className="text-white font-bold text-lg">HIPAA</h3>
+              <p className="text-cyan-100 text-sm">Compliant</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+              <Star className="w-8 h-8 text-white mx-auto mb-3" />
+              <h3 className="text-white font-bold text-lg">1000+</h3>
+              <p className="text-cyan-100 text-sm">Trusted Clinics</p>
+            </div>
+          </div>
+
+          {/* Bottom Security Notice */}
+          <div className="absolute bottom-8 left-12 right-12">
+            <p className="text-cyan-200 text-sm text-center flex items-center justify-center gap-2">
+              <Shield className="w-4 h-4" />
+              Enterprise-grade security & encryption
+            </p>
+          </div>
         </div>
+      </div>
 
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-          <h2 className="text-2xl font-semibold text-slate-800 mb-6">
-            Register Your Clinic
-          </h2>
+      {/* Right Side - Registration Form */}
+      <div className="w-full lg:w-1/2 lg:ml-auto flex items-start justify-center px-6 lg:px-12 py-12 overflow-y-auto h-screen">
+        <div className="w-full max-w-2xl">
+          {/* Back Button */}
+          <div className="mb-6">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center space-x-2 text-slate-600 hover:text-slate-800 transition-colors duration-200 group"
+            >
+              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
+              <span className="font-medium">Back</span>
+            </button>
+          </div>
 
+          {/* Mobile Logo - Only shown on smaller screens */}
+          <div className="lg:hidden text-center mb-10">
+            <div className="flex items-center justify-center mb-6">
+              <img src={logo} className="w-16 h-16" alt="Medora Logo" />
+              <div className="ml-4 text-left">
+                <h1 className="text-2xl font-bold text-slate-800">Medora</h1>
+                <p className="text-cyan-600 text-sm font-medium">
+                  Healthcare Platform
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Form Header */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-slate-800 mb-2">
+              Create Your Clinic Account
+            </h2>
+            <p className="text-slate-600 text-lg">
+              Register your clinic to get started
+            </p>
+          </div>
+
+          <PaymentModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onSubmit={handlePaymentSubmit}
+          />
+
+          {/* Registration Form */}
           <form
             className="space-y-6"
             onSubmit={(e) => {
@@ -118,10 +208,10 @@ export default function ClinicRegister() {
               registerClinic();
             }}
           >
-            {/* Clinic Information */}
+            {/* Clinic Name & Contact Person */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-700">
                   Clinic Name
                 </label>
                 <input
@@ -129,12 +219,12 @@ export default function ClinicRegister() {
                   name="clinicName"
                   value={formData.clinicName}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="Downtown Medical Center"
+                  className="w-full px-4 py-4 bg-white border border-slate-300 rounded-2xl focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all duration-300 placeholder:text-slate-400 text-slate-800"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-700">
                   Contact Person
                 </label>
                 <input
@@ -142,15 +232,16 @@ export default function ClinicRegister() {
                   name="contactPerson"
                   value={formData.contactPerson}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="Dr. John Smith"
+                  className="w-full px-4 py-4 bg-white border border-slate-300 rounded-2xl focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all duration-300 placeholder:text-slate-400 text-slate-800"
                 />
               </div>
             </div>
 
+            {/* Email & Phone */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-700">
                   Email Address
                 </label>
                 <input
@@ -158,13 +249,13 @@ export default function ClinicRegister() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  autoComplete="off"
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="admin@clinic.com"
+                  autoComplete="off"
+                  className="w-full px-4 py-4 bg-white border border-slate-300 rounded-2xl focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all duration-300 placeholder:text-slate-400 text-slate-800"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-700">
                   Phone Number
                 </label>
                 <input
@@ -172,14 +263,15 @@ export default function ClinicRegister() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="+1 (555) 123-4567"
+                  className="w-full px-4 py-4 bg-white border border-slate-300 rounded-2xl focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all duration-300 placeholder:text-slate-400 text-slate-800"
                 />
               </div>
             </div>
 
+            {/* Address */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-slate-700">
                 Clinic Address
               </label>
               <input
@@ -187,14 +279,15 @@ export default function ClinicRegister() {
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                 placeholder="123 Medical Drive, City, State 12345"
+                className="w-full px-4 py-4 bg-white border border-slate-300 rounded-2xl focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all duration-300 placeholder:text-slate-400 text-slate-800"
               />
             </div>
 
+            {/* Password & Confirm Password */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-700">
                   Password
                 </label>
                 <input
@@ -202,12 +295,12 @@ export default function ClinicRegister() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="••••••••"
+                  className="w-full px-4 py-4 bg-white border border-slate-300 rounded-2xl focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all duration-300 placeholder:text-slate-400 text-slate-800"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-slate-700">
                   Confirm Password
                 </label>
                 <input
@@ -215,8 +308,8 @@ export default function ClinicRegister() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
                   placeholder="••••••••"
+                  className="w-full px-4 py-4 bg-white border border-slate-300 rounded-2xl focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all duration-300 placeholder:text-slate-400 text-slate-800"
                 />
               </div>
             </div>
@@ -228,7 +321,7 @@ export default function ClinicRegister() {
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div
-                  className={`border-2 rounded-xl p-4 transition-all cursor-pointer ${
+                  className={`border-2 rounded-2xl p-6 transition-all cursor-pointer ${
                     formData.subscriptionPlan === "free"
                       ? "border-cyan-500 bg-cyan-50"
                       : "border-slate-200 hover:border-cyan-300"
@@ -241,16 +334,16 @@ export default function ClinicRegister() {
                       $0<span className="text-sm font-normal">/month</span>
                     </div>
                     <ul className="text-sm text-slate-600 space-y-1">
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Up to 25 patients
                       </li>
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Basic scheduling
                       </li>
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Email support
                       </li>
                     </ul>
@@ -258,7 +351,7 @@ export default function ClinicRegister() {
                 </div>
 
                 <div
-                  className={`border-2 rounded-xl p-4 transition-all cursor-pointer relative ${
+                  className={`border-2 rounded-2xl p-6 transition-all cursor-pointer relative ${
                     formData.subscriptionPlan === "basic"
                       ? "border-cyan-500 bg-cyan-50"
                       : "border-slate-200 hover:border-cyan-300"
@@ -278,20 +371,20 @@ export default function ClinicRegister() {
                       $29<span className="text-sm font-normal">/month</span>
                     </div>
                     <ul className="text-sm text-slate-600 space-y-1">
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Up to 100 patients
                       </li>
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Advanced scheduling
                       </li>
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Priority support
                       </li>
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Basic analytics
                       </li>
                     </ul>
@@ -299,7 +392,7 @@ export default function ClinicRegister() {
                 </div>
 
                 <div
-                  className={`border-2 rounded-xl p-4 transition-all cursor-pointer relative ${
+                  className={`border-2 rounded-2xl p-6 transition-all cursor-pointer relative ${
                     formData.subscriptionPlan === "pro"
                       ? "border-cyan-500 bg-cyan-50"
                       : "border-slate-200 hover:border-cyan-300"
@@ -319,24 +412,24 @@ export default function ClinicRegister() {
                       $79<span className="text-sm font-normal">/month</span>
                     </div>
                     <ul className="text-sm text-slate-600 space-y-1">
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Unlimited patients
                       </li>
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Full features
                       </li>
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         24/7 support
                       </li>
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Advanced analytics
                       </li>
-                      <li className="flex items-center">
-                        <Check className="w-3 h-3 text-emerald-500 mr-1" />
+                      <li className="flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-500 mr-1" />
                         Custom integrations
                       </li>
                     </ul>
@@ -345,6 +438,7 @@ export default function ClinicRegister() {
               </div>
             </div>
 
+            {/* Agree to Terms */}
             <div className="flex items-center mt-6">
               <input
                 type="checkbox"
@@ -365,15 +459,36 @@ export default function ClinicRegister() {
               </span>
             </div>
 
+            {/* Error Display */}
+            {error && (
+              <div className="border border-red-300 p-4 bg-red-50 flex items-center space-x-3 rounded-2xl mt-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-red-500 w-5 h-5 flex-shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <p className="text-red-700 font-medium">{error}</p>
+              </div>
+            )}
+
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={formData.subscriptionPlan !== "free" && !isPaymentSetup}
-              className={`w-full font-medium py-3 px-4 rounded-xl shadow-md transition-all duration-300 transform 
-                ${
-                  formData.subscriptionPlan !== "free" && !isPaymentSetup
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-cyan-600 hover:bg-cyan-700 hover:shadow-lg hover:-translate-y-0.5"
-                } text-white`}
+              className={`w-full bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-700 hover:to-cyan-600 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-2 focus:ring-cyan-500/20 focus:outline-none shadow-lg shadow-cyan-500/25 ${
+                formData.subscriptionPlan !== "free" && !isPaymentSetup
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
               title={
                 formData.subscriptionPlan !== "free" && !isPaymentSetup
                   ? "Please set up payment first"
@@ -389,12 +504,22 @@ export default function ClinicRegister() {
             )}
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <p className="text-center text-sm text-slate-600">
+          {/* Divider */}
+          <div className="my-8 flex items-center">
+            <div className="flex-1 border-t border-slate-300" />
+            <span className="px-4 text-xs text-slate-500 font-medium">
+              SECURE REGISTRATION
+            </span>
+            <div className="flex-1 border-t border-slate-300" />
+          </div>
+
+          {/* Sign In Link */}
+          <div className="text-center">
+            <p className="text-sm text-slate-600">
               Already have an account?{" "}
               <a
                 href="/clinic/login"
-                className="text-cyan-600 hover:text-cyan-700 font-medium"
+                className="text-cyan-600 hover:text-cyan-700 font-semibold transition-colors hover:underline"
               >
                 Sign in
               </a>
