@@ -91,7 +91,7 @@ export default function ClientSidebar() {
             <span className="text-white font-semibold text-sm">{initials}</span>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800">{user.name}</h3>
+            <h3 className="turnicate max-w-[150px] font-semibold text-slate-800">{user.name}</h3>
             <p className="text-sm text-slate-500">Patient</p>
           </div>
         </div>
