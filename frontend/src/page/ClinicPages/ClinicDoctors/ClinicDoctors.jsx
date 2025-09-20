@@ -19,9 +19,11 @@ import { useContext, useState } from "react";
 
 export default function ClinicDoctors() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
   return (
     <div className="w-full min-h-screen bg-slate-50">
-      <div className="mx-auto ">
+      <div className="mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-4">
@@ -72,7 +74,11 @@ export default function ClinicDoctors() {
             {/* Add Button */}
             <button
               type="button"
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                setEditMode(false);
+                setSelectedDoctor(null);
+                setIsModalOpen(true);
+              }}
               className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 h-12 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center"
             >
               <Plus className="w-5 h-5 mr-2" />
@@ -83,11 +89,17 @@ export default function ClinicDoctors() {
           {/* Add Doctor Modal */}
           <AddDoctorModal
             isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
+            onClose={() => {
+              setIsModalOpen(false);
+              setEditMode(false);
+              setSelectedDoctor(null);
+            }}
+            editMode={editMode}
+            doctorData={selectedDoctor}
           />
 
           {/* Table */}
-          <div className="rounded-xl border border-slate-200 overflow-hidden">
+          <div className="rounded-xl border border-slate-200">
             <table className="w-full text-left">
               <thead className="bg-slate-50">
                 <tr>
@@ -105,7 +117,13 @@ export default function ClinicDoctors() {
                   </th>
                 </tr>
               </thead>
-              <ClinicDoctorsTableBody />
+              <ClinicDoctorsTableBody 
+                onEditDoctor={(doctor) => {
+                  setEditMode(true);
+                  setSelectedDoctor(doctor);
+                  setIsModalOpen(true);
+                }}
+              />
             </table>
           </div>
 

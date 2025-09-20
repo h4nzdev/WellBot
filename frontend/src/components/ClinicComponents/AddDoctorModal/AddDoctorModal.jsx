@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { X } from "lucide-react";
 import axios from "axios";
 import { DoctorContext } from "../../../context/DoctorContext";
@@ -6,7 +6,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const AddDoctorModal = ({ isOpen, onClose }) => {
+const AddDoctorModal = ({ isOpen, onClose, editMode = false, doctorData = null }) => {
   const { user } = useContext(AuthContext);
   const { fetchDoctors } = useContext(DoctorContext);
   const [formData, setFormData] = useState({
@@ -27,18 +27,75 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
     ],
   });
 
+  // Update form data when doctorData changes (for editing)
+  useEffect(() => {
+    if (editMode && doctorData) {
+      setFormData({
+        name: doctorData.name || "",
+        gender: doctorData.gender || "",
+        qualification: doctorData.qualification || "",
+        specialty: doctorData.specialty || "",
+        experience: doctorData.experience || "",
+        email: doctorData.email || "",
+        phone: doctorData.phone || "",
+        status: doctorData.status || "Active",
+        availability: doctorData.availability || [
+          {
+            day: "Monday",
+            startTime: "09:00",
+            endTime: "17:00",
+          },
+        ],
+      });
+    } else {
+      // Reset form when adding new doctor
+      setFormData({
+        name: "",
+        gender: "",
+        qualification: "",
+        specialty: "",
+        experience: "",
+        email: "",
+        phone: "",
+        status: "Active",
+        availability: [
+          {
+            day: "Monday",
+            startTime: "09:00",
+            endTime: "17:00",
+          },
+        ],
+      });
+    }
+  }, [editMode, doctorData]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/doctor/add-doctor", {
-        ...formData,
-        clinicId: user._id,
-      });
-      toast.success("Doctor added successfully!");
+      if (editMode && doctorData) {
+        // Update existing doctor
+        await axios.put(`http://localhost:3000/doctor/${doctorData._id}`, {
+          ...formData,
+          clinicId: user._id,
+        });
+        toast.success("Doctor updated successfully!");
+      } else {
+        // Add new doctor
+        await axios.post("http://localhost:3000/doctor/add-doctor", {
+          ...formData,
+          clinicId: user._id,
+        });
+        toast.success("Doctor added successfully!");
+      }
       fetchDoctors();
       onClose();
     } catch (error) {
-      toast.error("Error adding doctor");
+      if (editMode) {
+        toast.error("Error updating doctor");
+      } else {
+        toast.error("Error adding doctor");
+      }
+      console.error("Error:", error);
     }
   };
 
@@ -58,7 +115,7 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
         <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center p-6 border-b">
             <h2 className="text-xl font-semibold text-gray-800">
-              Add New Doctor
+              {editMode ? "Edit Doctor" : "Add New Doctor"}
             </h2>
             <button
               onClick={onClose}
@@ -380,7 +437,7 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
                 type="submit"
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
-                Add Doctor
+                {editMode ? "Update Doctor" : "Add Doctor"}
               </button>
             </div>
           </form>

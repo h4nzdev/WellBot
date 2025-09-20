@@ -89,7 +89,7 @@ const ClinicRoutes = () => {
           }
         />
         <Route
-          path="/clinic/doctor-profile"
+          path="/clinic/doctor-profile/:id"
           element={
             <ClinicLayout>
               <ClinicDoctorProfile />

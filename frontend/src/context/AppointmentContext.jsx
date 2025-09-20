@@ -23,8 +23,6 @@ export const AppointmentProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  console.log(appointments);
-
   return (
     <AppointmentContext.Provider
       value={{ appointments, setAppointments, fetchAppointments }}

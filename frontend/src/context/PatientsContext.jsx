@@ -19,8 +19,6 @@ export const PatientsProvider = ({ children }) => {
     fetchPatients();
   }, []);
 
-  console.log(patients);
-
   return (
     <PatientsContext.Provider value={{ patients, setPatients, fetchPatients }}>
       {children}

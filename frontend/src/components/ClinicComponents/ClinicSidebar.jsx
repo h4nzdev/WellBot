@@ -124,9 +124,8 @@ export default function ClinicSidebar() {
       {/* Navigation Menu */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {menuItems.map((item, index) => (
-          <Link to={item.link}>
+          <Link key={index} to={item.link}>
             <button
-              key={index}
               className={`
               w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200
               ${

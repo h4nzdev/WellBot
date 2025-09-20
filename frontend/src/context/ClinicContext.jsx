@@ -15,8 +15,6 @@ export const ClinicProvider = ({ children }) => {
     }
   };
 
-  console.log(clinics)
-
   useEffect(() => {
     fetchClinics();
   }, []);

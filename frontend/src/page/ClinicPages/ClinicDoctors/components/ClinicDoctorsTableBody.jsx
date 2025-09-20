@@ -1,10 +1,9 @@
-import { MoreHorizontal } from "lucide-react";
 import React, { useContext } from "react";
 import { DoctorContext } from "../../../../context/DoctorContext";
 import { AuthContext } from "../../../../context/AuthContext";
 import DoctorActions from "../../../../components/ClinicComponents/DoctorActions/DoctorActions";
 
-const ClinicDoctorsTableBody = () => {
+const ClinicDoctorsTableBody = ({ onEditDoctor }) => {
   const { doctors } = useContext(DoctorContext);
   const { user } = useContext(AuthContext);
 
@@ -32,7 +31,11 @@ const ClinicDoctorsTableBody = () => {
               </span>
             </td>
             <td className="px-4 text-center">
-              <DoctorActions />
+              <DoctorActions 
+                id={doctor._id}
+                doctor={doctor}
+                onEdit={() => onEditDoctor(doctor)}
+              />
             </td>
           </tr>
         ))
