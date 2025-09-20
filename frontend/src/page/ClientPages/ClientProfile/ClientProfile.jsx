@@ -12,7 +12,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { useDate } from "../../../utils/date";
 
 const ClientProfile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, initials } = useContext(AuthContext);
 
   if (!user) {
     return (
@@ -141,46 +141,43 @@ const ClientProfile = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-slate-50">
-      <div className="mx-auto">
+    <div className="w-full flex">
+      <div className="mx-auto flex-1 p-4 sm:p-6">
         <header className="mb-8">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-lg p-8">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-lg p-6 lg:p-8">
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <div className="w-24 h-24 rounded-full bg-cyan-700 flex items-center justify-center shadow-lg">
-                <span className="text-2xl font-bold text-white tracking-wide">
-                  {user.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-cyan-700 flex items-center justify-center shadow-lg">
+                <span className="text-xl sm:text-2xl font-bold text-white tracking-wide">
+                  {initials}
                 </span>
               </div>
               <div className="text-center sm:text-left flex-1">
-                <h1 className="text-3xl md:text-4xl font-bold text-slate-800 tracking-tight">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 tracking-tight">
                   {user.name}
                 </h1>
-                <p className="text-slate-600 mt-2 text-lg font-medium">
+                <p className="text-slate-600 mt-2 text-base sm:text-lg font-medium break-all">
                   {user.email}
                 </p>
-                <div className="flex flex-wrap gap-3 mt-4">
-                  <span className="inline-block bg-cyan-100 text-cyan-700 px-4 py-2 rounded-lg text-sm font-semibold tracking-wide uppercase border border-cyan-200">
+                <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 justify-center sm:justify-start">
+                  <span className="inline-block bg-cyan-100 text-cyan-700 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold tracking-wide uppercase border border-cyan-200">
                     {user.role}
                   </span>
-                  <span className="inline-block bg-emerald-100 text-emerald-700 px-4 py-2 rounded-lg text-sm font-semibold tracking-wide border border-emerald-200">
+                  <span className="inline-block bg-emerald-100 text-emerald-700 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold tracking-wide border border-emerald-200">
                     Active
                   </span>
                 </div>
               </div>
-              <div className="text-center sm:text-right">
-                <p className="text-sm font-medium text-slate-600 tracking-wide uppercase">
+              <div className="text-center sm:text-right mt-4 sm:mt-0">
+                <p className="text-xs sm:text-sm font-medium text-slate-600 tracking-wide uppercase">
                   Registered Date
                 </p>
-                <p className="text-lg font-bold text-slate-800 mt-1">
+                <p className="text-base sm:text-lg font-bold text-slate-800 mt-1">
                   {useDate(user.createdAt)}
                 </p>
-                <p className="text-sm font-medium text-slate-600 tracking-wide uppercase mt-3">
+                <p className="text-xs sm:text-sm font-medium text-slate-600 tracking-wide uppercase mt-3">
                   Patient ID
                 </p>
-                <p className="text-lg font-bold text-cyan-700">{user._id}</p>
+                <p className="text-sm sm:text-base lg:text-lg font-bold text-cyan-700 break-all">{user._id}</p>
               </div>
             </div>
           </div>
@@ -190,7 +187,7 @@ const ClientProfile = () => {
           <h2 className="text-2xl font-bold text-slate-800 tracking-tight mb-6">
             Personal Information
           </h2>
-          <div className="grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((stat, index) => {
               const IconComponent = stat.icon;
               return (
@@ -199,7 +196,7 @@ const ClientProfile = () => {
                   className={`${stat.bgColor} backdrop-blur-sm rounded-xl p-6 border ${stat.borderColor} shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300`}
                 >
                   <div className="flex items-center justify-between">
-                    <div>
+                    <div className="flex-1">
                       <p className="text-sm font-medium text-slate-600 tracking-wide uppercase">
                         {stat.title}
                       </p>
@@ -267,7 +264,7 @@ const ClientProfile = () => {
 
           <div className="bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[600px]">
                 <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
                     <th className="text-left p-4 text-sm font-semibold text-slate-700">

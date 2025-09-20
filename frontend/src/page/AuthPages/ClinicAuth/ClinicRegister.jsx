@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Shield, Star, Check, ArrowLeft } from "lucide-react";
+import { Shield, Star, Check } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

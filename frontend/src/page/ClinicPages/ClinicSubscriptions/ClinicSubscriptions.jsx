@@ -10,13 +10,13 @@ import { toast } from "react-toastify";
 const plans = [
   {
     name: "free",
-    price: "$0",
+    price: "₱0",
     priceDetails: "/month",
     features: ["Up to 25 patients", "Basic scheduling", "Email support"],
   },
   {
     name: "basic",
-    price: "$29",
+    price: "₱199",
     priceDetails: "/month",
     features: [
       "Up to 100 patients",
@@ -27,7 +27,7 @@ const plans = [
   },
   {
     name: "pro",
-    price: "$79",
+    price: "₱299",
     priceDetails: "/month",
     features: [
       "Unlimited patients",
