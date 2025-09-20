@@ -1,4 +1,4 @@
-import { MoreHorizontal } from "lucide-react";
+import PatientActions from "../../../components/ClinicComponents/PatientActions/PatientActions";
 
 const ClinicPatientsTableBody = ({ patients }) => {
   return (
@@ -18,14 +18,7 @@ const ClinicPatientsTableBody = ({ patients }) => {
             <td className="px-4 text-slate-500">{patient.email}</td>
             <td className="px-4">{patient.address}</td>
             <td className="px-4 text-center">
-              <button
-                type="button"
-                className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
-                disabled
-                aria-label="Actions"
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </button>
+              <PatientActions id={patient._id} />
             </td>
           </tr>
         ))
