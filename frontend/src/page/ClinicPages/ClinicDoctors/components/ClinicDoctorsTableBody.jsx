@@ -2,6 +2,7 @@ import { MoreHorizontal } from "lucide-react";
 import React, { useContext } from "react";
 import { DoctorContext } from "../../../../context/DoctorContext";
 import { AuthContext } from "../../../../context/AuthContext";
+import DoctorActions from "../../../../components/ClinicComponents/DoctorActions/DoctorActions";
 
 const ClinicDoctorsTableBody = () => {
   const { doctors } = useContext(DoctorContext);
@@ -31,14 +32,7 @@ const ClinicDoctorsTableBody = () => {
               </span>
             </td>
             <td className="px-4 text-center">
-              <button
-                type="button"
-                className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
-                disabled
-                aria-label="Actions"
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </button>
+              <DoctorActions />
             </td>
           </tr>
         ))

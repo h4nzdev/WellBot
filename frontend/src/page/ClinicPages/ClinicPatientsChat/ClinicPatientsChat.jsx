@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import {
+  User,
   MessageCircle,
   Search,
   ChevronDown,
@@ -8,48 +9,24 @@ import {
   MoreHorizontal,
   X,
 } from "lucide-react";
-import { appointments } from "../../../utils/appointment";
-import axios from "axios";
 
 export default function ClinicPatientsChat() {
   const [chatHistory, setChatHistory] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
 
   useEffect(() => {
-    const fetchChats = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/chat");
-        const data = response.data;
-        if (data.success) {
-          const chatsByPatient = data.chats.reduce((acc, chat) => {
-            const patientId = chat.patientId || "Unknown Patient";
-            if (!acc[patientId]) {
-              acc[patientId] = {
-                patient: patientId,
-                chat: [],
-              };
-            }
-            acc[patientId].chat.push({
-              role: chat.role,
-              text: chat.message,
-              timestamp: chat.timestamp,
-            });
-            return acc;
-          }, {});
-
-          setChatHistory(Object.values(chatsByPatient));
-        }
-      } catch (error) {
-        console.error("Error fetching chat history:", error);
-      }
-    };
-
-    fetchChats();
+    const storedChatHistory = localStorage.getItem("chatHistory");
+    if (storedChatHistory) {
+      const parsedHistory = JSON.parse(storedChatHistory);
+      // Assuming single patient for now, will need to group by patient in a real app
+      setChatHistory([{ patient: "Patient", chat: parsedHistory }]);
+    }
   }, []);
 
+  console.log(chatHistory);
+
   const lastUserMessage = (chat) => {
-    // find last message from patient
-    const userMessages = chat.filter((message) => message.role === "patient");
+    const userMessages = chat.filter((message) => message.role === "user");
     return userMessages[userMessages.length - 1];
   };
 
@@ -114,58 +91,43 @@ export default function ClinicPatientsChat() {
               </tr>
             </thead>
             <tbody>
-              {chatHistory.map((item, index) => {
-                const lastMessage = item.chat[item.chat.length - 1];
-                const lastInteractionTime = lastMessage
-                  ? new Date(lastMessage.timestamp).toLocaleString()
-                  : "N/A";
-                const patient = appointments.find(
-                  (appointment) => appointment.id === item.patient
-                );
-
-                return (
-                  <tr
-                    key={index}
-                    className="border-t border-slate-200 hover:bg-slate-50 transition-colors"
+              {chatHistory.map((item, index) => (
+                <tr
+                  key={index}
+                  className="border-t border-slate-200 hover:bg-slate-50 transition-colors"
+                >
+                  <td className="py-4 px-4 flex items-center gap-3">
+                    <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
+                      {item.patient.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-800">
+                        {item.patient}
+                      </p>
+                      <p className="text-sm text-slate-500">ID: #0001</p>
+                    </div>
+                  </td>
+                  <td
+                    className="py-4 px-4 text-slate-700 max-w-xl truncate"
+                    title={lastUserMessage(item.chat)?.text}
                   >
-                    <td className="py-4 px-4 flex items-center gap-3">
-                      <div className="bg-cyan-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-semibold text-lg">
-                        {patient?.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-slate-800">
-                          {patient?.name}
-                        </p>
-                        <p className="text-sm text-slate-500">
-                          ID: #
-                          {item.patient === "Unknown Patient"
-                            ? "N/A"
-                            : item.patient.substring(0, 8)}
-                        </p>
-                      </div>
-                    </td>
-                    <td
-                      className="py-4 px-4 text-slate-700 max-w-xl truncate"
-                      title={lastUserMessage(item.chat)?.text}
+                    {lastUserMessage(item.chat)?.text}
+                  </td>
+                  <td className="py-4 px-4 text-slate-600">
+                    {new Date().toLocaleString()}
+                  </td>
+                  <td className="py-4 px-4 text-right">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedChat(item.chat)}
+                      className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
+                      aria-label="View chat details"
                     >
-                      {lastUserMessage(item.chat)?.text}
-                    </td>
-                    <td className="py-4 px-4 text-slate-600">
-                      {lastInteractionTime}
-                    </td>
-                    <td className="py-4 px-4 text-right">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedChat(item.chat)}
-                        className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center"
-                        aria-label="View chat details"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+                      <MoreHorizontal className="h-4 w-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -187,12 +149,12 @@ export default function ClinicPatientsChat() {
                 <div
                   key={index}
                   className={`flex ${
-                    message.role === "patient" ? "justify-end" : "justify-start"
+                    message.role === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
                   <div
                     className={`max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-lg ${
-                      message.role === "patient"
+                      message.role === "user"
                         ? "bg-cyan-600 text-white"
                         : "bg-white border border-gray-200 text-gray-900"
                     }`}
