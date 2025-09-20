@@ -276,8 +276,8 @@ export default function ClientAppointments() {
                           </p>
                         </td>
                         <td className="px-6">
-                          <span className="inline-block bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 px-4 py-2 rounded-xl text-base font-semibold shadow-sm">
-                            Consultation
+                          <span className="inline-block bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 px-4 py-2 rounded-xl text-base font-semibold shadow-sm capitalize">
+                            {appointment.type}
                           </span>
                         </td>
                         <td className="px-4">

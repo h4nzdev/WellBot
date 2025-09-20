@@ -204,7 +204,7 @@ export default function ClinicDashboard() {
                             <h3 className="font-semibold text-slate-800 text-lg">
                               {appointment.patientId.name}
                             </h3>
-                            <span className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-full">
+                            <span className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded-full capitalize">
                               {appointment.type}
                             </span>
                           </div>

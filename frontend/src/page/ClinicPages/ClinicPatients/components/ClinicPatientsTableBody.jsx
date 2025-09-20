@@ -13,7 +13,7 @@ const ClinicPatientsTableBody = ({ patients }) => {
               <p className="font-semibold text-slate-800">{patient.name}</p>
             </td>
             <td className="px-4">{patient.age}</td>
-            <td className="px-4">{patient.gender}</td>
+            <td className="px-4 capitalize">{patient.gender}</td>
             <td className="px-4 text-slate-700">{patient.phone}</td>
             <td className="px-4 text-slate-500">{patient.email}</td>
             <td className="px-4">{patient.address}</td>

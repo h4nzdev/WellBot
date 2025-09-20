@@ -157,8 +157,8 @@ const PendingAppointmentsTableBody = () => {
               <p className="text-sm text-slate-500">09:00 AM</p>
             </td>
             <td className="px-4">
-              <span className="inline-block bg-slate-100 text-slate-700 px-2 py-1 rounded-md text-sm">
-                Consultation
+              <span className="inline-block bg-slate-100 text-slate-700 px-2 py-1 rounded-md text-sm capitalize">
+                {appointment.type}
               </span>
             </td>
             <td className="px-4">

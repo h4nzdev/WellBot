@@ -275,7 +275,7 @@ export default function ClientDashboard() {
                           {useTime(appointment.date)}
                         </td>
                         <td className="px-4">
-                          <span className="inline-block bg-slate-100 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium">
+                          <span className="inline-block bg-slate-100 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium capitalize">
                             {appointment.type}
                           </span>
                         </td>

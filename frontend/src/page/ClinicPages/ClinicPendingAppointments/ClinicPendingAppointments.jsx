@@ -67,15 +67,7 @@ export default function PendingAppointments() {
             </div>
 
             {/* Add Button */}
-            <button
-              type="button"
-              className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 h-12 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Add Appointment
-            </button>
           </div>
-
           {/* Table */}
           <div className="rounded-xl border border-slate-200 overflow-hidden">
             <table className="w-full text-left">
