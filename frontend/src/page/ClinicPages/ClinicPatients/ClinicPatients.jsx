@@ -159,7 +159,7 @@ export default function ClinicPatients() {
           </div>
 
           {/* Table */}
-          <div className="rounded-xl border border-slate-200 overflow-hidden">
+          <div className="rounded-xl border border-slate-200">
             <table className="w-full text-left">
               <thead className="bg-slate-50">
                 <tr>

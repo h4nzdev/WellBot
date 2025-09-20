@@ -31,9 +31,15 @@ function useMedicalRecords() {
     if (user?._id) {
       fetchRecords();
     }
+
+    const interval = setInterval(() => {
+      fetchRecords();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, [user]);
 
-  console.log(records)
+  console.log(records);
 
   return { records, loading, error, refetch: fetchRecords };
 }

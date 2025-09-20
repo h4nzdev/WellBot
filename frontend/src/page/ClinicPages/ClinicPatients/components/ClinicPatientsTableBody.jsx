@@ -1,4 +1,5 @@
-import PatientActions from "../../../components/ClinicComponents/PatientActions/PatientActions";
+import PatientActions from "../../../../components/ClinicComponents/PatientActions/PatientActions";
+
 
 const ClinicPatientsTableBody = ({ patients }) => {
   return (
