@@ -3,16 +3,31 @@ import Doctor from "../model/doctorModel.js";
 // ➤ Add new doctor
 export const addDoctor = async (req, res) => {
   try {
-    const { clinicId, name, specialty, email, phone, status, availability } =
-      req.body;
+    const {
+      clinicId,
+      name,
+      gender,
+      qualification,
+      specialty,
+      experience,
+      email,
+      phone,
+      profileImage,
+      status,
+      availability,
+    } = req.body;
 
     // create new doctor
     const doctor = new Doctor({
       clinicId,
       name,
+      gender,
+      qualification,
       specialty,
+      experience,
       email,
       phone,
+      profileImage,
       status: status || "Active", // default if not provided
       availability,
     });
@@ -57,11 +72,33 @@ export const getDoctorById = async (req, res) => {
 // ➤ Update doctor (can update phone, status, etc.)
 export const updateDoctor = async (req, res) => {
   try {
-    const { name, specialty, email, phone, status, availability } = req.body;
+    const {
+      name,
+      gender,
+      qualification,
+      specialty,
+      experience,
+      email,
+      phone,
+      profileImage,
+      status,
+      availability,
+    } = req.body;
 
     const doctor = await Doctor.findByIdAndUpdate(
       req.params.id,
-      { name, specialty, email, phone, status, availability },
+      {
+        name,
+        gender,
+        qualification,
+        specialty,
+        experience,
+        email,
+        phone,
+        profileImage,
+        status,
+        availability,
+      },
       { new: true }
     );
 

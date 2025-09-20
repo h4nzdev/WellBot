@@ -72,6 +72,8 @@ const AddAppointmentModal = ({ isOpen, onClose }) => {
     return null;
   }
 
+  console.log(formData.type)
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform animate-in zoom-in-95 duration-300 border border-slate-200/50">

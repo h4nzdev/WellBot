@@ -9,13 +9,13 @@ import { toast } from "react-toastify";
 
 const plans = [
   {
-    name: "Free",
+    name: "free",
     price: "$0",
     priceDetails: "/month",
     features: ["Up to 25 patients", "Basic scheduling", "Email support"],
   },
   {
-    name: "Basic",
+    name: "basic",
     price: "$29",
     priceDetails: "/month",
     features: [
@@ -26,7 +26,7 @@ const plans = [
     ],
   },
   {
-    name: "Pro",
+    name: "pro",
     price: "$79",
     priceDetails: "/month",
     features: [
@@ -144,7 +144,7 @@ export default function ClinicSubscriptions() {
                     : "border border-slate-200"
                 }`}
               >
-                <h3 className="text-lg font-semibold text-slate-800 mb-2">
+                <h3 className="text-lg font-semibold text-slate-800 mb-2 capitalize">
                   {plan.name} Plan
                 </h3>
                 <p className="text-4xl font-bold text-slate-800 mb-4">

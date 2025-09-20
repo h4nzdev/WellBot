@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import axios from "axios";
 import { DoctorContext } from "../../../context/DoctorContext";
 import { AuthContext } from "../../../context/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddDoctorModal = ({ isOpen, onClose }) => {
@@ -11,7 +11,10 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
   const { fetchDoctors } = useContext(DoctorContext);
   const [formData, setFormData] = useState({
     name: "",
+    gender: "",
+    qualification: "",
     specialty: "",
+    experience: "",
     email: "",
     phone: "",
     status: "Active",
@@ -51,16 +54,6 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
         <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center p-6 border-b">
@@ -77,6 +70,7 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
 
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Name */}
               <div>
                 <label
                   htmlFor="name"
@@ -95,6 +89,50 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
                 />
               </div>
 
+              {/* Gender */}
+              <div>
+                <label
+                  htmlFor="gender"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Gender
+                </label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              {/* Qualification */}
+              <div>
+                <label
+                  htmlFor="qualification"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Qualification
+                </label>
+                <input
+                  type="text"
+                  id="qualification"
+                  name="qualification"
+                  value={formData.qualification}
+                  onChange={handleChange}
+                  placeholder="e.g. MD, DDS"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              {/* Specialty (Dropdown) */}
               <div>
                 <label
                   htmlFor="specialty"
@@ -102,17 +140,45 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
                 >
                   Specialty
                 </label>
-                <input
-                  type="text"
+                <select
                   id="specialty"
                   name="specialty"
                   value={formData.specialty}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
+                >
+                  <option value="">Select Specialty</option>
+                  <option value="General Physician">General Physician</option>
+                  <option value="Pediatrician">Pediatrician</option>
+                  <option value="Cardiologist">Cardiologist</option>
+                  <option value="Dermatologist">Dermatologist</option>
+                  <option value="Dentist">Dentist</option>
+                  <option value="Surgeon">Surgeon</option>
+                </select>
+              </div>
+
+              {/* Experience */}
+              <div>
+                <label
+                  htmlFor="experience"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Years of Experience
+                </label>
+                <input
+                  type="number"
+                  id="experience"
+                  name="experience"
+                  value={formData.experience}
+                  onChange={handleChange}
+                  placeholder="e.g. 5"
+                  min="0"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
+              {/* Email */}
               <div>
                 <label
                   htmlFor="email"
@@ -131,6 +197,7 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
                 />
               </div>
 
+              {/* Phone */}
               <div>
                 <label
                   htmlFor="phone"
@@ -149,6 +216,7 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
                 />
               </div>
 
+              {/* Status */}
               <div>
                 <label
                   htmlFor="status"
@@ -169,6 +237,7 @@ const AddDoctorModal = ({ isOpen, onClose }) => {
               </div>
             </div>
 
+            {/* Availability section stays as is */}
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-medium text-gray-800">

@@ -36,3 +36,19 @@ export const getAllPatientChats = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+export const deleteChatsByPatient = async (req, res) => {
+  try {
+    const { patientId } = req.params;
+
+    // Delete all chats belonging to this patientId
+    const result = await Chat.deleteMany({ patientId });
+
+    res.json({
+      success: true,
+      message: `Deleted ${result.deletedCount} chat(s) for patient ${patientId}`,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

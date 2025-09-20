@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const apiKey = process.env.GEMINI_API_KEY;
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
 // 🧩 Symptom-checker Prompt Template
 const systemPrompt = `
@@ -24,7 +25,15 @@ export const chatWithGemini = async (req, res) => {
   try {
     const { message } = req.body;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    if (!apiKey) {
+      return res.status(500).json({ error: "Missing GEMINI_API_KEY in environment." });
+    }
+
+    if (!message || typeof message !== "string" || message.trim().length === 0) {
+      return res.status(400).json({ error: "Message is required." });
+    }
+
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Combine system prompt + user question
     const result = await model.generateContent([systemPrompt, message]);
@@ -32,6 +41,7 @@ export const chatWithGemini = async (req, res) => {
     res.json({ reply: result.response.text() });
   } catch (error) {
     console.error("Chat error:", error);
-    res.status(500).json({ error: "Something went wrong" });
+    const msg = error?.message || "Something went wrong";
+    res.status(500).json({ error: msg });
   }
 };
