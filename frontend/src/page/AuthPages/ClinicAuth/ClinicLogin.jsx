@@ -15,12 +15,13 @@ import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import logo from "../../../assets/medoralogo.png";
 import { useNavigate } from "react-router-dom";
-import clinic from "../../../assets/clinic.jpg"
+import clinic from "../../../assets/clinic.jpg";
+import { toast } from "react-toastify";
 
 export default function ClinicLogin() {
   const { setRole, setUser } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
@@ -50,6 +51,7 @@ export default function ClinicLogin() {
         email: "",
         password: "",
       });
+      toast.success("Logged in successfully");
     } catch (error) {
       if (
         error.response &&
@@ -67,8 +69,10 @@ export default function ClinicLogin() {
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-cyan-600 via-cyan-700 to-cyan-800 relative bg-cover overflow-hidden"
-      style={{backgroundImage: `url(${clinic})`}}>
+      <div
+        className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-cyan-600 via-cyan-700 to-cyan-800 relative bg-cover overflow-hidden"
+        style={{ backgroundImage: `url(${clinic})` }}
+      >
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.1),transparent_70%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.08),transparent_60%)]" />

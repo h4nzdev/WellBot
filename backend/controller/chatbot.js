@@ -45,3 +45,50 @@ export const chatWithGemini = async (req, res) => {
     res.status(500).json({ error: msg });
   }
 };
+
+// 📋 Chat Summary Function
+export const summarizeChatHistory = async (req, res) => {
+  try {
+    const { messages } = req.body;
+
+    if (!apiKey) {
+      return res.status(500).json({ error: "Missing GEMINI_API_KEY in environment." });
+    }
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ error: "Messages array is required." });
+    }
+
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    // Create a summary prompt
+    const summaryPrompt = `
+You are a medical assistant helping clinic staff understand patient conversations.
+
+Please analyze the following chat conversation between a patient and our chatbot, and provide a helpful summary.
+
+Chat Messages:
+${messages.map(msg => `${msg.role}: ${msg.text}`).join('\n')}
+
+Please provide a summary that includes:
+1. Main symptoms or concerns mentioned by the patient
+2. Key advice given by the chatbot
+3. Overall health topics discussed
+4. Any recommendations for follow-up
+
+Keep the summary clear, professional, and helpful for medical staff. Use bullet points for easy reading.
+`;
+
+    const result = await model.generateContent(summaryPrompt);
+    const summary = result.response.text();
+
+    res.json({ 
+      summary: summary,
+      messageCount: messages.length 
+    });
+  } catch (error) {
+    console.error("Summary error:", error);
+    const msg = error?.message || "Something went wrong while summarizing";
+    res.status(500).json({ error: msg });
+  }
+};

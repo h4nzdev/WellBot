@@ -1,10 +1,18 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { Shield, Star, Sparkles, Eye, EyeOff, AlertTriangle } from "lucide-react";
+import {
+  Shield,
+  Star,
+  Sparkles,
+  Eye,
+  EyeOff,
+  AlertTriangle,
+} from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 import logo from "../../../assets/medoralogo.png";
+import { toast } from "react-toastify";
 
 const ClientLogin = () => {
   const { setRole, setUser } = useContext(AuthContext);
@@ -37,6 +45,7 @@ const ClientLogin = () => {
         email: "",
         password: "",
       });
+      toast.success("Logged in successfully")
     } catch (error) {
       if (
         error.response &&

@@ -12,8 +12,11 @@ import {
   Star,
   Menu,
   X,
+  MapPinIcon,
+  PhoneIcon,
+  Calendar,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ayham from "../../assets/ayham.jpg";
 import heart from "../../assets/heart.jpg";
 import hanz from "../../assets/hanz.jpg";
@@ -22,6 +25,35 @@ import logo from "../../assets/medoralogo.png";
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [clinics, setClinics] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Function to fetch clinics with basic or pro subscription
+  const fetchClinics = async () => {
+    try {
+      setLoading(true);
+      // API call to get all clinics
+      const response = await fetch('http://localhost:3000/clinic');
+      const allClinics = await response.json();
+      
+      // Filter clinics that have basic or pro subscription (not free)
+      const premiumClinics = allClinics.filter(clinic => 
+        clinic.subscriptionPlan !== 'free'
+      );
+      
+      setClinics(premiumClinics);
+    } catch (error) {
+      console.error('Error fetching clinics:', error);
+      setClinics([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch clinics when component loads
+  useEffect(() => {
+    fetchClinics();
+  }, []);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -51,6 +83,12 @@ const LandingPage = () => {
                 className="text-slate-600 hover:text-cyan-600 font-medium transition-colors duration-200"
               >
                 Features
+              </button>
+              <button
+                onClick={() => scrollToSection("clinics")}
+                className="text-slate-600 hover:text-cyan-600 font-medium transition-colors duration-200"
+              >
+                Clinics
               </button>
               <button
                 onClick={() => scrollToSection("team")}
@@ -100,6 +138,12 @@ const LandingPage = () => {
                   className="text-left text-slate-600 hover:text-cyan-600 font-medium transition-colors duration-200"
                 >
                   Features
+                </button>
+                <button
+                  onClick={() => scrollToSection("clinics")}
+                  className="text-left text-slate-600 hover:text-cyan-600 font-medium transition-colors duration-200"
+                >
+                  Clinics
                 </button>
                 <button
                   onClick={() => scrollToSection("team")}
@@ -238,7 +282,7 @@ const LandingPage = () => {
       {/* Features Section */}
       <section
         id="features"
-        className="py-24 bg-gradient-to-b from-white to-slate-50"
+        className="py-18 bg-gradient-to-b from-white to-slate-50"
       >
         <div className="container mx-auto px-6">
           <div className="text-center mb-20">
@@ -300,6 +344,107 @@ const LandingPage = () => {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Featured Clinics Section */}
+      <section id="clinics" className="py-24 relative bg-cover bg-fixed"
+      style={{backgroundImage: `url(${clinic})`}}>
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="container relative w-full mx-auto z-40">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl md:text-5xl font-bold text-slate-100 mb-4">
+              Featured Clinics
+            </h3>
+            <p className="text-xl text-slate-200 max-w-2xl mx-auto">
+              Discover our premium healthcare partners offering exceptional medical services.
+            </p>
+          </div>
+
+          {/* Loading State */}
+          {loading && (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+            </div>
+          )}
+
+          {/* No Clinics Available */}
+          {!loading && clinics.length === 0 && (
+            <div className="text-center py-12">
+              <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto border border-slate-100">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-8 h-8 text-slate-400" />
+                </div>
+                <h4 className="text-xl font-semibold text-slate-800 mb-2">No Clinics Available</h4>
+                <p className="text-slate-600">
+                  We're currently working on adding more premium clinics to our network.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Clinics Grid */}
+          {!loading && clinics.length > 0 && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {clinics.map((clinic) => (
+                <div key={clinic._id} className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-100 overflow-hidden">
+                  {/* Clinic Image Placeholder */}
+                  <div className="h-58 bg-gradient-to-br from-cyan-50 to-cyan-100 flex items-center justify-center relative overflow-hidden">
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-cyan-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Stethoscope className="w-10 h-10 text-cyan-600" />
+                      </div>
+                      <p className="text-cyan-600 font-medium text-sm">Medical Center</p>
+                    </div>
+                    {/* Subscription Badge */}
+                    <div className="absolute top-4 right-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        clinic.subscriptionPlan === 'pro' 
+                          ? 'bg-purple-100 text-purple-700' 
+                          : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {clinic.subscriptionPlan.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Clinic Details */}
+                  <div className="p-6">
+                    <h4 className="text-xl font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition-colors duration-200">
+                      {clinic.clinicName}
+                    </h4>
+                    
+                    <div className="space-y-3 mb-6">
+                      <div className="flex items-center gap-3 text-slate-600">
+                        <Users className="w-4 h-4 text-cyan-500 flex-shrink-0" />
+                        <span className="text-sm">{clinic.contactPerson}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 text-slate-600">
+                        <PhoneIcon className="w-4 h-4 text-cyan-500 flex-shrink-0" />
+                        <span className="text-sm">{clinic.phone}</span>
+                      </div>
+                      
+                      <div className="flex items-start gap-3 text-slate-600">
+                        <MapPinIcon className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
+                        <span className="text-sm">{clinic.address}</span>
+                      </div>
+                    </div>
+
+                    {/* Book Now Button */}
+                    <a
+                      href="/client/register"
+                      className="group/btn w-full bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      Book Now
+                      <div className="w-2 h-2 bg-white rounded-full group-hover/btn:translate-x-1 transition-transform duration-200"></div>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
