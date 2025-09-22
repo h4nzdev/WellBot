@@ -1,10 +1,12 @@
 import { useState, useEffect, useContext } from "react";
-import { Shield, Star, Check } from "lucide-react";
+import { Shield, Star, Check, ArrowLeft } from "lucide-react";
 import axios from "axios";
 import { ClinicContext } from "../../../context/ClinicContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import logo from "../../../assets/medoralogo.png";
+import clinic from "../../../assets/clinic.jpg";
 
 export default function ClientRegister() {
   // Mock clinics data - replace with API call to fetch clinics
@@ -94,23 +96,100 @@ export default function ClientRegister() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-xl">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-3 mb-6">
-            <div className="bg-cyan-500 p-4 rounded-2xl shadow-lg">
-              <Shield className="w-10 h-10 text-white" />
+    <div className="min-h-screen bg-slate-50 flex">
+      {/* Left Side - Branding */}
+      <div
+        className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-cyan-600 via-cyan-700 to-cyan-800 relative bg-cover overflow-hidden"
+        style={{ backgroundImage: `url(${clinic})` }}
+      >
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.1),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.08),transparent_60%)]" />
+
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute bottom-32 right-16 w-24 h-24 bg-white/5 rounded-full blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/3 right-1/4 w-16 h-16 bg-white/15 rounded-full blur-lg animate-pulse delay-500"></div>
+
+        <div className="flex flex-col justify-center items-center w-full px-12 relative z-10 bg-black/60">
+          {/* Logo and Brand */}
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center mb-8">
+              <img
+                src={logo}
+                className="w-20 h-20 rounded-3xl shadow-2xl shadow-black/20"
+                alt="Medora Logo"
+              />
+              <div className="ml-6 text-left">
+                <h1 className="text-4xl font-bold text-white tracking-tight">Medora</h1>
+                <p className="text-cyan-100 font-medium tracking-wider">Patient Portal</p>
+              </div>
             </div>
-            <h1 className="text-4xl font-semibold text-slate-800">Medora</h1>
+
+            <div className="space-y-6 text-center">
+              <h2 className="text-3xl font-bold text-white leading-tight">Create Your Patient Account</h2>
+              <p className="text-cyan-100 text-lg leading-relaxed max-w-md">
+                Join Medora to manage appointments, records, and reminders securely.
+              </p>
+            </div>
           </div>
-          <p className="text-lg text-slate-600">Create your client account</p>
+
+          {/* Trust Indicators */}
+          <div className="grid grid-cols-2 gap-6 w-full max-w-sm">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+              <Shield className="w-8 h-8 text-white mx-auto mb-3" />
+              <h3 className="text-white font-bold text-lg">HIPAA</h3>
+              <p className="text-cyan-100 text-sm">Compliant</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20">
+              <Star className="w-8 h-8 text-white mx-auto mb-3" />
+              <h3 className="text-white font-bold text-lg">1000+</h3>
+              <p className="text-cyan-100 text-sm">Trusted Clinics</p>
+            </div>
+          </div>
+
+          {/* Bottom Security Notice */}
+          <div className="absolute bottom-8 left-12 right-12">
+            <p className="text-cyan-200 text-sm text-center flex items-center justify-center gap-2">
+              <Shield className="w-4 h-4" />
+              Enterprise-grade security & encryption
+            </p>
+          </div>
         </div>
+      </div>
 
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-          <h2 className="text-2xl font-semibold text-slate-800 mb-6">
-            Register as a Patient
-          </h2>
+      {/* Right Side - Registration Form */}
+      <div className="w-full lg:w-1/2 flex items-start justify-center px-6 lg:px-12 py-12 overflow-y-auto h-screen">
+        <div className="w-full max-w-2xl">
+          {/* Back Button */}
+          <div className="mb-6">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center space-x-2 text-slate-600 hover:text-slate-800 transition-colors duration-200 group"
+            >
+              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
+              <span className="font-medium">Back</span>
+            </button>
+          </div>
 
+          {/* Mobile Logo - Only shown on smaller screens */}
+          <div className="lg:hidden text-center mb-10">
+            <div className="flex items-center justify-center mb-6">
+              <img src={logo} className="w-16 h-16" alt="Medora Logo" />
+              <div className="ml-4 text-left">
+                <h1 className="text-2xl font-bold text-slate-800">Medora</h1>
+                <p className="text-cyan-600 text-sm font-medium">Patient Portal</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Form Header */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-slate-800 mb-2">Create Your Patient Account</h2>
+            <p className="text-slate-600 text-lg">Register to get started</p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Clinic Selection */}
             <div>
@@ -339,7 +418,7 @@ export default function ClientRegister() {
 
             <button
               type="submit"
-              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
+              className="w-full bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-700 hover:to-cyan-600 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-2 focus:ring-cyan-500/20 focus:outline-none shadow-lg shadow-cyan-500/25"
             >
               Create Account
             </button>
@@ -350,7 +429,7 @@ export default function ClientRegister() {
               Already have an account?{" "}
               <a
                 href="/client/login"
-                className="text-cyan-600 hover:text-cyan-700 font-medium"
+                className="text-cyan-600 hover:text-cyan-700 font-semibold transition-colors hover:underline"
               >
                 Sign in
               </a>
@@ -367,6 +446,7 @@ export default function ClientRegister() {
               <Star className="w-4 h-4 text-amber-500" />
               <span>Trusted by 1000+ healthcare providers</span>
             </div>
+          </div>
           </div>
         </div>
       </div>
