@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { Plus, BellRing, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,6 +16,7 @@ const ClientReminders = () => {
   const [reminderToEdit, setReminderToEdit] = useState(null);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [dueReminder, setDueReminder] = useState(null);
+  const callTimer = useRef(null);
 
   const alarmSound = new Audio(sound);
 
@@ -55,6 +56,25 @@ const ClientReminders = () => {
     return () => clearInterval(interval);
   }, [reminders, alarmSound, dueReminder]);
 
+  useEffect(() => {
+    if (isNotificationModalOpen && dueReminder) {
+      callTimer.current = setTimeout(() => {
+        toast.info(
+          `📞 Mock call initiated for reminder: ${dueReminder.name}. You did not acknowledge in time.`
+        );
+        setIsNotificationModalOpen(false);
+        setDueReminder(null);
+        alarmSound.pause();
+      }, 30000); // 30 seconds
+    }
+
+    return () => {
+      if (callTimer.current) {
+        clearTimeout(callTimer.current);
+      }
+    };
+  }, [isNotificationModalOpen, dueReminder, alarmSound]);
+
   const saveReminders = (updated) => {
     setReminders(updated);
     localStorage.setItem(`reminders_${user._id}`, JSON.stringify(updated));
@@ -70,6 +90,10 @@ const ClientReminders = () => {
 
   const handleAcknowledge = () => {
     if (dueReminder) {
+      if (callTimer.current) {
+        clearTimeout(callTimer.current);
+      }
+
       const today = new Date().toISOString().split("T")[0];
       const updatedReminders = reminders.map((r) =>
         r.id === dueReminder.id
