@@ -14,6 +14,9 @@ import {
   Phone,
   Users,
   Stethoscope,
+  CheckCircle,
+  Clock,
+  Heart,
 } from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
@@ -106,77 +109,106 @@ const ClientLogin = () => {
     navigate("/client/login");
   };
 
+  const benefits = [
+    { icon: Calendar, title: "Easy Booking", desc: "Online scheduling" },
+    { icon: Star, title: "Verified", desc: "Trusted clinic" },
+    { icon: Clock, title: "24/7 Support", desc: "Always available" },
+    { icon: Heart, title: "Quality Care", desc: "Expert treatment" },
+  ];
+
   // Enhanced Clinic Details Display Component
   const ClinicDetailsSection = ({ clinic }) => (
-    <div className="flex flex-col justify-center items-center w-full px-12 relative z-10 bg-black/70">
-      {/* Clinic Header - keeping original structure */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center mb-6">
-          <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto border border-white/30 backdrop-blur-sm">
-            <Stethoscope className="w-10 h-10 text-white" />
+    <div className="min-h-screen bg-black/60 flex items-center justify-center w-full">
+      <div className="flex flex-col justify-center items-center w-full px-6">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="relative mb-6">
+            <div className="w-24 h-24 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto border-4 border-cyan-200/20 shadow-lg">
+              <Stethoscope className="w-12 h-12 text-white" />
+            </div>
+            <div className="absolute -bottom-2 -right-2 bg-cyan-500 rounded-full p-1">
+              <CheckCircle className="w-5 h-5 text-white" />
+            </div>
           </div>
-        </div>
 
-        <h2 className="text-3xl font-bold text-white leading-tight mb-4">
-          Book with {clinic.clinicName}
-        </h2>
-        <p className="text-cyan-200 text-lg leading-relaxed max-w-md">
-          Sign in to book your appointment with {clinic.contactPerson}
-        </p>
-      </div>
-
-      {/* Enhanced Clinic Information Card - keeping original layout */}
-      <div className="bg-white/15 backdrop-blur-md rounded-2xl p-6 border border-white/30 w-full max-w-sm mb-6 shadow-2xl">
-        <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-          <Calendar className="w-5 h-5" />
-          Clinic Details
-        </h3>
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10 border border-white/20 transition-all duration-200 hover:bg-white/15">
-            <Users className="w-4 h-4 text-cyan-500 flex-shrink-0" />
-            <span className="text-white text-sm font-medium">
-              {clinic.contactPerson}
-            </span>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10 border border-white/20 transition-all duration-200 hover:bg-white/15">
-            <Phone className="w-4 h-4 text-cyan-500 flex-shrink-0" />
-            <span className="text-white text-sm font-medium">{clinic.phone}</span>
-          </div>
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-white/10 border border-white/20 transition-all duration-200 hover:bg-white/15">
-            <MapPin className="w-4 h-4 text-cyan-500 mt-0.5 flex-shrink-0" />
-            <span className="text-white text-sm leading-tight font-medium">
-              {clinic.address}
-            </span>
-          </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10 border border-white/20 transition-all duration-200 hover:bg-white/15">
-            <Shield className="w-4 h-4 text-cyan-500 flex-shrink-0" />
-            <span className="text-white text-sm font-medium capitalize">
-              {clinic.subscriptionPlan} Plan Clinic
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Benefits - keeping original 2x2 grid */}
-      <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
-        <div className="bg-white/15 backdrop-blur-md rounded-xl p-4 text-center border border-white/30 shadow-lg transition-all duration-200 hover:bg-white/20 hover:shadow-xl">
-          <Calendar className="w-6 h-6 text-white mx-auto mb-2" />
-          <p className="text-white text-xs font-medium">Easy Online Booking</p>
-        </div>
-        <div className="bg-white/15 backdrop-blur-md rounded-xl p-4 text-center border border-white/30 shadow-lg transition-all duration-200 hover:bg-white/20 hover:shadow-xl">
-          <Star className="w-6 h-6 text-white mx-auto mb-2" />
-          <p className="text-white text-xs font-medium">Verified & Trusted</p>
-        </div>
-      </div>
-
-      {/* Enhanced Bottom Note - keeping original position */}
-      <div className="absolute bottom-8 left-12 right-12">
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
-          <p className="text-cyan-500 text-sm text-center flex items-center justify-center gap-2">
-            <Shield className="w-4 h-4" />
-            Secure appointment booking
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Book with {clinic.clinicName}
+          </h2>
+          <p className="text-cyan-100 text-lg max-w-md bg-white/10 rounded-lg p-3 inline-block backdrop-blur-sm">
+            Sign in to book your appointment with {clinic.contactPerson} –
+            Expert care awaits!
           </p>
+
+          <div className="mt-4 inline-flex items-center bg-cyan-500/20 border border-cyan-400/30 rounded-full px-4 py-2 text-cyan-100 text-sm font-medium">
+            <Calendar className="w-4 h-4 mr-2" />
+            Ready to Schedule?
+          </div>
         </div>
+
+        {/* Clinic Information Card */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-cyan-200/20 w-full mb-6 shadow-lg">
+          <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-cyan-400" />
+            Clinic Details
+          </h3>
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10 border border-cyan-200/20 hover:bg-white/15 transition-colors">
+              <Users className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+              <span className="text-white text-sm font-medium">
+                Contact: {clinic.contactPerson}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10 border border-cyan-200/20 hover:bg-white/15 transition-colors">
+              <Phone className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+              <span className="text-white text-sm font-medium">
+                Phone: {clinic.phone}
+              </span>
+            </div>
+
+            <div className="flex items-start gap-3 p-3 rounded-xl bg-white/10 border border-cyan-200/20 hover:bg-white/15 transition-colors">
+              <MapPin className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
+              <span className="text-white text-sm leading-tight font-medium">
+                Address: {clinic.address}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-white/10 border border-cyan-200/20 hover:bg-white/15 transition-colors">
+              <Shield className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+              <span className="text-white text-sm font-medium capitalize">
+                {clinic.subscriptionPlan} Plan Clinic
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Benefits Grid */}
+        <div className="grid grid-cols-2 gap-4 w-full">
+          {benefits.map((benefit, index) => {
+            const IconComponent = benefit.icon;
+            return (
+              <div
+                key={index}
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-cyan-200/20 shadow-lg hover:bg-white/15 transition-colors"
+              >
+                <IconComponent className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
+                <p className="text-white text-xs font-medium mb-1">
+                  {benefit.title}
+                </p>
+                <p className="text-cyan-100 text-xs">{benefit.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Book Button */}
+        <button className="mt-8 w-full bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-all duration-200 hover:shadow-cyan-500/25">
+          <div className="flex items-center justify-center gap-3">
+            <Calendar className="w-5 h-5" />
+            <span>Book Appointment Now</span>
+          </div>
+        </button>
       </div>
     </div>
   );
