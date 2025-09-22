@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { useContext, useState } from "react";
 import AddAppointmentModal from "../../../components/ClientComponents/AddAppointmentModal/AddAppointmentModal";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AppointmentContext } from "../../../context/AppointmentContext";
 import { AuthContext } from "../../../context/AuthContext";
@@ -74,7 +73,6 @@ export default function ClientAppointments() {
 
   return (
     <>
-      <ToastContainer />
       <AddAppointmentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

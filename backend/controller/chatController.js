@@ -4,8 +4,8 @@ import ChatCredit from "../model/chatCreditModel.js";
 // Save a new chat
 export const saveChat = async (req, res) => {
   try {
-    const { patientId, role, message } = req.body;
-    const newChat = new Chat({ patientId, role, message });
+    const { patientId, clinicId, role, message } = req.body;
+    const newChat = new Chat({ patientId, clinicId, role, message });
     await newChat.save();
     res.status(201).json({ success: true, chat: newChat });
   } catch (error) {
@@ -30,6 +30,19 @@ export const getChatsByPatient = async (req, res) => {
 export const getAllPatientChats = async (req, res) => {
   try {
     const chats = await Chat.find()
+      .sort({ timestamp: 1 })
+      .populate("patientId", "name email"); // populate patient info
+    res.json({ success: true, chats });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Get all chats from patients in a specific clinic (populated)
+export const getChatsByClinic = async (req, res) => {
+  try {
+    const { clinicId } = req.params;
+    const chats = await Chat.find({ clinicId })
       .sort({ timestamp: 1 })
       .populate("patientId", "name email"); // populate patient info
     res.json({ success: true, chats });

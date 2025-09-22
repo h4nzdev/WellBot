@@ -1,13 +1,14 @@
 "use client";
 
 import { useContext, useState } from "react";
-import { X, Calendar, Clock, User, Stethoscope } from "lucide-react";
+import { X, Calendar, Clock, User, Stethoscope, CreditCard } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DoctorContext } from "../../../context/DoctorContext";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
 import { AppointmentContext } from "../../../context/AppointmentContext";
+import ClientPaymentModal from "../ClientPaymentModal/ClientPaymentModal";
 
 const AddAppointmentModal = ({ isOpen, onClose }) => {
   const { doctors } = useContext(DoctorContext);
@@ -26,6 +27,9 @@ const AddAppointmentModal = ({ isOpen, onClose }) => {
     type: "consultation",
     status: "scheduled",
   });
+  
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState(null);
 
   const appointmentTypes = [
     { value: "consultation", label: "Consultation" },
@@ -40,24 +44,59 @@ const AddAppointmentModal = ({ isOpen, onClose }) => {
   const handleAddAppointment = async (e) => {
     e.preventDefault();
 
-    // Combine date and time for the final submission
-    const appointmentDateTime = `${formData.date}T${formData.time}:00.000Z`;
-    const finalData = {
-      ...formData,
-      date: appointmentDateTime,
-      clinicId: user.clinicId?._id, // from logged in clinic
-      patientId: user._id,
-    };
+    // Validate form data
+    if (!formData.doctorId || !formData.date || !formData.time) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
 
-    console.log("Form Data:", finalData);
-    const res = await axios.post(
-      "http://localhost:3000/appointment/add-appointment",
-      finalData
-    );
-    console.log(res.data.message);
-    toast.success("Appointment Added Successfully!");
-    fetchAppointments();
-    onClose(); // Close the modal after submission
+    // Open payment modal
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePaymentSubmit = async (paymentData) => {
+    try {
+      // Combine date and time for the final submission
+      const appointmentDateTime = `${formData.date}T${formData.time}:00.000Z`;
+      const finalData = {
+        ...formData,
+        date: appointmentDateTime,
+        clinicId: user.clinicId?._id, // from logged in clinic
+        patientId: user._id,
+        paymentMethod: paymentData.paymentMethod,
+        paymentDetails: paymentData.bankDetails,
+      };
+
+      console.log("Form Data with Payment:", finalData);
+      
+      // Mock payment processing (simulate API call)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const res = await axios.post(
+        "http://localhost:3000/appointment/add-appointment",
+        finalData
+      );
+      
+      console.log(res.data.message);
+      
+      // Show success message based on payment method
+      if (paymentData.paymentMethod === "cash") {
+        toast.success("Appointment booked successfully! Please pay in cash upon arrival.");
+      } else {
+        toast.success("Appointment booked successfully! Payment processed.");
+      }
+      
+      fetchAppointments();
+      setIsPaymentModalOpen(false);
+      onClose(); // Close the modal after submission
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      toast.error("Failed to book appointment. Please try again.");
+    }
+  };
+
+  const handlePaymentModalClose = () => {
+    setIsPaymentModalOpen(false);
   };
 
   const handleChange = (e) => {
@@ -200,13 +239,21 @@ const AddAppointmentModal = ({ isOpen, onClose }) => {
             <button
               type="submit"
               disabled={!formData.doctorId || !formData.date || !formData.time}
-              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl hover:from-cyan-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl hover:from-cyan-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center gap-2"
             >
-              Schedule Appointment
+              <CreditCard className="w-4 h-4" />
+              Book Appointment
             </button>
           </div>
         </form>
       </div>
+      
+      {/* Payment Modal */}
+      <ClientPaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={handlePaymentModalClose}
+        onSubmit={handlePaymentSubmit}
+      />
     </div>
   );
 };

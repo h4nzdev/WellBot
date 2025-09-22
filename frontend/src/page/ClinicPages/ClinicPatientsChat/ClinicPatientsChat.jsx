@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   User,
   MessageCircle,
@@ -11,16 +11,29 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { AuthContext } from "../../../context/AuthContext";
 import ClientChatsModal from "./components/ClientChatsModal.jsx";
 
 export default function ClinicPatientsChat() {
   const [chatHistory, setChatHistory] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { user } = useContext(AuthContext);
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/chat");
+      // Check if user (clinic) is available and has an ID
+      if (!user || !user._id) {
+        console.error("Clinic user not found or missing ID");
+        setChatHistory([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      // Fetch chats specific to this clinic
+      const res = await axios.get(`http://localhost:3000/chat/clinic/${user._id}`);
       const chats = res.data?.chats || [];
 
       // Group chats by patient and normalize message shape
@@ -55,22 +68,35 @@ export default function ClinicPatientsChat() {
 
       setChatHistory(grouped);
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Error fetching clinic chats:", error);
+      // Show user-friendly error message
+      if (error.response?.status === 404) {
+        console.log("No chats found for this clinic");
+        setChatHistory([]);
+      } else {
+        console.error("Failed to fetch chats:", error.message);
+        setChatHistory([]);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    // fetch immediately when component mounts
-    fetchMessages();
-
-    // then keep fetching every 5 seconds
-    const interval = setInterval(() => {
+    // Only fetch if user (clinic) is available
+    if (user && user._id) {
+      // fetch immediately when component mounts
       fetchMessages();
-    }, 5000);
 
-    // cleanup when component unmounts
-    return () => clearInterval(interval);
-  }, []);
+      // then keep fetching every 5 seconds
+      const interval = setInterval(() => {
+        fetchMessages();
+      }, 5000);
+
+      // cleanup when component unmounts
+      return () => clearInterval(interval);
+    }
+  }, [user]); // Depend on user to refetch when clinic changes
 
   const lastUserMessage = (chat) => {
     const userMessages = chat.filter((message) => message.role === "user");
@@ -204,10 +230,19 @@ export default function ClinicPatientsChat() {
                 </tr>
               </thead>
               <tbody>
-                {chatHistory && chatHistory.length === 0 ? (
+                {loading ? (
                   <tr>
                     <td colSpan="6" className="text-center py-8 text-slate-500">
-                      No patient chats found.
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-600"></div>
+                        <span>Loading patient chats...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : chatHistory && chatHistory.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="text-center py-8 text-slate-500">
+                      No patient chats found for this clinic.
                     </td>
                   </tr>
                 ) : (

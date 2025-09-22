@@ -4,6 +4,7 @@ import {
   saveChat,
   getChatsByPatient,
   getAllPatientChats,
+  getChatsByClinic,
   deleteChatsByPatient,
   getChatCredits,
   incrementChatCredits,
@@ -16,6 +17,7 @@ chatRoutes.post("/chat/summarize", summarizeChatHistory);
 chatRoutes.post("/chat/save-chat", saveChat);
 chatRoutes.get("/chat/:patientId", getChatsByPatient);
 chatRoutes.get("/chat", getAllPatientChats);
+chatRoutes.get("/chat/clinic/:clinicId", getChatsByClinic);
 chatRoutes.delete("/chat/:patientId", deleteChatsByPatient);
 chatRoutes.get("/chat/credits/:patientId", getChatCredits);
 chatRoutes.post("/chat/increment-credits", incrementChatCredits);

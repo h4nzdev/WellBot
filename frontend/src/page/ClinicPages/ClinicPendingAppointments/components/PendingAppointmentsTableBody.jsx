@@ -5,8 +5,9 @@ import {
   CalendarCheck,
   CheckCheck,
   Ban,
+  Loader2,
 } from "lucide-react";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -21,6 +22,7 @@ import { useDate, useTime } from "../../../../utils/date";
 const PendingAppointmentsTableBody = () => {
   const { appointments, fetchAppointments } = useContext(AppointmentContext);
   const { user } = useContext(AuthContext);
+  const [loadingStates, setLoadingStates] = useState({});
 
   const pendingAppointments = appointments?.filter(
     (appointment) =>
@@ -28,6 +30,9 @@ const PendingAppointmentsTableBody = () => {
   );
 
   const handleRespond = async (appointmentId, action) => {
+    // Set loading state for this specific appointment
+    setLoadingStates(prev => ({ ...prev, [appointmentId]: true }));
+
     try {
       // Find the appointment details for email
       const appointment = pendingAppointments.find(
@@ -93,6 +98,9 @@ const PendingAppointmentsTableBody = () => {
     } catch (error) {
       toast.error("Failed to update appointment status.");
       console.error("Error responding:", error);
+    } finally {
+      // Clear loading state for this appointment
+      setLoadingStates(prev => ({ ...prev, [appointmentId]: false }));
     }
   };
 
@@ -192,19 +200,37 @@ const PendingAppointmentsTableBody = () => {
               <div className="flex justify-end gap-2">
                 <button
                   type="button"
-                  className="p-2 hover:bg-slate-100 rounded-md text-green-500"
+                  className={`p-2 rounded-md transition-all duration-200 ${
+                    loadingStates[appointment._id]
+                      ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                      : "hover:bg-slate-100 text-green-500 hover:text-green-600"
+                  }`}
                   aria-label="Accept"
+                  disabled={loadingStates[appointment._id]}
                   onClick={() => confirmAction(appointment._id, "approve")}
                 >
-                  <CheckCircle className="h-5 w-5" />
+                  {loadingStates[appointment._id] ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <CheckCircle className="h-5 w-5" />
+                  )}
                 </button>
                 <button
                   type="button"
-                  className="p-2 hover:bg-slate-100 rounded-md text-red-500"
+                  className={`p-2 rounded-md transition-all duration-200 ${
+                    loadingStates[appointment._id]
+                      ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                      : "hover:bg-slate-100 text-red-500 hover:text-red-600"
+                  }`}
                   aria-label="Reject"
+                  disabled={loadingStates[appointment._id]}
                   onClick={() => confirmAction(appointment._id, "reject")}
                 >
-                  <XCircle className="h-5 w-5" />
+                  {loadingStates[appointment._id] ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <XCircle className="h-5 w-5" />
+                  )}
                 </button>
               </div>
             </td>

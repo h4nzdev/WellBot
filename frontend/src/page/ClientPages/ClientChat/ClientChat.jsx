@@ -16,7 +16,8 @@ const ClientChat = () => {
   });
   const { user } = useContext(AuthContext);
 
-  console.log(chatHistory);
+  console.log("User data:", user);
+  console.log("Chat history:", chatHistory);
 
   // Function to fetch chat credits
   const fetchChatCredits = async () => {
@@ -94,8 +95,14 @@ const ClientChat = () => {
     try {
       // 1) Save the user's message immediately
       if (user && user._id) {
+        // Check if user has clinicId (should be populated from login)
+        if (!user.clinicId) {
+          throw new Error("Patient clinic information not found. Please log in again.");
+        }
+        
         await axios.post("http://localhost:3000/chat/save-chat", {
           patientId: user._id,
+          clinicId: user.clinicId._id || user.clinicId, // Handle both populated and non-populated clinicId
           role: "Client",
           message,
         });
@@ -117,6 +124,7 @@ const ClientChat = () => {
       if (user && user._id) {
         await axios.post("http://localhost:3000/chat/save-chat", {
           patientId: user._id,
+          clinicId: user.clinicId._id || user.clinicId, // Handle both populated and non-populated clinicId
           role: "ai",
           message: response.data.reply,
         });
@@ -134,9 +142,21 @@ const ClientChat = () => {
       }
     } catch (error) {
       console.error("Error fetching bot response:", error);
+      
+      let errorText = "Sorry, something went wrong. Please try again.";
+      
+      // Provide more specific error messages
+      if (error.message.includes("clinic information not found")) {
+        errorText = "Unable to identify your clinic. Please log out and log in again.";
+      } else if (error.response?.status === 400) {
+        errorText = "Invalid request. Please check your connection and try again.";
+      } else if (error.response?.status === 500) {
+        errorText = "Server error. Please try again in a moment.";
+      }
+      
       const errorMessage = {
         role: "bot",
-        text: "Sorry, something went wrong. Please try again.",
+        text: errorText,
       };
       setChatHistory((prev) => [...prev, errorMessage]);
     } finally {
