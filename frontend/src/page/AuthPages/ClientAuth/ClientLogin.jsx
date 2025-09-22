@@ -202,9 +202,11 @@ const ClientLogin = () => {
 
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-slate-800 mb-2">
-              Welcome Back
+              {selectedClinic ? `Booking with ${selectedClinic.clinicName}` : "Welcome Back"}
             </h2>
-            <p className="text-slate-600">Sign in to your patient dashboard</p>
+            <p className="text-slate-600">
+              {selectedClinic ? "Sign in to complete your booking" : "Sign in to your patient dashboard"}
+            </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -324,15 +326,6 @@ const ClientLogin = () => {
               <div className="border border-red-300 p-4 bg-red-50 flex items-center space-x-3 rounded-2xl">
                 <AlertTriangle className="text-red-500 w-5 h-5 flex-shrink-0" />
                 <p className="text-red-700 font-medium">{error}</p>
-              </div>
-            )}
-
-            {selectedClinic && !error && (
-              <div className="border border-cyan-300 p-4 bg-cyan-50 flex items-center space-x-3 rounded-2xl">
-                <Calendar className="text-cyan-500 w-5 h-5 flex-shrink-0" />
-                <p className="text-cyan-700 font-medium">
-                  You are booking with {selectedClinic.clinicName}
-                </p>
               </div>
             )}
 
