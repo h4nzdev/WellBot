@@ -8,6 +8,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import AddReminderModal from "../../../components/ClientComponents/AddReminderModal/AddReminderModal";
 import ReminderDropdown from "../../../components/ClientComponents/ReminderDropdown/ReminderDropdown";
 import sound from "../../../assets/reminder2.mp3";
+import ringtone from "../../../assets/ringtone.mp3";
 
 const ClientReminders = () => {
   const { user } = useContext(AuthContext);
@@ -19,6 +20,7 @@ const ClientReminders = () => {
   const callTimer = useRef(null);
 
   const alarmSound = new Audio(sound);
+  const ringtoneSound = new Audio(ringtone);
 
   useEffect(() => {
     if (user && user._id) {
@@ -65,6 +67,10 @@ const ClientReminders = () => {
         setIsNotificationModalOpen(false);
         setDueReminder(null);
         alarmSound.pause();
+        ringtoneSound.currentTime = 0;
+        ringtoneSound.play().catch((err) => {
+          console.warn("Sound play blocked by browser:", err);
+        });
       }, 30000); // 30 seconds
     }
 
@@ -107,7 +113,12 @@ const ClientReminders = () => {
       saveReminders(updatedReminders);
       setIsNotificationModalOpen(false);
       setDueReminder(null);
+
+      // ✅ stop sounds
       alarmSound.pause();
+      alarmSound.currentTime = 0;
+      ringtoneSound.pause();
+      ringtoneSound.currentTime = 0;
     }
   };
 
