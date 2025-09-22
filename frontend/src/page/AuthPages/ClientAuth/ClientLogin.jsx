@@ -97,11 +97,6 @@ const ClientLogin = () => {
     }
   };
 
-  const clearClinicSelection = () => {
-    setSelectedClinic(null);
-    navigate("/client/login");
-  };
-  
   const DefaultBrandingSection = () => (
     <div className="flex flex-col justify-center items-center w-full px-12 relative z-10 bg-black/60">
       {/* Logo and Brand */}
@@ -178,15 +173,13 @@ const ClientLogin = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 lg:px-12 py-12">
         <div className="w-full max-w-2xl">
           <div className="mb-6 space-y-2">
-            
-              <button
-                onClick={() => navigate("/")}
-                className="flex items-center space-x-2 text-slate-600 hover:text-slate-800 transition-colors duration-200 group"
-              >
-                <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
-                <span className="font-medium">Back to Home</span>
-              </button>
-            
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center space-x-2 text-slate-600 hover:text-slate-800 transition-colors duration-200 group"
+            >
+              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
+              <span className="font-medium">Back to Home</span>
+            </button>
           </div>
 
           <div className="lg:hidden text-center mb-8">
@@ -205,9 +198,7 @@ const ClientLogin = () => {
             <h2 className="text-3xl font-bold text-slate-800 mb-2">
               Welcome Back
             </h2>
-            <p className="text-slate-600">
-              Sign in to your patient dashboard
-            </p>
+            <p className="text-slate-600">Sign in to your patient dashboard</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -223,9 +214,7 @@ const ClientLogin = () => {
                 >
                   <span
                     className={
-                      selectedClinic
-                        ? "text-slate-800"
-                        : "text-slate-400"
+                      selectedClinic ? "text-slate-800" : "text-slate-400"
                     }
                   >
                     {selectedClinic
@@ -242,9 +231,7 @@ const ClientLogin = () => {
                         onClick={() => {
                           setSelectedClinic(clinic);
                           setIsDropdownOpen(false);
-                          navigate(
-                            `/client/login?clinicId=${clinic._id}`
-                          );
+                          navigate(`/client/login?clinicId=${clinic._id}`);
                         }}
                         className="px-4 py-3 hover:bg-cyan-50 cursor-pointer"
                       >
@@ -325,8 +312,8 @@ const ClientLogin = () => {
                 <p className="text-red-700 font-medium">{error}</p>
               </div>
             )}
-            
-            {selectedClinic && !error &&(
+
+            {selectedClinic && !error && (
               <div className="border border-cyan-300 p-4 bg-cyan-50 flex items-center space-x-3 rounded-2xl">
                 <Calendar className="text-cyan-500 w-5 h-5 flex-shrink-0" />
                 <p className="text-cyan-700 font-medium">
