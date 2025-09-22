@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import PaymentModal from "../../../components/ClinicComponents/PaymentModal/PaymentModal";
 import logo from "../../../assets/medoralogo.png";
 import { useNavigate } from "react-router-dom";
+import clinic from "../../../assets/clinic.jpg"
 
 export default function ClinicRegister() {
   const [error, setError] = useState();
@@ -91,7 +92,8 @@ export default function ClinicRegister() {
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 fixed top-0 left-0 h-screen bg-gradient-to-br from-cyan-600 via-cyan-700 to-cyan-800">
+      <div className="hidden lg:flex lg:w-1/2 fixed top-0 left-0 h-screen bg-cover"
+      style={{backgroundImage: `url(${clinic})`}}>
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.1),transparent_70%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.08),transparent_60%)]" />
@@ -101,7 +103,7 @@ export default function ClinicRegister() {
         <div className="absolute bottom-32 right-16 w-24 h-24 bg-white/5 rounded-full blur-xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/3 right-1/4 w-16 h-16 bg-white/15 rounded-full blur-lg animate-pulse delay-500"></div>
 
-        <div className="flex flex-col justify-center items-center w-full px-12 relative z-10">
+        <div className="flex flex-col justify-center items-center w-full px-12 relative z-10 bg-black/60">
           {/* Logo and Brand */}
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-8">

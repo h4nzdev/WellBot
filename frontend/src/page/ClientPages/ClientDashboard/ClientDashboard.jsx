@@ -23,6 +23,7 @@ export default function ClientDashboard() {
   const { user } = useContext(AuthContext);
   const [appointments, setAppointments] = useState([]);
   const [date, setDate] = useState(new Date());
+  const [showAll, setShowAll] = useState(false);
 
   const healthTips = [
     "Stay hydrated by drinking at least 8 glasses of water a day.",
@@ -60,6 +61,10 @@ export default function ClientDashboard() {
   const completedAppointments = appointments.filter(
     (app) => app.status === "completed"
   );
+
+  const visibleAppointments = showAll
+    ? completedAppointments
+    : completedAppointments.slice(0, 5);
 
   return (
     <div className="w-full flex">
@@ -252,7 +257,7 @@ export default function ClientDashboard() {
                       </td>
                     </tr>
                   ) : (
-                    completedAppointments.map((appointment) => (
+                    visibleAppointments.map((appointment) => (
                       <tr
                         key={appointment._id}
                         className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5"
@@ -299,8 +304,11 @@ export default function ClientDashboard() {
             </div>
 
             <div className="mt-8 text-center">
-              <button className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-8 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                View All Appointments
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-8 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
+              >
+                {showAll ? "Show Less" : "View All Appointments"}
               </button>
             </div>
           </div>

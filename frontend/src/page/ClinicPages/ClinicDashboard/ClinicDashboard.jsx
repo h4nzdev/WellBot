@@ -14,7 +14,7 @@ import {
   Activity,
   DollarSign,
 } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppointmentContext } from "../../../context/AppointmentContext";
 import { AuthContext } from "../../../context/AuthContext";
 import { PatientsContext } from "../../../context/PatientsContext";
@@ -27,6 +27,7 @@ export default function ClinicDashboard() {
   const { patients } = useContext(PatientsContext);
   const { doctors } = useContext(DoctorContext);
   const { user } = useContext(AuthContext);
+  const [showAll, setShowAll] = useState(false);
 
   const clinicAppointments = appointments?.filter(
     (appointment) => appointment.clinicId?._id === user._id
@@ -36,7 +37,13 @@ export default function ClinicDashboard() {
     (patient) => patient.clinicId?._id === user._id
   );
 
-  const clinicDoctors = doctors?.filter((doctor) => doctor.clinicId?._id === user._id);
+  const clinicDoctors = doctors?.filter(
+    (doctor) => doctor.clinicId?._id === user._id
+  );
+
+  const visibleAppointments = showAll
+    ? clinicAppointments
+    : clinicAppointments.slice(0, 5);
 
   // Static data for demonstration
   const stats = {
@@ -192,8 +199,8 @@ export default function ClinicDashboard() {
                 Recent Appointments
               </h2>
               <div className="space-y-4">
-                {clinicAppointments.length > 0 ? (
-                  clinicAppointments.map((appointment) => (
+                {visibleAppointments.length > 0 ? (
+                  visibleAppointments.map((appointment) => (
                     <div
                       key={appointment.id}
                       className="group relative overflow-hidden bg-slate-50 border border-slate-200 rounded-xl p-6 hover:shadow-md hover:border-cyan-300 transition-all duration-300 hover:-translate-y-0.5"
@@ -212,7 +219,8 @@ export default function ClinicDashboard() {
                             {appointment.doctorId.name}
                           </p>
                           <p className="text-slate-500 text-sm mt-1">
-                            {useDate(appointment.date)} at {useTime(appointment.date)}
+                            {useDate(appointment.date)} at{" "}
+                            {useTime(appointment.date)}
                           </p>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -237,8 +245,11 @@ export default function ClinicDashboard() {
                 )}
               </div>
               <div className="mt-8 text-center">
-                <button className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-8 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                  View All Appointments
+                <button
+                  onClick={() => setShowAll(!showAll)}
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-8 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
+                >
+                  {showAll ? "Show Less" : "View All Appointments"}
                 </button>
               </div>
             </div>
