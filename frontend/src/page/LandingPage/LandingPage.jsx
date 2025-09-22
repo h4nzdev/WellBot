@@ -445,7 +445,7 @@ const LandingPage = () => {
                     </div>
                     {/* Book Now Button */}
                     <a
-                      href={`/client/login`}
+                      href={`/client/login?clinicId=${clinic._id}`}
                       className="group/btn w-full bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
                     >
                       <Calendar className="w-4 h-4" />
