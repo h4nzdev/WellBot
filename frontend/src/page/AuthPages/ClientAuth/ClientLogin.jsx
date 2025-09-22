@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 
 const ClientLogin = () => {
   const { setRole, setUser } = useContext(AuthContext);
+  const [warningShown, setWarningShown] = useState(false);
   const [error, setError] = useState();
   const [clinics, setClinics] = useState([]);
   const [selectedClinic, setSelectedClinic] = useState("");
@@ -54,6 +55,7 @@ const ClientLogin = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const clinicId = searchParams.get("clinicId");
+
     if (clinicId && clinics.length > 0) {
       const clinicFromUrl = clinics.find((c) => c._id === clinicId);
       if (clinicFromUrl) {
@@ -96,11 +98,19 @@ const ClientLogin = () => {
       console.error("Login error:", error);
     }
   };
-  
-  const handleDisabledInputFocus = () => {
+
+  const handleOnkeyDown = (e) => {
     if (!selectedClinic) {
-      toast.error("Please select your clinic first");
+      e.preventDefault(); // 🚫 stops typing
+      if (!warningShown) {
+        toast.warning("Please select a clinic first!");
+        setWarningShown(true);
+      }
     }
+  };
+
+  const handleOnBlur = () => {
+    setWarningShown(false); // reset when user leaves the input
   };
 
   const DefaultBrandingSection = () => (
@@ -260,11 +270,11 @@ const ClientLogin = () => {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   type="email"
-                  disabled={!selectedClinic}
-                  onFocus={handleDisabledInputFocus}
                   className={`w-full px-4 py-4 bg-white border border-slate-300 rounded-2xl focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all duration-300 placeholder:text-slate-400 text-slate-800 ${
                     !selectedClinic && "cursor-not-allowed bg-slate-100"
                   }`}
+                  onKeyDown={handleOnkeyDown}
+                  onBlur={handleOnBlur}
                   placeholder="patient@example.com"
                 />
               </div>
@@ -281,11 +291,11 @@ const ClientLogin = () => {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   type={showPassword ? "text" : "password"}
-                  disabled={!selectedClinic}
-                  onFocus={handleDisabledInputFocus}
                   className={`w-full px-4 py-4 pr-12 bg-white border border-slate-300 rounded-2xl focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all duration-300 placeholder:text-slate-400 text-slate-800 ${
                     !selectedClinic && "cursor-not-allowed bg-slate-100"
                   }`}
+                  onKeyDown={handleOnkeyDown}
+                  onBlur={handleOnBlur}
                   placeholder="Enter your password"
                 />
                 <button
