@@ -1,6 +1,4 @@
 import React, { useContext, useState } from "react";
-import { AppointmentContext } from "../../../../context/AppointmentContext";
-import { AuthContext } from "../../../../context/AuthContext";
 import AppointmentActions from "./AppointmentActions";
 import AddMedicalRecordModal from "../../../../components/ClinicComponents/AddMedicalRecordModal";
 import {
@@ -12,20 +10,12 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useDate, useTime } from "../../../../utils/date";
 
-const ClinicAppointmentsTableBody = () => {
-  const { appointments } = useContext(AppointmentContext);
-  const { user } = useContext(AuthContext);
+const ClinicAppointmentsTableBody = ({ appointments }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  const scheduledAppointments = appointments?.filter(
-    (appointment) => appointment.clinicId?._id === user._id
-  );
-
   const handleComplete = (appointmentId) => {
-    const appointment = scheduledAppointments.find(
-      (app) => app._id === appointmentId
-    );
+    const appointment = appointments.find((app) => app._id === appointmentId);
     setSelectedAppointment(appointment);
     setIsModalOpen(true);
   };
@@ -72,7 +62,7 @@ const ClinicAppointmentsTableBody = () => {
   return (
     <>
       <tbody>
-        {scheduledAppointments.length === 0 ? (
+        {appointments.length === 0 ? (
           <tr>
             <td colSpan="7" className="text-center py-6 text-slate-500 italic">
               No appointments found
@@ -80,7 +70,7 @@ const ClinicAppointmentsTableBody = () => {
           </tr>
         ) : (
           <>
-            {scheduledAppointments.map((appointment) => (
+            {appointments.map((appointment) => (
               <tr
                 key={appointment._id}
                 className="hover:bg-slate-50 transition-colors border-t border-slate-200"

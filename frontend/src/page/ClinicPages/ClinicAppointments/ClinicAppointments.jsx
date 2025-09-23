@@ -11,16 +11,28 @@ import {
   ChevronDown,
 } from "lucide-react";
 import ClinicAppointmentsTableBody from "./components/ClinicAppointmentsTableBody";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppointmentContext } from "../../../context/AppointmentContext";
 import { AuthContext } from "../../../context/AuthContext";
 
 export default function ClinicAppointments() {
   const { appointments } = useContext(AppointmentContext);
   const { user } = useContext(AuthContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const appointmentsPerPage = 5;
+
   const clinicAppointments = appointments.filter(
     (app) => app.clinicId?._id === user._id
   );
+
+  const indexOfLastAppointment = currentPage * appointmentsPerPage;
+  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+  const currentAppointments = clinicAppointments.slice(
+    indexOfFirstAppointment,
+    indexOfLastAppointment
+  );
+  const totalPages = Math.ceil(clinicAppointments.length / appointmentsPerPage);
+
   const confirmedAppointment = appointments.filter(
     (app) => app.status === "scheduled"
   );
@@ -41,6 +53,18 @@ export default function ClinicAppointments() {
   };
 
   const appointmentLimit = getAppointmentLimit();
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className='w-full min-h-screen bg-slate-50'>
@@ -201,25 +225,31 @@ export default function ClinicAppointments() {
                   </th>
                 </tr>
               </thead>
-              <ClinicAppointmentsTableBody />
+              <ClinicAppointmentsTableBody appointments={currentAppointments} />
             </table>
           </div>
 
           {/* Results Summary */}
           <div className='mt-6 flex items-center justify-between text-sm text-slate-600'>
-            <p>Showing 3 of 8 appointments</p>
+            <p>
+              Showing {indexOfFirstAppointment + 1}-
+              {Math.min(indexOfLastAppointment, clinicAppointments.length)} of{" "}
+              {clinicAppointments.length} appointments
+            </p>
             <div className='flex items-center gap-2'>
               <button
                 type='button'
-                disabled
-                className='rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed'
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className='rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed'
               >
                 Previous
               </button>
               <button
                 type='button'
-                disabled
-                className='rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed'
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages || totalPages === 0}
+                className='rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed'
               >
                 Next
               </button>
