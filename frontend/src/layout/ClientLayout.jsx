@@ -4,6 +4,7 @@ import ClientSidebar from "../components/ClientComponents/ClientSidebar";
 import ClientMobileNav from "../components/ClientComponents/ClientMobileNav";
 import ClientHeader from "../components/ClientComponents/ClientHeader/ClientHeader";
 import { AuthContext } from "../context/AuthContext";
+import { containerVariants, floatingVariants, itemVariants, logoVariants, ringVariants } from "../animations/splashscreen";
 
 const ClientLayout = ({ children }) => {
   const { user } = useContext(AuthContext);
@@ -23,63 +24,6 @@ const ClientLayout = ({ children }) => {
   };
 
   // Animation variants
-  const containerVariants = {
-    initial: { opacity: 0 },
-    animate: {
-      opacity: 1,
-      transition: { duration: 0.6, staggerChildren: 0.3 },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      transition: { duration: 0.5 },
-    },
-  };
-
-  const itemVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
-  };
-
-  const logoVariants = {
-    initial: { scale: 0, rotate: -180 },
-    animate: {
-      scale: 1,
-      rotate: 0,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-        type: "spring",
-        stiffness: 100,
-      },
-    },
-  };
-
-  const ringVariants = {
-    animate: {
-      rotate: 360,
-      transition: {
-        duration: 3,
-        ease: "linear",
-        repeat: Infinity,
-      },
-    },
-  };
-
-  const floatingVariants = {
-    animate: {
-      y: [-10, 10, -10],
-      transition: {
-        duration: 4,
-        ease: "easeInOut",
-        repeat: Infinity,
-      },
-    },
-  };
 
   if (showSplash) {
     return (

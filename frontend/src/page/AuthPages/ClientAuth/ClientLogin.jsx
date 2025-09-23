@@ -88,7 +88,9 @@ const ClientLogin = () => {
       }
 
       setFormData({ email: "", password: "" });
-      toast.success("Logged in successfully");
+      toast.success("Logged in successfully", {
+        delay: 3000,
+      });
     } catch (error) {
       if (error.response?.data?.message) {
         setError(error.response.data.message);
@@ -210,12 +212,26 @@ const ClientLogin = () => {
             </div>
           </div>
 
-          <div className={`mb-8 ${selectedClinic ? 'border border-cyan-200 p-6 bg-cyan-50 rounded-2xl' : ''}`}>
-            <h2 className={`text-3xl font-bold mb-2 ${selectedClinic ? 'text-cyan-900' : 'text-slate-800'}`}>
-              {selectedClinic ? `Booking with ${selectedClinic.clinicName}` : "Welcome Back"}
+          <div
+            className={`mb-8 ${
+              selectedClinic
+                ? "border border-cyan-200 p-6 bg-cyan-50 rounded-2xl"
+                : ""
+            }`}
+          >
+            <h2
+              className={`text-3xl font-bold mb-2 ${
+                selectedClinic ? "text-cyan-900" : "text-slate-800"
+              }`}
+            >
+              {selectedClinic
+                ? `Booking with ${selectedClinic.clinicName}`
+                : "Welcome Back"}
             </h2>
-            <p className={selectedClinic ? 'text-cyan-700' : 'text-slate-600'}>
-              {selectedClinic ? "Sign in to complete your booking" : "Sign in to your patient dashboard"}
+            <p className={selectedClinic ? "text-cyan-700" : "text-slate-600"}>
+              {selectedClinic
+                ? "Sign in to complete your booking"
+                : "Sign in to your patient dashboard"}
             </p>
           </div>
 
