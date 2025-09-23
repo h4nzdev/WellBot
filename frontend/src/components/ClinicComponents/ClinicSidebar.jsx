@@ -3,15 +3,13 @@ import {
   Calendar,
   Users,
   UserCheck,
-  MessageSquare,
   FileText,
   Settings,
   CreditCard,
-  Bell,
   LogOut,
   Stethoscope,
-  Clock,
   ChevronDown,
+  Calendar1,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
@@ -30,7 +28,7 @@ export default function ClinicSidebar() {
       link: "/clinic/dashboard",
     },
     {
-      icon: Calendar,
+      icon: Calendar1,
       label: "Calendar",
       link: "/clinic/calendar",
     },
@@ -91,7 +89,7 @@ export default function ClinicSidebar() {
   ];
   const path = useLocation();
   const navigate = useNavigate();
-  const { setUser , setRole } = useContext(AuthContext);
+  const { setUser, setRole } = useContext(AuthContext);
 
   const handleLogout = () => {
     Swal.fire({
@@ -105,7 +103,7 @@ export default function ClinicSidebar() {
       if (result.isConfirmed) {
         sessionStorage.removeItem("user");
         sessionStorage.removeItem("role");
-        setUser (false);
+        setUser(false);
         setRole("Clinic");
         navigate("/auth/login");
         toast.success("Logout successfully!");
