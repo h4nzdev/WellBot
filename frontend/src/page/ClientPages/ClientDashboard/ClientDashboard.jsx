@@ -24,7 +24,6 @@ export default function ClientDashboard() {
   const [appointments, setAppointments] = useState([]);
   const [date, setDate] = useState(new Date());
   const [showAll, setShowAll] = useState(false);
-  const [showSplash, setShowSplash] = useState(true);
 
   const healthTips = [
     "Stay hydrated by drinking at least 8 glasses of water a day.",
@@ -45,11 +44,6 @@ export default function ClientDashboard() {
       console.error("Error:", error);
     }
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     if (user?._id) {
@@ -73,18 +67,6 @@ export default function ClientDashboard() {
   const visibleAppointments = showAll
     ? completedAppointments
     : completedAppointments.slice(0, 5);
-
-  if (showSplash) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center bg-cyan-50">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-cyan-800 animate-pulse">
-            Welcome to {user?.clinicId?.clinicName}
-          </h1>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full flex">
