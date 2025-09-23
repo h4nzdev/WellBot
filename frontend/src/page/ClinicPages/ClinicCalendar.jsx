@@ -125,50 +125,64 @@ export default function ClinicCalendar() {
                 className="border-2 border-dashed border-slate-200 rounded-xl p-3 h-36 bg-slate-50/30"
               ></div>
             ))}
-            {daysInMonth.map((day, index) => (
-              <div
-                key={index}
-                className={`border-2 rounded-xl p-3 h-36 flex flex-col transition-all duration-200 hover:shadow-lg ${
-                  new Date().toDateString() === day.toDateString()
-                    ? "bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-300 shadow-lg"
-                    : "bg-white border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                <span
-                  className={`font-bold text-lg mb-2 ${
+            {daysInMonth.map((day, index) => {
+              const dayAppointments = appointmentsForDate(day);
+
+              return (
+                <div
+                  key={index}
+                  className={`relative border-2 rounded-xl p-3 h-36 flex flex-col transition-all duration-200 hover:shadow-lg ${
                     new Date().toDateString() === day.toDateString()
-                      ? "text-cyan-700"
-                      : "text-slate-800"
+                      ? "bg-gradient-to-br from-cyan-50 to-cyan-100 border-cyan-300 shadow-lg"
+                      : "bg-white border-slate-200 hover:border-slate-300"
                   }`}
                 >
-                  {day.getDate()}
-                </span>
-                <div className="flex-1 overflow-y-auto space-y-2 pr-1 hide-scroll">
-                  {appointmentsForDate(day).map((appointment, i) => (
-                    <div
-                      key={i}
-                      className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 text-sm leading-relaxed "
-                    >
-                      <div className="font-medium text-slate-800 text-xs mb-2 truncate flex items-center">
-                        <div className="w-2 h-2 bg-cyan-500 rounded-full mr-2 flex-shrink-0"></div>
-                        {appointment.patientId?.name}
-                      </div>
-                      <div className="text-cyan-600 text-xs font-semibold mb-1 truncate">
-                        Dr. {appointment.doctorId?.name}
-                      </div>
-                      {appointment.time && (
-                        <div className="text-slate-500 text-xs font-medium">
-                          {new Date(appointment.time).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </div>
-                      )}
+                  {/* Date */}
+                  <span
+                    className={`font-bold text-lg mb-1 ${
+                      new Date().toDateString() === day.toDateString()
+                        ? "text-cyan-700"
+                        : "text-slate-800"
+                    }`}
+                  >
+                    {day.getDate()}
+                  </span>
+
+                  {/* Appointment count badge */}
+                  {dayAppointments.length > 0 && (
+                    <div className="absolute top-2 right-2 bg-cyan-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      {dayAppointments.length}
                     </div>
-                  ))}
+                  )}
+
+                  {/* Appointments list */}
+                  <div className="flex-1 overflow-y-auto space-y-2 pr-1 hide-scroll mt-2">
+                    {dayAppointments.map((appointment, i) => (
+                      <div
+                        key={i}
+                        className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 text-sm leading-relaxed"
+                      >
+                        <div className="font-medium text-slate-800 text-xs mb-2 truncate flex items-center">
+                          <div className="w-2 h-2 bg-cyan-500 rounded-full mr-2 flex-shrink-0"></div>
+                          {appointment.patientId?.name}
+                        </div>
+                        <div className="text-cyan-600 text-xs font-semibold mb-1 truncate">
+                          Dr. {appointment.doctorId?.name}
+                        </div>
+                        {appointment.time && (
+                          <div className="text-slate-500 text-xs font-medium">
+                            {new Date(appointment.time).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

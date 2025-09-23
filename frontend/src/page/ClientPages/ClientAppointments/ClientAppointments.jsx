@@ -5,6 +5,7 @@ import {
   CheckCircle,
   AlertCircle,
   MoreHorizontal,
+  AlertTriangle,
 } from "lucide-react";
 import { useContext, useState } from "react";
 import AddAppointmentModal from "../../../components/ClientComponents/AddAppointmentModal/AddAppointmentModal";
@@ -12,6 +13,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AppointmentContext } from "../../../context/AppointmentContext";
 import { AuthContext } from "../../../context/AuthContext";
+import { ClinicContext } from "../../../context/ClinicContext"; // new
 import {
   getStatusIcon,
   getStatusBadge1,
@@ -23,29 +25,44 @@ export default function ClientAppointments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { appointments } = useContext(AppointmentContext);
   const { user } = useContext(AuthContext);
+  const { clinics } = useContext(ClinicContext); // new
 
+  // Plan limits
+  const planLimits = {
+    free: 10,
+    basic: 20,
+    pro: Infinity, // unlimited
+  };
+
+  // Filter patient appointments
   const patientAppointments = appointments.filter(
     (app) => app.patientId._id === user._id
   );
 
-  const clinicAppointments = appointments.filter(
-    (app) => app.clinicId?._id === appointments[0]?.clinicId?._id
-  );
+  // Get the latest clinic info from ClinicContext
+  const clinic = clinics?.find((c) => c._id === user.clinicId._id);
+  const plan = clinic?.subscriptionPlan || "free";
+  const maxAppointments = planLimits[plan];
 
-  const isAppointmentLimitReached =
-    appointments[0]?.clinicId?.subscriptionPlan === "free" &&
-    clinicAppointments.length >= 10;
+  // Count total appointments for this clinic
+  const clinicAppointmentCount = appointments.filter(
+    (app) => app.clinicId?._id === user.clinicId._id
+  ).length;
+
+  // Check if limit is reached
+  const LimitReached = clinicAppointmentCount >= maxAppointments;
 
   const handleNewAppointmentClick = () => {
-    if (isAppointmentLimitReached) {
+    if (LimitReached) {
       toast.error(
-        "The clinic has reached its appointment limit for the free plan."
+        `The clinic has reached its appointment limit for the ${plan} plan.`
       );
     } else {
       setIsModalOpen(true);
     }
   };
 
+  // Stats (unchanged)
   const stats = [
     {
       title: "Total Appointments",
@@ -107,14 +124,20 @@ export default function ClientAppointments() {
                 <p className="text-slate-600 mt-3 text-lg sm:text-xl leading-relaxed">
                   View and manage your upcoming appointments.
                 </p>
+                {LimitReached && (
+                  <p className="md:text-lg text-red-600 font-semibold mb-2 flex items-center mt-4 border border-red-500 bg-red-200 rounded p-2 max-w-xl justify-center
+                  text-sm">
+                    <AlertTriangle className="mr-2"/> The clinic has reached its appointment
+                    limit for the {clinic?.subscriptionPlan} plan.
+                  </p>
+                )}
               </div>
               <button
                 onClick={handleNewAppointmentClick}
-                disabled={isAppointmentLimitReached}
-                className={`group flex items-center justify-center px-6 md:px-8 py-4 bg-gradient-to-r from-cyan-500 to-sky-500 text-white rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-base md:text-lg font-semibold ${
-                  isAppointmentLimitReached
-                    ? "cursor-not-allowed bg-gray-400"
-                    : ""
+                className={`group flex items-center justify-center px-6 md:px-8 py-4 text-white rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-base md:text-lg font-semibold ${
+                  LimitReached
+                    ? "bg-slate-600/50 cursor-not-allowed"
+                    : "bg-gradient-to-r from-cyan-500 to-sky-500"
                 }`}
               >
                 <CalendarPlus className="w-5 h-5 md:w-6 md:h-6 mr-3 group-hover:scale-110 transition-transform duration-300" />

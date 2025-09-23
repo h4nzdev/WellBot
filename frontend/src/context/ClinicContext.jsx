@@ -17,6 +17,12 @@ export const ClinicProvider = ({ children }) => {
 
   useEffect(() => {
     fetchClinics();
+
+    const interval = setInterval(() => {
+      fetchClinics()
+    }, 5000)
+
+    return () => clearInterval(interval)
   }, []);
 
   return (

@@ -26,7 +26,7 @@ export const addAppointment = async (req, res) => {
       });
     } else if (
       clinic.subscriptionPlan === "basic" &&
-      appointmentCount >= 100
+      appointmentCount >= 20
     ) {
       return res.status(403).json({
         message:
