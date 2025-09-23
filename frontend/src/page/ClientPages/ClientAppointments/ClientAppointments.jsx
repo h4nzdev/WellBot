@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useContext, useState } from "react";
 import AddAppointmentModal from "../../../components/ClientComponents/AddAppointmentModal/AddAppointmentModal";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AppointmentContext } from "../../../context/AppointmentContext";
 import { AuthContext } from "../../../context/AuthContext";
@@ -25,6 +26,25 @@ export default function ClientAppointments() {
 
   const patientAppointments = appointments.filter(
     (app) => app.patientId._id === user._id
+  );
+
+  const handleNewAppointmentClick = () => {
+    const clinic = appointments[0]?.clinicId;
+    if (
+      clinic?.subscriptionPlan === "free" &&
+      appointments.length >= 10
+    ) {
+      toast.error(
+        "The clinic has reached its appointment limit for the free plan."
+      );
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
+  const isAppointmentLimitReached = (
+    appointments[0]?.clinicId?.subscriptionPlan === "free" &&
+    appointments.length >= 10
   );
 
   const stats = [
@@ -90,8 +110,13 @@ export default function ClientAppointments() {
                 </p>
               </div>
               <button
-                onClick={() => setIsModalOpen(true)}
-                className="group flex items-center justify-center px-6 md:px-8 py-4 bg-gradient-to-r from-cyan-500 to-sky-500 text-white rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-base md:text-lg font-semibold"
+                onClick={handleNewAppointmentClick}
+                disabled={isAppointmentLimitReached}
+                className={`group flex items-center justify-center px-6 md:px-8 py-4 bg-gradient-to-r from-cyan-500 to-sky-500 text-white rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 w-full sm:w-auto text-base md:text-lg font-semibold ${
+                  isAppointmentLimitReached
+                    ? "cursor-not-allowed bg-gray-400"
+                    : ""
+                }`}
               >
                 <CalendarPlus className="w-5 h-5 md:w-6 md:h-6 mr-3 group-hover:scale-110 transition-transform duration-300" />
                 New Appointment

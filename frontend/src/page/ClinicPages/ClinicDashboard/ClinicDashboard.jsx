@@ -45,6 +45,17 @@ export default function ClinicDashboard() {
     ? clinicAppointments
     : clinicAppointments.slice(0, 5);
 
+  const getAppointmentLimit = () => {
+    if (user?.subscriptionPlan === "free") {
+      return 10;
+    } else if (user?.subscriptionPlan === "basic") {
+      return 100;
+    }
+    return "Unlimited";
+  };
+
+  const appointmentLimit = getAppointmentLimit();
+
   // Static data for demonstration
   const stats = {
     appointments: clinicAppointments?.length,
@@ -116,6 +127,11 @@ export default function ClinicDashboard() {
                 </p>
                 <p className="text-4xl font-semibold text-cyan-600">
                   {stats.appointments}
+                  {appointmentLimit !== "Unlimited" && (
+                    <span className="text-lg font-medium text-slate-500">
+                      / {appointmentLimit}
+                    </span>
+                  )}
                 </p>
                 <p className="text-sm text-emerald-600 mt-1 flex items-center">
                   <TrendingUp className="w-4 h-4 mr-1" />
