@@ -14,6 +14,26 @@ export const addAppointment = async (req, res) => {
       return res.status(404).json({ message: "Clinic not found" });
     }
 
+    // Check subscription plan and appointment limits
+    const appointmentCount = await Appointment.countDocuments({ clinicId });
+    if (
+      clinic.subscriptionPlan === "free" &&
+      appointmentCount >= 10
+    ) {
+      return res.status(403).json({
+        message:
+          "This clinic has reached its appointment limit for the free plan.",
+      });
+    } else if (
+      clinic.subscriptionPlan === "basic" &&
+      appointmentCount >= 100
+    ) {
+      return res.status(403).json({
+        message:
+          "This clinic has reached its appointment limit for the basic plan.",
+      });
+    }
+
     // check if doctor exists
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) {
