@@ -11,9 +11,10 @@ import {
   LogOut,
   Stethoscope,
   Clock,
+  ChevronDown,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -21,48 +22,52 @@ import { toast } from "react-toastify";
 
 export default function ClinicSidebar() {
   const { user } = useContext(AuthContext);
+  const [openDropdown, setOpenDropdown] = useState(null);
   const menuItems = [
     {
       icon: LayoutDashboard,
       label: "Dashboard",
-      active: true,
       link: "/clinic/dashboard",
     },
     {
       icon: Calendar,
       label: "Appointments",
-      active: false,
-      link: "/clinic/appointments",
+      subItems: [
+        {
+          label: "All Appointments",
+          link: "/clinic/appointments",
+        },
+        {
+          label: "Pending Appointments",
+          link: "/clinic/pending-appointments",
+        },
+      ],
     },
     {
       icon: Calendar,
       label: "Calendar",
-      active: false,
       link: "/clinic/calendar",
     },
-    {
-      icon: Clock,
-      label: "Pending Appointments",
-      active: false,
-      link: "/clinic/pending-appointments",
-    },
+
     {
       icon: Users,
       label: "Patients",
-      active: false,
-      link: "/clinic/patients",
+      subItems: [
+        {
+          label: "All Patients",
+          link: "/clinic/patients",
+        },
+        {
+          label: "Patient Chats",
+          link: "/clinic/patients-chats",
+        },
+      ],
     },
     {
       icon: UserCheck,
       label: "Doctors",
       active: false,
       link: "/clinic/doctors",
-    },
-    {
-      icon: MessageSquare,
-      label: "Patient Chats",
-      active: false,
-      link: "/clinic/patients-chats",
     },
     {
       icon: FileText,
@@ -108,6 +113,10 @@ export default function ClinicSidebar() {
     });
   };
 
+  const handleDropdown = (label) => {
+    setOpenDropdown(openDropdown === label ? null : label);
+  };
+
   return (
     <div className="hidden md:block fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
       {/* Sidebar Header */}
@@ -130,9 +139,51 @@ export default function ClinicSidebar() {
       {/* Navigation Menu */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {menuItems.map((item, index) => (
-          <Link key={index} to={item.link}>
-            <button
-              className={`
+          <div key={index}>
+            {item.subItems ? (
+              <div>
+                <button
+                  onClick={() => handleDropdown(item.label)}
+                  className={`w-full flex items-center justify-between space-x-3 p-3 rounded-lg transition-all duration-200 ${
+                    item.subItems.some((sub) =>
+                      path.pathname.includes(sub.link)
+                    )
+                      ? "bg-cyan-600 text-white shadow-md ml-2"
+                      : "text-slate-600 hover:bg-slate-100"
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-medium">{item.label}</span>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 transition-transform duration-300 ${
+                      openDropdown === item.label ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {openDropdown === item.label && (
+                  <div className="pl-8 pt-2 space-y-1">
+                    {item.subItems.map((subItem, subIndex) => (
+                      <Link key={subIndex} to={subItem.link}>
+                        <button
+                          className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 ${
+                            path.pathname === subItem.link
+                              ? "bg-cyan-500 text-white"
+                              : "text-slate-500 hover:bg-slate-100"
+                          }`}
+                        >
+                          <span className="font-medium">{subItem.label}</span>
+                        </button>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to={item.link}>
+                <button
+                  className={`
               w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200
               ${
                 path.pathname === item.link
@@ -140,11 +191,13 @@ export default function ClinicSidebar() {
                   : "text-slate-600 hover:bg-slate-100"
               }
             `}
-            >
-              <item.icon className="w-5 h-5" />
-              <span className="font-medium">{item.label}</span>
-            </button>
-          </Link>
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              </Link>
+            )}
+          </div>
         ))}
       </nav>
 
