@@ -1,160 +1,174 @@
-import { X, Calendar, Clock, User, MessageSquare } from "lucide-react";
-import { useContext, useState, useEffect } from "react";
-import axios from "axios";
+'use client';
+
+import { useContext, useState } from "react";
+import { X, Calendar, CreditCard } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthContext } from "../../../context/AuthContext";
 import { DoctorContext } from "../../../context/DoctorContext";
+import { AuthContext } from "../../../context/AuthContext";
+import axios from "axios";
 import { AppointmentContext } from "../../../context/AppointmentContext";
+import ClientPaymentModal from "../ClientPaymentModal/ClientPaymentModal";
+
+// Import the new tab components
+import DateTab from "./Tabs/DateTab";
+import TimeTab from "./Tabs/TimeTab";
+import DetailsTab from "./Tabs/DetailsTab";
 
 const AddAppointmentModal = ({ isOpen, onClose }) => {
-  const { user } = useContext(AuthContext);
   const { doctors } = useContext(DoctorContext);
+  const { user } = useContext(AuthContext);
   const { fetchAppointments } = useContext(AppointmentContext);
+  const doctorClinic = doctors?.filter(
+    (doc) => doc.clinicId?._id === user.clinicId?._id
+  );
 
+  const [currentTab, setCurrentTab] = useState(1);
   const [formData, setFormData] = useState({
-    patientId: user?._id,
-    clinicId: "",
     doctorId: "",
-    date: "",
+    date: new Date(),
     time: "",
-    type: "",
+    type: "consultation",
+    status: "scheduled",
   });
 
-  useEffect(() => {
-    if (doctors.length > 0) {
-      setFormData((prev) => ({
-        ...prev,
-        clinicId: doctors[0].clinicId,
-      }));
-    }
-  }, [doctors]);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const appointmentTypes = [
+    { value: "consultation", label: "Consultation" },
+    { value: "follow-up", label: "Follow-up" },
+    { value: "check-up", label: "Check-up" },
+    { value: "surgery", label: "Surgery" },
+    { value: "therapy", label: "Therapy" },
+    { value: "vaccination", label: "Vaccination" },
+    { value: "screening", label: "Screening" },
+  ];
+
+  const nextTab = () => setCurrentTab((prev) => prev + 1);
+  const prevTab = () => setCurrentTab((prev) => prev - 1);
+
+  const handleAddAppointment = (e) => {
     e.preventDefault();
+    if (!formData.doctorId || !formData.date || !formData.time || !formData.type) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePaymentSubmit = async (paymentData) => {
     try {
-      await axios.post("http://localhost:3000/appointment/add", formData);
-      toast.success("Appointment requested successfully!");
+      const datePart = formData.date.toISOString().split('T')[0];
+      const appointmentDateTime = `${datePart}T${formData.time}:00.000Z`;
+
+      const finalData = {
+        ...formData,
+        date: appointmentDateTime,
+        clinicId: user.clinicId?._id,
+        patientId: user._id,
+        paymentMethod: paymentData.paymentMethod,
+        paymentDetails: paymentData.bankDetails,
+      };
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const res = await axios.post(
+        "http://localhost:3000/appointment/add-appointment",
+        finalData
+      );
+
+      if (paymentData.paymentMethod === "cash") {
+        toast.success("Appointment booked successfully! Please pay in cash upon arrival.");
+      } else {
+        toast.success("Appointment booked successfully! Payment processed.");
+      }
+
       fetchAppointments();
+      setIsPaymentModalOpen(false);
       onClose();
     } catch (error) {
-      if (error.response && error.response.status === 403) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Error requesting appointment");
-      }
-      console.error("Error:", error);
+      console.error("Error booking appointment:", error);
+      toast.error("Failed to book appointment. Please try again.");
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handlePaymentModalClose = () => {
+    setIsPaymentModalOpen(false);
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
+
+  const tabContent = () => {
+    switch (currentTab) {
+      case 1:
+        return <DateTab formData={formData} setFormData={setFormData} nextTab={nextTab} />;
+      case 2:
+        return <TimeTab formData={formData} setFormData={setFormData} nextTab={nextTab} prevTab={prevTab} />;
+      case 3:
+        return <DetailsTab formData={formData} setFormData={setFormData} doctors={doctorClinic} appointmentTypes={appointmentTypes} prevTab={prevTab} />;
+      default:
+        return null;
+    }
+  }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10 w-full max-w-lg mx-4 md:mx-0">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
-            New Appointment
-          </h2>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-300">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform animate-in zoom-in-95 duration-300 border border-slate-200/50">
+        <div className="flex justify-between items-center p-6 border-b border-slate-100">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-slate-800 tracking-tight">
+                Schedule Appointment
+              </h2>
+              <p className="text-slate-500 text-sm mt-0.5">
+                Step {currentTab} of 3
+              </p>
+            </div>
+          </div>
           <button
+            type="button"
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-700 transition-colors p-2 rounded-full hover:bg-slate-100"
+            className="p-2 hover:bg-slate-100 rounded-xl transition-colors duration-200 group"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5 text-slate-400 group-hover:text-slate-600" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Doctor Select */}
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <select
-                name="doctorId"
-                value={formData.doctorId}
-                onChange={handleChange}
-                className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all"
-                required
-              >
-                <option value="" disabled>
-                  Select Doctor
-                </option>
-                {doctors.map((doctor) => (
-                  <option key={doctor._id} value={doctor._id}>
-                    {doctor.name} - {doctor.specialty}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <form onSubmit={handleAddAppointment} className="p-6 space-y-6">
+            {tabContent()}
 
-            {/* Appointment Type */}
-            <div className="relative">
-              <MessageSquare className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                type="text"
-                name="type"
-                placeholder="Reason (e.g., Check-up)"
-                value={formData.type}
-                onChange={handleChange}
-                className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Date Input */}
-            <div className="relative">
-              <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all"
-                required
-              />
-            </div>
-
-            {/* Time Input */}
-            <div className="relative">
-              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                type="time"
-                name="time"
-                value={formData.time}
-                onChange={handleChange}
-                className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-slate-200 flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-3 rounded-lg text-slate-600 font-semibold hover:bg-slate-100 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-8 py-3 rounded-lg bg-cyan-600 text-white font-semibold hover:bg-cyan-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300"
-            >
-              Request Appointment
-            </button>
-          </div>
+            {currentTab === 3 && (
+                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="px-6 py-3 border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 transition-all duration-200 font-medium"
+                        >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={!formData.doctorId || !formData.date || !formData.time}
+                        className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl hover:from-cyan-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center gap-2"
+                        >
+                        <CreditCard className="w-4 h-4" />
+                        Proceed to Payment
+                    </button>
+                </div>
+            )}
         </form>
       </div>
+      
+      <ClientPaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={handlePaymentModalClose}
+        onSubmit={handlePaymentSubmit}
+      />
     </div>
   );
 };
