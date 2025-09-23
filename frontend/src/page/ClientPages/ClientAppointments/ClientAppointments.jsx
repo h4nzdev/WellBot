@@ -28,12 +28,16 @@ export default function ClientAppointments() {
     (app) => app.patientId._id === user._id
   );
 
+  const clinicAppointments = appointments.filter(
+    (app) => app.clinicId?._id === appointments[0]?.clinicId?._id
+  );
+
+  const isAppointmentLimitReached =
+    appointments[0]?.clinicId?.subscriptionPlan === "free" &&
+    clinicAppointments.length >= 10;
+
   const handleNewAppointmentClick = () => {
-    const clinic = appointments[0]?.clinicId;
-    if (
-      clinic?.subscriptionPlan === "free" &&
-      appointments.length >= 10
-    ) {
+    if (isAppointmentLimitReached) {
       toast.error(
         "The clinic has reached its appointment limit for the free plan."
       );
@@ -41,11 +45,6 @@ export default function ClientAppointments() {
       setIsModalOpen(true);
     }
   };
-
-  const isAppointmentLimitReached = (
-    appointments[0]?.clinicId?.subscriptionPlan === "free" &&
-    appointments.length >= 10
-  );
 
   const stats = [
     {
