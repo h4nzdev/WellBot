@@ -31,38 +31,10 @@ export default function ClinicSidebar() {
     },
     {
       icon: Calendar,
-      label: "Appointments",
-      subItems: [
-        {
-          label: "All Appointments",
-          link: "/clinic/appointments",
-        },
-        {
-          label: "Pending Appointments",
-          link: "/clinic/pending-appointments",
-        },
-      ],
-    },
-    {
-      icon: Calendar,
       label: "Calendar",
       link: "/clinic/calendar",
     },
 
-    {
-      icon: Users,
-      label: "Patients",
-      subItems: [
-        {
-          label: "All Patients",
-          link: "/clinic/patients",
-        },
-        {
-          label: "Patient Chats",
-          link: "/clinic/patients-chats",
-        },
-      ],
-    },
     {
       icon: UserCheck,
       label: "Doctors",
@@ -88,10 +60,38 @@ export default function ClinicSidebar() {
       active: false,
       link: "/clinic/settings",
     },
+    {
+      icon: Calendar,
+      label: "Appointments",
+      subItems: [
+        {
+          label: "All Appointments",
+          link: "/clinic/appointments",
+        },
+        {
+          label: "Pending Appointments",
+          link: "/clinic/pending-appointments",
+        },
+      ],
+    },
+    {
+      icon: Users,
+      label: "Patients",
+      subItems: [
+        {
+          label: "All Patients",
+          link: "/clinic/patients",
+        },
+        {
+          label: "Patient Chats",
+          link: "/clinic/patients-chats",
+        },
+      ],
+    },
   ];
   const path = useLocation();
   const navigate = useNavigate();
-  const { setUser, setRole } = useContext(AuthContext);
+  const { setUser , setRole } = useContext(AuthContext);
 
   const handleLogout = () => {
     Swal.fire({
@@ -105,7 +105,7 @@ export default function ClinicSidebar() {
       if (result.isConfirmed) {
         sessionStorage.removeItem("user");
         sessionStorage.removeItem("role");
-        setUser(false);
+        setUser (false);
         setRole("Clinic");
         navigate("/auth/login");
         toast.success("Logout successfully!");
@@ -118,8 +118,8 @@ export default function ClinicSidebar() {
   };
 
   return (
-    <div className="hidden md:block fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
-      {/* Sidebar Header */}
+    <div className="hidden md:block fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col overflow-hidden">
+      {/* Sidebar Header - Fixed at top */}
       <div className="flex items-center space-x-3 p-6 border-b flex-shrink-0">
         <div className="bg-cyan-600 p-2 rounded-lg">
           <Stethoscope className="w-6 h-6 text-white" />
@@ -136,7 +136,7 @@ export default function ClinicSidebar() {
         </div>
       </div>
 
-      {/* Navigation Menu */}
+      {/* Navigation Menu - Scrollable if content overflows */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {menuItems.map((item, index) => (
           <div key={index}>
@@ -201,8 +201,8 @@ export default function ClinicSidebar() {
         ))}
       </nav>
 
-      {/* User Profile & Logout */}
-      <div className="flex-shrink-0 p-4 border-t bg-white">
+      {/* User Profile & Logout - Fixed at bottom */}
+      <div className="flex-shrink-0 p-4 border-t bg-white absolute bottom-0">
         <div className="flex items-center space-x-3 p-3 mb-3">
           <div className="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-semibold text-sm">DC</span>
