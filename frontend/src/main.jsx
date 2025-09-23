@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { registerSW } from 'vite-plugin-pwa/dist/registerSW.js';
 
 import App from "./App.jsx";
 import { DoctorProvider } from "./context/DoctorContext.jsx";
@@ -21,3 +22,5 @@ createRoot(document.getElementById("root")).render(
     </DoctorProvider>
   </AuthProvider>
 );
+
+registerSW({ immediate: true });
