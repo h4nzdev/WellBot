@@ -103,7 +103,7 @@ export default function ClinicSidebar() {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
+    <div className="hidden md:block fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50 flex flex-col">
       {/* Sidebar Header */}
       <div className="flex items-center space-x-3 p-6 border-b flex-shrink-0">
         <div className="bg-cyan-600 p-2 rounded-lg">

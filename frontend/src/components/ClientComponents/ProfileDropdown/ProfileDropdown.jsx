@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 import { User, LogOut } from "lucide-react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ProfileDropdown = () => {
   const { setUser, setRole } = useContext(AuthContext);
@@ -27,7 +27,6 @@ const ProfileDropdown = () => {
         setUser(false);
         setRole("Client");
         navigate("/auth/login");
-        Swal.fire("Logged out!", "You have been logged out.", "success");
       }
     });
   };
@@ -57,13 +56,15 @@ const ProfileDropdown = () => {
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100/80 py-2 z-50 animate-in fade-in-20 zoom-in-95 duration-200">
-          <a
-            href="/client/profile"
-            className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
-          >
-            <User className="w-4 h-4 mr-3" />
-            Profile
-          </a>
+          <Link to="/client/profile">
+            <button
+              href="/client/profile"
+              className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <User className="w-4 h-4 mr-3" />
+              Profile
+            </button>
+          </Link>
           <button
             onClick={() => {
               handleLogout();
