@@ -12,6 +12,7 @@ import ClinicSettings from "../page/ClinicPages/ClinicSettings/ClinicSettings";
 import PendingAppointments from "../page/ClinicPages/ClinicPendingAppointments/ClinicPendingAppointments";
 import ClinicDoctorProfile from "../page/ClinicPages/DoctorProfile/ClinicDoctorProfile";
 import ClinicPatientProfile from "../page/ClinicPages/PatientProfile/ClinicPatientProfile";
+import ClinicCalendar from "../page/ClinicPages/ClinicCalendar";
 
 const ClinicRoutes = () => {
   return (
@@ -30,6 +31,14 @@ const ClinicRoutes = () => {
           element={
             <ClinicLayout>
               <ClinicAppointments />
+            </ClinicLayout>
+          }
+        />
+        <Route
+          path="/clinic/calendar"
+          element={
+            <ClinicLayout>
+              <ClinicCalendar />
             </ClinicLayout>
           }
         />

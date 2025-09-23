@@ -35,6 +35,12 @@ export default function ClinicSidebar() {
       link: "/clinic/appointments",
     },
     {
+      icon: Calendar,
+      label: "Calendar",
+      active: false,
+      link: "/clinic/calendar",
+    },
+    {
       icon: Clock,
       label: "Pending Appointments",
       active: false,
