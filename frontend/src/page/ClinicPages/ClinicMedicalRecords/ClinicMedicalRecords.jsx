@@ -7,14 +7,16 @@ import {
   Search,
   Filter,
   ChevronDown,
-  MoreHorizontal,
 } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
+import ClinicMedicalRecordsTableBody from "./components/ClinicMedicalRecordsTableBody";
 
 export default function ClinicMedicalRecords() {
   const [records, setRecords] = useState([]);
   const { user } = useContext(AuthContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5;
 
   const fetchRecords = async () => {
     try {
@@ -28,6 +30,27 @@ export default function ClinicMedicalRecords() {
   useEffect(() => {
     fetchRecords();
   }, []);
+
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = records.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
+  const totalPages = Math.ceil(records.length / recordsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
 
   return (
     <div className="w-full min-h-screen bg-slate-50">
@@ -159,73 +182,35 @@ export default function ClinicMedicalRecords() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                {/* Record Row 1 */}
-                {records?.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="text-center py-8 text-slate-500">
-                      No medical records in this clinic found.
-                    </td>
-                  </tr>
-                ) : (
-                  <>
-                    {records?.map((record) => (
-                      <tr className="hover:bg-slate-50 transition-colors border-t border-slate-200">
-                        <td className="py-4 px-4 font-mono text-slate-700">
-                          #0001
-                        </td>
-                        <td className="px-4 font-semibold text-slate-800">
-                          {record?.patientId?.name}
-                        </td>
-                        <td className="px-4">
-                          {record.createdAt.slice(1, 10)}
-                        </td>
-                        <td className="px-4">{record.diagnosis}</td>
-                        <td className="px-4">{record.doctorId?.name}</td>
-                        <td className="px-4">
-                          <span className="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-md text-sm w-fit">
-                            Reviewed
-                          </span>
-                        </td>
-                        <td className="px-4 text-right">
-                          <button
-                            type="button"
-                            className="h-8 w-8 p-0 hover:bg-slate-100 rounded-md inline-flex items-center justify-center mx-auto"
-                            disabled
-                            aria-label="Actions"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </>
-                )}
-
-                {/* Add more rows as needed */}
-              </tbody>
+                <ClinicMedicalRecordsTableBody records={currentRecords} />
             </table>
           </div>
 
           {/* Results Summary */}
           <div className="mt-6 flex items-center justify-between text-sm text-slate-600">
-            <p>Showing 3 of 24 records</p>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                disabled
-                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <button
-                type="button"
-                disabled
-                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>
+          <p>
+          Showing {indexOfFirstRecord + 1}-
+          {Math.min(indexOfLastRecord, records.length)} of {records.length}{" "}
+          records
+        </p>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed"
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages || totalPages === 0}
+            className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
           </div>
         </div>
       </div>

@@ -19,15 +19,10 @@ import {
 } from "../../../../utils/emailService";
 import { useDate, useTime } from "../../../../utils/date";
 
-const PendingAppointmentsTableBody = () => {
-  const { appointments, fetchAppointments } = useContext(AppointmentContext);
+const PendingAppointmentsTableBody = ({ appointments }) => {
+  const { fetchAppointments } = useContext(AppointmentContext);
   const { user } = useContext(AuthContext);
   const [loadingStates, setLoadingStates] = useState({});
-
-  const pendingAppointments = appointments?.filter(
-    (appointment) =>
-      appointment.clinicId?._id === user._id && appointment.status === "pending"
-  );
 
   const handleRespond = async (appointmentId, action) => {
     // Set loading state for this specific appointment
@@ -35,7 +30,7 @@ const PendingAppointmentsTableBody = () => {
 
     try {
       // Find the appointment details for email
-      const appointment = pendingAppointments.find(
+      const appointment = appointments.find(
         (apt) => apt._id === appointmentId
       );
 
@@ -141,8 +136,8 @@ const PendingAppointmentsTableBody = () => {
 
   return (
     <tbody>
-      {pendingAppointments.length > 0 ? (
-        pendingAppointments.map((appointment) => (
+      {appointments.length > 0 ? (
+        appointments.map((appointment) => (
           <tr
             key={appointment._id}
             className="hover:bg-slate-50 transition-colors border-t border-slate-200"

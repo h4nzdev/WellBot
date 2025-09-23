@@ -6,13 +6,11 @@ import {
   Search,
   ChevronDown,
   Filter,
-  MoreHorizontal,
-  X,
 } from "lucide-react";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { AuthContext } from "../../../context/AuthContext";
 import ClientChatsModal from "./components/ClientChatsModal.jsx";
+import ClinicPatientsChatTableBody from "./components/ClinicPatientsChatTableBody.jsx";
 
 export default function ClinicPatientsChat() {
   const [chatHistory, setChatHistory] = useState([]);
@@ -20,26 +18,24 @@ export default function ClinicPatientsChat() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const chatsPerPage = 5;
 
   const fetchMessages = async () => {
     try {
-      // Check if user (clinic) is available and has an ID
       if (!user || !user._id) {
-        console.error("Clinic user not found or missing ID");
         setChatHistory([]);
         setLoading(false);
         return;
       }
 
       setLoading(true);
-      // Fetch chats specific to this clinic
       const res = await axios.get(`http://localhost:3000/chat/clinic/${user._id}`);
       const chats = res.data?.chats || [];
 
-      // Group chats by patient and normalize message shape
       const byPatient = new Map();
       chats.forEach((c) => {
-        const patient = c.patientId || {}; // populated doc with name/email
+        const patient = c.patientId || {};
         const patientKey = patient._id || "unknown";
         const patientName = patient.name || patient.email || "Unknown";
 
@@ -69,12 +65,9 @@ export default function ClinicPatientsChat() {
       setChatHistory(grouped);
     } catch (error) {
       console.error("Error fetching clinic chats:", error);
-      // Show user-friendly error message
       if (error.response?.status === 404) {
-        console.log("No chats found for this clinic");
         setChatHistory([]);
       } else {
-        console.error("Failed to fetch chats:", error.message);
         setChatHistory([]);
       }
     } finally {
@@ -83,24 +76,28 @@ export default function ClinicPatientsChat() {
   };
 
   useEffect(() => {
-    // Only fetch if user (clinic) is available
     if (user && user._id) {
-      // fetch immediately when component mounts
       fetchMessages();
-
-      // then keep fetching every 5 seconds
-      const interval = setInterval(() => {
-        fetchMessages();
-      }, 5000);
-
-      // cleanup when component unmounts
+      const interval = setInterval(fetchMessages, 5000);
       return () => clearInterval(interval);
     }
-  }, [user]); // Depend on user to refetch when clinic changes
+  }, [user]);
 
-  const lastUserMessage = (chat) => {
-    const userMessages = chat.filter((message) => message.role === "user");
-    return userMessages[userMessages.length - 1];
+  const indexOfLastChat = currentPage * chatsPerPage;
+  const indexOfFirstChat = indexOfLastChat - chatsPerPage;
+  const currentChats = chatHistory.slice(indexOfFirstChat, indexOfLastChat);
+  const totalPages = Math.ceil(chatHistory.length / chatsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   return (
@@ -229,131 +226,37 @@ export default function ClinicPatientsChat() {
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="6" className="text-center py-8 text-slate-500">
-                      <div className="flex items-center justify-center space-x-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-600"></div>
-                        <span>Loading patient chats...</span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : chatHistory && chatHistory.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="text-center py-8 text-slate-500">
-                      No patient chats found for this clinic.
-                    </td>
-                  </tr>
-                ) : (
-                  chatHistory?.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="hover:bg-slate-50 transition-colors border-t border-slate-200"
-                    >
-                      <td className="py-4 px-4 font-mono text-slate-700">
-                        #0001
-                      </td>
-                      <td className="px-4 font-semibold text-slate-800">
-                        {item.patientName}
-                      </td>
-                      <td
-                        className="px-4 max-w-xs truncate"
-                        title={lastUserMessage(item.chat)?.text}
-                      >
-                        {lastUserMessage(item.chat)?.text || "No messages yet"}
-                      </td>
-                      <td className="px-4">
-                        {item.lastTimestamp
-                          ? new Date(item.lastTimestamp).toLocaleDateString()
-                          : "Never"}
-                      </td>
-                      <td className="px-4">
-                        <span className="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-1 rounded-md text-sm w-fit">
-                          Active
-                        </span>
-                      </td>
-                      <td className="px-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedPatient({
-                                id: item.patientId,
-                                name: item.patientName,
-                              });
-                              setSelectedChat(item.chat);
-                            }}
-                            className="px-3 py-1.5 text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50 border border-cyan-200 hover:border-cyan-300 rounded-md font-medium transition-all duration-200 text-sm"
-                          >
-                            View
-                          </button>
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              try {
-                                const result = await Swal.fire({
-                                  title: "Delete chats?",
-                                  text: `This will delete all chats for ${item.patientName}.`,
-                                  icon: "warning",
-                                  showCancelButton: true,
-                                  confirmButtonText: "Delete",
-                                  cancelButtonText: "Cancel",
-                                  confirmButtonColor: "#dc2626",
-                                });
-                                if (result.isConfirmed) {
-                                  await axios.delete(
-                                    `http://localhost:3000/chat/${item.patientId}`
-                                  );
-                                  await Swal.fire({
-                                    title: "Deleted",
-                                    text: "Patient chats were deleted.",
-                                    icon: "success",
-                                    timer: 1200,
-                                    showConfirmButton: false,
-                                  });
-                                  fetchMessages();
-                                }
-                              } catch (e) {
-                                await Swal.fire({
-                                  title: "Error",
-                                  text: "Failed to delete chats.",
-                                  icon: "error",
-                                });
-                                // eslint-disable-next-line no-console
-                                console.error("Failed to delete chats", e);
-                              }
-                            }}
-                            className="px-3 py-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 hover:border-red-300 rounded-md font-medium transition-all duration-200 text-sm"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
+              <ClinicPatientsChatTableBody
+                chats={currentChats}
+                loading={loading}
+                setSelectedChat={setSelectedChat}
+                setSelectedPatient={setSelectedPatient}
+                fetchMessages={fetchMessages}
+              />
             </table>
           </div>
 
           {/* Results Summary */}
           <div className="mt-6 flex items-center justify-between text-sm text-slate-600">
             <p>
-              Showing {chatHistory?.length} of {chatHistory?.length} chats
+              Showing {indexOfFirstChat + 1}-{
+                Math.min(indexOfLastChat, chatHistory.length)
+              } of {chatHistory.length} chats
             </p>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                disabled
-                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
               <button
                 type="button"
-                disabled
-                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages || totalPages === 0}
+                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed"
               >
                 Next
               </button>
