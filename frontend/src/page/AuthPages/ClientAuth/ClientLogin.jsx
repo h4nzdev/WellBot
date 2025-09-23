@@ -19,7 +19,7 @@ import clinic from "../../../assets/clinic.jpg";
 import { toast } from "react-toastify";
 
 const ClientLogin = () => {
-  const { user, setRole, setUser } = useContext(AuthContext);
+  const { setRole, setUser } = useContext(AuthContext);
   const [warningShown, setWarningShown] = useState(false);
   const [error, setError] = useState();
   const [clinics, setClinics] = useState([]);
@@ -27,7 +27,6 @@ const ClientLogin = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const [showSplash, setShowSplash] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -83,12 +82,9 @@ const ClientLogin = () => {
       if (res.data.patient) {
         setRole(res.data.patient.role);
         setUser(res.data.patient);
-        setShowSplash(true);
         console.log("Login successful for patient:", res.data.patient.email);
-        setTimeout(() => {
-          setShowSplash(false);
-          navigate(`/appointments?clinicId=${selectedClinic._id}`);
-        }, 2000);
+
+        navigate(`/client/dashboard?clinicId=${selectedClinic._id}`);
       }
 
       setFormData({ email: "", password: "" });
@@ -172,18 +168,6 @@ const ClientLogin = () => {
     </div>
   );
 
-  if (showSplash) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center bg-cyan-50">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-cyan-800 animate-pulse">
-            Welcome to {user.clinicId?.clinicName}
-          </h1>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Left Side - Branding */}
@@ -226,26 +210,12 @@ const ClientLogin = () => {
             </div>
           </div>
 
-          <div
-            className={`mb-8 ${
-              selectedClinic
-                ? "border border-cyan-200 p-6 bg-cyan-50 rounded-2xl"
-                : ""
-            }`}
-          >
-            <h2
-              className={`text-3xl font-bold mb-2 ${
-                selectedClinic ? "text-cyan-900" : "text-slate-800"
-              }`}
-            >
-              {selectedClinic
-                ? `Booking with ${selectedClinic.clinicName}`
-                : "Welcome Back"}
+          <div className={`mb-8 ${selectedClinic ? 'border border-cyan-200 p-6 bg-cyan-50 rounded-2xl' : ''}`}>
+            <h2 className={`text-3xl font-bold mb-2 ${selectedClinic ? 'text-cyan-900' : 'text-slate-800'}`}>
+              {selectedClinic ? `Booking with ${selectedClinic.clinicName}` : "Welcome Back"}
             </h2>
-            <p className={selectedClinic ? "text-cyan-700" : "text-slate-600"}>
-              {selectedClinic
-                ? "Sign in to complete your booking"
-                : "Sign in to your patient dashboard"}
+            <p className={selectedClinic ? 'text-cyan-700' : 'text-slate-600'}>
+              {selectedClinic ? "Sign in to complete your booking" : "Sign in to your patient dashboard"}
             </p>
           </div>
 
