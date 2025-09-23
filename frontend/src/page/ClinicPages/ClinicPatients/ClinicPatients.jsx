@@ -19,6 +19,9 @@ import axios from "axios";
 export default function ClinicPatients() {
   const [patients, setPatients] = useState([]);
   const { user } = useContext(AuthContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const patientsPerPage = 5;
 
   const fetchPatients = async () => {
     try {
@@ -32,8 +35,37 @@ export default function ClinicPatients() {
   };
 
   useEffect(() => {
-    fetchPatients();
-  }, []);
+    if (user?._id) {
+      fetchPatients();
+    }
+  }, [user]);
+
+  const filteredPatients = patients.filter((patient) => {
+    const searchTermLower = searchTerm.toLowerCase();
+    const patientName = patient.name?.toLowerCase() || "";
+    return patientName.includes(searchTermLower);
+  });
+
+  const indexOfLastPatient = currentPage * patientsPerPage;
+  const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
+  const currentPatients = filteredPatients.slice(
+    indexOfFirstPatient,
+    indexOfLastPatient
+  );
+  const totalPages = Math.ceil(filteredPatients.length / patientsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="w-full min-h-screen bg-slate-50">
       <div className="mx-auto">
@@ -131,31 +163,14 @@ export default function ClinicPatients() {
                   type="text"
                   placeholder="Search patients..."
                   className="pl-10 h-12 rounded-xl border border-slate-200 focus:border-cyan-300 focus:ring-1 focus:ring-cyan-200 w-full"
-                  disabled
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setCurrentPage(1);
+                  }}
                 />
               </div>
-
-              {/* Filter */}
-              <button
-                type="button"
-                className="flex items-center h-12 px-4 rounded-xl border border-slate-200 hover:border-cyan-300 bg-transparent text-slate-700 cursor-not-allowed"
-                disabled
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Filter
-                <ChevronDown className="w-4 h-4 ml-2" />
-              </button>
             </div>
-
-            {/* Add Button */}
-            {/* <button
-              type="button"
-              className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 h-12 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center"
-              disabled
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Add Patient
-            </button> */}
           </div>
 
           {/* Table */}
@@ -176,25 +191,31 @@ export default function ClinicPatients() {
                   </th>
                 </tr>
               </thead>
-              <ClinicPatientsTableBody patients={patients} />
+              <ClinicPatientsTableBody patients={currentPatients} />
             </table>
           </div>
 
           {/* Results Summary */}
           <div className="mt-6 flex items-center justify-between text-sm text-slate-600">
-            <p>Showing 3 of 12 patients</p>
+            <p>
+              Showing {indexOfFirstPatient + 1}-
+              {Math.min(indexOfLastPatient, filteredPatients.length)} of{" "}
+              {filteredPatients.length} patients
+            </p>
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                disabled
-                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed"
               >
                 Previous
               </button>
               <button
                 type="button"
-                disabled
-                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-400 cursor-not-allowed"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages || totalPages === 0}
+                className="rounded-lg bg-transparent border border-slate-300 px-3 py-1 text-slate-700 disabled:text-slate-400 disabled:cursor-not-allowed"
               >
                 Next
               </button>

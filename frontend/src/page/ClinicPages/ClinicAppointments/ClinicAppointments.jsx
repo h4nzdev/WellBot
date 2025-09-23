@@ -19,27 +19,66 @@ export default function ClinicAppointments() {
   const { appointments } = useContext(AppointmentContext);
   const { user } = useContext(AuthContext);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [doctorFilter, setDoctorFilter] = useState("All");
+  const [isStatusDropdownOpen, setStatusDropdownOpen] = useState(false);
+  const [isDoctorDropdownOpen, setDoctorDropdownOpen] = useState(false);
   const appointmentsPerPage = 5;
+
+  const doctors = [
+    ...new Set(appointments.map((app) => app.doctorId?.name).filter(Boolean)),
+  ];
+  const statuses = [
+    "All",
+    "Pending",
+    "Accepted",
+    "Scheduled",
+    "Completed",
+    "Cancelled",
+    "Rejected",
+  ];
 
   const clinicAppointments = appointments.filter(
     (app) => app.clinicId?._id === user._id
   );
 
+  const filteredAppointments = clinicAppointments
+    .filter((app) => {
+      if (statusFilter === "All") return true;
+      return app.status.toLowerCase() === statusFilter.toLowerCase();
+    })
+    .filter((app) => {
+      if (doctorFilter === "All") return true;
+      return app.doctorId?.name === doctorFilter;
+    })
+    .filter((app) => {
+      const searchTermLower = searchTerm.toLowerCase();
+      const patientName = app.patientId?.name?.toLowerCase() || "";
+      const doctorName = app.doctorId?.name?.toLowerCase() || "";
+      return (
+        patientName.includes(searchTermLower) ||
+        doctorName.includes(searchTermLower)
+      );
+    });
+
   const indexOfLastAppointment = currentPage * appointmentsPerPage;
   const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
-  const currentAppointments = clinicAppointments.slice(
+  const currentAppointments = filteredAppointments.slice(
     indexOfFirstAppointment,
     indexOfLastAppointment
   );
-  const totalPages = Math.ceil(clinicAppointments.length / appointmentsPerPage);
+  const totalPages = Math.ceil(
+    filteredAppointments.length / appointmentsPerPage
+  );
 
-  const confirmedAppointment = appointments.filter(
+  const confirmedAppointment = clinicAppointments.filter(
     (app) => app.status === "scheduled"
   );
-  const pendingAppointment = appointments.filter(
+  const pendingAppointment = clinicAppointments.filter(
     (app) => app.status === "pending"
   );
-  const completedAppointment = appointments.filter(
+  const completedAppointment = clinicAppointments.filter(
     (app) => app.status === "completed"
   );
 
@@ -170,28 +209,80 @@ export default function ClinicAppointments() {
                   type='text'
                   placeholder='Search appointments...'
                   className='pl-10 h-12 rounded-xl border border-slate-200 focus:border-cyan-300 focus:ring-1 focus:ring-cyan-200 w-full'
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
 
               {/* Filters */}
               <div className='flex gap-3'>
-                <button
-                  type='button'
-                  className='flex items-center h-12 px-4 rounded-xl border border-slate-200 hover:border-cyan-300 bg-transparent text-slate-700'
-                >
-                  <Filter className='w-4 h-4 mr-2' />
-                  Status: All
-                  <ChevronDown className='w-4 h-4 ml-2' />
-                </button>
+                <div className='relative'>
+                  <button
+                    type='button'
+                    onClick={() => setStatusDropdownOpen(!isStatusDropdownOpen)}
+                    className='flex items-center h-12 px-4 rounded-xl border border-slate-200 hover:border-cyan-300 bg-transparent text-slate-700'
+                  >
+                    <Filter className='w-4 h-4 mr-2' />
+                    Status: {statusFilter}
+                    <ChevronDown className='w-4 h-4 ml-2' />
+                  </button>
+                  {isStatusDropdownOpen && (
+                    <div className='absolute top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 z-10'>
+                      {statuses.map((status) => (
+                        <button
+                          key={status}
+                          onClick={() => {
+                            setStatusFilter(status);
+                            setStatusDropdownOpen(false);
+                            setCurrentPage(1);
+                          }}
+                          className='block w-full text-left px-4 py-2 text-slate-700 hover:bg-slate-50'
+                        >
+                          {status}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-                <button
-                  type='button'
-                  className='flex items-center h-12 px-4 rounded-xl border border-slate-200 hover:border-cyan-300 bg-transparent text-slate-700'
-                >
-                  <Users className='w-4 h-4 mr-2' />
-                  Doctor: All
-                  <ChevronDown className='w-4 h-4 ml-2' />
-                </button>
+                <div className='relative'>
+                  <button
+                    type='button'
+                    onClick={() => setDoctorDropdownOpen(!isDoctorDropdownOpen)}
+                    className='flex items-center h-12 px-4 rounded-xl border border-slate-200 hover:border-cyan-300 bg-transparent text-slate-700'
+                  >
+                    <Users className='w-4 h-4 mr-2' />
+                    Doctor: {doctorFilter}
+                    <ChevronDown className='w-4 h-4 ml-2' />
+                  </button>
+                  {isDoctorDropdownOpen && (
+                    <div className='absolute top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 z-10'>
+                      <button
+                        onClick={() => {
+                          setDoctorFilter("All");
+                          setDoctorDropdownOpen(false);
+                          setCurrentPage(1);
+                        }}
+                        className='block w-full text-left px-4 py-2 text-slate-700 hover:bg-slate-50'
+                      >
+                        All
+                      </button>
+                      {doctors.map((doctor) => (
+                        <button
+                          key={doctor}
+                          onClick={() => {
+                            setDoctorFilter(doctor);
+                            setDoctorDropdownOpen(false);
+                            setCurrentPage(1);
+                          }}
+                          className='block w-full text-left px-4 py-2 text-slate-700 hover:bg-slate-50'
+                        >
+                          {doctor}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -233,8 +324,8 @@ export default function ClinicAppointments() {
           <div className='mt-6 flex items-center justify-between text-sm text-slate-600'>
             <p>
               Showing {indexOfFirstAppointment + 1}-
-              {Math.min(indexOfLastAppointment, clinicAppointments.length)} of{" "}
-              {clinicAppointments.length} appointments
+              {Math.min(indexOfLastAppointment, filteredAppointments.length)} of{" "}
+              {filteredAppointments.length} appointments
             </p>
             <div className='flex items-center gap-2'>
               <button

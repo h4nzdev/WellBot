@@ -16,6 +16,9 @@ export default function ClinicMedicalRecords() {
   const [records, setRecords] = useState([]);
   const { user } = useContext(AuthContext);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("All");
+  const [isFilterDropdownOpen, setFilterDropdownOpen] = useState(false);
   const recordsPerPage = 5;
 
   const fetchRecords = async () => {
@@ -28,16 +31,38 @@ export default function ClinicMedicalRecords() {
   };
 
   useEffect(() => {
-    fetchRecords();
-  }, []);
+    if (user?._id) {
+      fetchRecords();
+    }
+  }, [user]);
+
+  const filteredRecords = records
+    .filter((record) => {
+      if (filter === "All") return true;
+      return record.type.toLowerCase() === filter.toLowerCase();
+    })
+    .filter((record) => {
+      const searchTermLower = searchTerm.toLowerCase();
+      const patientName = record.patientId?.name?.toLowerCase() || "";
+      const doctorName = record.doctorId?.name?.toLowerCase() || "";
+      return (
+        patientName.includes(searchTermLower) ||
+        doctorName.includes(searchTermLower)
+      );
+    });
 
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = records.slice(
+  const currentRecords = filteredRecords.slice(
     indexOfFirstRecord,
     indexOfLastRecord
   );
-  const totalPages = Math.ceil(records.length / recordsPerPage);
+  const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+
+  const recordTypes = [
+    "All",
+    ...new Set(records.map((record) => record.type)),
+  ];
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -135,20 +160,40 @@ export default function ClinicMedicalRecords() {
                   type="text"
                   placeholder="Search medical records..."
                   className="pl-10 h-12 rounded-xl border border-slate-200 focus:border-cyan-300 focus:ring-1 focus:ring-cyan-200 w-full"
-                  disabled
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
 
               {/* Filter */}
-              <button
-                type="button"
-                className="flex items-center h-12 px-4 rounded-xl border border-slate-200 hover:border-cyan-300 bg-transparent text-slate-700 cursor-not-allowed"
-                disabled
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Filter
-                <ChevronDown className="w-4 h-4 ml-2" />
-              </button>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setFilterDropdownOpen(!isFilterDropdownOpen)}
+                  className="flex items-center h-12 px-4 rounded-xl border border-slate-200 hover:border-cyan-300 bg-transparent text-slate-700"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  Filter: {filter}
+                  <ChevronDown className="w-4 h-4 ml-2" />
+                </button>
+                {isFilterDropdownOpen && (
+                  <div className="absolute top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 z-10">
+                    {recordTypes.map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => {
+                          setFilter(type);
+                          setFilterDropdownOpen(false);
+                          setCurrentPage(1);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-slate-50"
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Add Button */}
@@ -190,7 +235,7 @@ export default function ClinicMedicalRecords() {
           <div className="mt-6 flex items-center justify-between text-sm text-slate-600">
           <p>
           Showing {indexOfFirstRecord + 1}-
-          {Math.min(indexOfLastRecord, records.length)} of {records.length}{" "}
+          {Math.min(indexOfLastRecord, filteredRecords.length)} of {filteredRecords.length}{" "}
           records
         </p>
         <div className="flex items-center gap-2">
